@@ -1,6 +1,6 @@
 # Reusable Weapons Pack
 
-A drop-in weapon system with 27 weapons, 6 fire modes, 10 ammo types, and full multiplayer support.
+A drop-in weapon system just for you with 27 weapons, 6 fire modes, and 10 ammo types! :D 
 
 ## Setup
 
