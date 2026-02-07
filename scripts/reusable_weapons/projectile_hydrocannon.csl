@@ -40,7 +40,7 @@ Hydro_Cannon_Projectile :: class : Component {
                     geyser_timer = 0.0;
                     geysers_spawned += 1;
 
-                    geyser_prefab := get_asset(Prefab_Asset, "Weapon_HydroCannonGeyser.prefab");
+                    geyser_prefab := get_asset(Prefab_Asset, "reusable_weapons/Weapon_HydroCannonGeyser.prefab");
                     geyser_entity := Scene.instantiate(geyser_prefab);
                     geyser_entity->set_local_position(entity.world_position);
 
@@ -57,9 +57,9 @@ Hydro_Cannon_Projectile :: class : Component {
                     // Play random splash sound
                     rng: u64 = rng_seed_time();
                     splash_index := rng_range_int(ref rng, 1, 3);
-                    splash_path := "sounds/reusable-weapons/geyser_splash_01.wav";
-                    if splash_index == 2 { splash_path = "sounds/reusable-weapons/geyser_splash_02.wav"; }
-                    if splash_index == 3 { splash_path = "sounds/reusable-weapons/geyser_splash_03.wav"; }
+                    splash_path := "reusable_weapons/sounds/reusable-weapons/geyser_splash_01.wav";
+                    if splash_index == 2 { splash_path = "reusable_weapons/sounds/reusable-weapons/geyser_splash_02.wav"; }
+                    if splash_index == 3 { splash_path = "reusable_weapons/sounds/reusable-weapons/geyser_splash_03.wav"; }
                     sfx_desc := SFX.default_sfx_desc();
                     sfx_desc->set_position(entity.world_position);
                     sfx_desc.range_multiplier = 2.0;

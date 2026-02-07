@@ -141,7 +141,7 @@ spawn_beam_entity :: proc(owner_id: u64, target_id: u64, skin_name: string, anim
 
     spine := beam_entity->add_component(Spine_Animator);
     spine->awaken();
-    beam_asset := get_asset(Spine_Asset, "anims/reusable-weapons/lightning_beam/lighting_beam.spine");
+    beam_asset := get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/lightning_beam/lighting_beam.spine");
     spine.instance->set_skeleton(beam_asset);
     spine.instance->enable_skin(skin_name);
     spine.instance->refresh_skins();

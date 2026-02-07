@@ -66,7 +66,7 @@ Growing_Projectile :: class : Component {
                 cur_scale := entity.local_scale;
                 entity->set_local_scale({cur_scale.x * 1.5, cur_scale.y * 1.5});
 
-                sfx := get_asset(SFX_Asset, "sounds/reusable-weapons/plasma_burst_hit.wav");
+                sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/plasma_burst_hit.wav");
                 sfx_desc := SFX.default_sfx_desc();
                 sfx_desc->set_position(pos);
                 sfx_desc.range_multiplier = 2.0;
@@ -92,7 +92,7 @@ spawn_growing_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type)
     proj_entity->set_local_rotation(to_degrees(angle));
 
     // Use the laser bolt texture for plasma
-    proj_texture := get_asset(Texture_Asset, "sprites/reusable-weapons/projectiles/MachineGunBullet.png");
+    proj_texture := get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/projectiles/MachineGunBullet.png");
     sprite := proj_entity->add_component(Sprite_Renderer);
     sprite->set_texture(proj_texture);
     sprite.color = {0.8, 0.2, 1.0, 1.0};

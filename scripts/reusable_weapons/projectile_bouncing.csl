@@ -35,7 +35,7 @@ Bouncing_Projectile :: class : Component {
                         hit_player.health = 0;
                     }
 
-                    hit_sfx := get_asset(SFX_Asset, "sounds/reusable-weapons/buzzshot_projectile_ricochet.wav");
+                    hit_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/buzzshot_projectile_ricochet.wav");
                     sfx_desc := SFX.default_sfx_desc();
                     sfx_desc->set_position(pos);
                     sfx_desc.range_multiplier = 2.0;
@@ -113,9 +113,9 @@ spawn_bouncing_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type
     angle := atan2(direction.y, direction.x);
     proj_entity->set_local_rotation(to_degrees(angle));
 
-    texture_path := "sprites/reusable-weapons/projectiles/buzzsaw.png";
+    texture_path := "reusable_weapons/sprites/reusable-weapons/projectiles/buzzsaw.png";
     if wt == .MEGA_BLADE {
-        texture_path = "sprites/reusable-weapons/projectiles/megablade.png";
+        texture_path = "reusable_weapons/sprites/reusable-weapons/projectiles/megablade.png";
     }
     proj_texture := get_asset(Texture_Asset, texture_path);
     sprite := proj_entity->add_component(Sprite_Renderer);

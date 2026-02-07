@@ -58,7 +58,7 @@ spawn_poison_cloud :: proc(pos: v2, owner_id: u64) {
     // Spine visual: virus cloud with Appear -> Idle -> Disappear
     spine := cloud_entity->add_component(Spine_Animator);
     spine->awaken();
-    spine.instance->set_skeleton(get_asset(Spine_Asset, "anims/reusable-weapons/Virus_Cloud/004RAND_virus_cloud.spine"));
+    spine.instance->set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/Virus_Cloud/004RAND_virus_cloud.spine"));
     spine.instance.color_multiplier = {1, 1, 1, 0.5};
 
     sm := State_Machine.create();
@@ -81,7 +81,7 @@ spawn_poison_cloud :: proc(pos: v2, owner_id: u64) {
     cloud.radius = 2.0;
 
     // Gas cloud sound
-    sfx := get_asset(SFX_Asset, "sounds/reusable-weapons/poison_grenade_gas_cloud.wav");
+    sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/poison_grenade_gas_cloud.wav");
     desc := SFX.default_sfx_desc();
     desc.entity_to_follow = cloud_entity.id;
     desc.range_multiplier = 2.0;
@@ -101,7 +101,7 @@ spawn_cluster_bombs :: proc(pos: v2, owner_id: u64) {
         bomb_entity := Scene.create_entity();
         bomb_entity->set_local_position(pos);
 
-        texture := get_asset(Texture_Asset, "sprites/reusable-weapons/projectiles/cannonball.png");
+        texture := get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/projectiles/cannonball.png");
         sprite := bomb_entity->add_component(Sprite_Renderer);
         sprite->set_texture(texture);
         bomb_entity->set_local_scale({1.5, 1.5});
@@ -147,14 +147,14 @@ Cluster_Bomb :: class : Component {
             if Game.is_server() {
                 apply_aoe_damage(target_pos, owner_id, aoe_radius, damage);
 
-                sfx := get_asset(SFX_Asset, "sounds/reusable-weapons/dynamite_explode.wav");
+                sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/dynamite_explode.wav");
                 desc := SFX.default_sfx_desc();
                 desc->set_position(target_pos);
                 desc.range_multiplier = 2.0;
                 SFX.play(sfx, desc);
 
                 // Spawn explosion VFX
-                spawn_simple_vfx("VFX_ShotgunExplosion.prefab", target_pos, {2, 2}, "explode", 1.5);
+                spawn_simple_vfx("reusable_weapons/VFX_ShotgunExplosion.prefab", target_pos, {2, 2}, "explode", 1.5);
             }
             entity->destroy();
         }
@@ -194,7 +194,7 @@ Tornado_Entity :: class : Component {
             }
             // Play end sound
             if Game.is_server() {
-                end_sfx := get_asset(SFX_Asset, "sounds/reusable-weapons/fire_tornado_end.wav");
+                end_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/fire_tornado_end.wav");
                 end_desc := SFX.default_sfx_desc();
                 end_desc->set_position(entity.world_position);
                 end_desc.range_multiplier = 2.0;
@@ -256,7 +256,7 @@ spawn_tornado_entity :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     // Spine visual: tornado with spin_intro -> spin_loop -> spin_outro
     spine := tornado_entity->add_component(Spine_Animator);
     spine->awaken();
-    spine.instance->set_skeleton(get_asset(Spine_Asset, "anims/reusable-weapons/Tornado/Export/tornado.spine"));
+    spine.instance->set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/Tornado/Export/tornado.spine"));
 
     sm := State_Machine.create();
     disappear_var := sm->create_variable("disappear", .TRIGGER);
@@ -281,13 +281,13 @@ spawn_tornado_entity :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     tornado.aoe_radius = config.aoe_radius;
 
     // Start sound + loop sound
-    start_sfx := get_asset(SFX_Asset, "sounds/reusable-weapons/fire_tornado_start.wav");
+    start_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/fire_tornado_start.wav");
     start_desc := SFX.default_sfx_desc();
     start_desc->set_position(spawn_pos);
     start_desc.range_multiplier = 2.0;
     SFX.play(start_sfx, start_desc);
 
-    loop_sfx := get_asset(SFX_Asset, "sounds/reusable-weapons/fire_tornado_loop.wav");
+    loop_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/fire_tornado_loop.wav");
     loop_desc := SFX.default_sfx_desc();
     loop_desc.entity_to_follow = tornado_entity.id;
     loop_desc.range_multiplier = 2.0;
@@ -359,7 +359,7 @@ spawn_storms_eye_tornado :: proc(player: Player) {
     // Spine visual: wind rings with intro -> loop -> outro
     spine := tornado_entity->add_component(Spine_Animator);
     spine->awaken();
-    spine.instance->set_skeleton(get_asset(Spine_Asset, "anims/reusable-weapons/wind_rings/wind_rings.spine"));
+    spine.instance->set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/wind_rings/wind_rings.spine"));
 
     sm := State_Machine.create();
     outro_var := sm->create_variable("outro_trigger", .TRIGGER);
@@ -381,7 +381,7 @@ spawn_storms_eye_tornado :: proc(player: Player) {
     tornado.aoe_radius = config.aoe_radius;
 
     // Loop sound
-    loop_sfx := get_asset(SFX_Asset, "sounds/reusable-weapons/storms_eye_shoot_loop.wav");
+    loop_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/storms_eye_shoot_loop.wav");
     loop_desc := SFX.default_sfx_desc();
     loop_desc.entity_to_follow = tornado_entity.id;
     loop_desc.range_multiplier = 2.0;

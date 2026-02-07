@@ -21,7 +21,7 @@ weapon_equip :: proc(player: Player, wt: Weapon_Type) {
 
     // Boomwheel: spawn cannon entity
     if wt == .BOOMWHEEL {
-        cannon_prefab := get_asset(Prefab_Asset, "Weapon_BoomwheelCannon.prefab");
+        cannon_prefab := get_asset(Prefab_Asset, "reusable_weapons/Weapon_BoomwheelCannon.prefab");
         cannon_entity := Scene.instantiate(cannon_prefab);
         cannon_entity->set_parent(player.animator.entity, false);
         cannon_entity->set_local_position({1.0, 0.15});
@@ -199,7 +199,7 @@ weapon_spawn_standard_projectile :: proc(player: Player, direction: v2, wt: Weap
     angle_deg := to_degrees(angle);
     proj_entity->set_local_rotation(angle_deg);
 
-    bullet_texture := get_asset(Texture_Asset, "sprites/reusable-weapons/projectiles/MachineGunBullet.png");
+    bullet_texture := get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/projectiles/MachineGunBullet.png");
     sprite := proj_entity->add_component(Sprite_Renderer);
     sprite->set_texture(bullet_texture);
     proj_entity->set_local_scale({2, 2});
@@ -213,7 +213,7 @@ weapon_spawn_standard_projectile :: proc(player: Player, direction: v2, wt: Weap
 }
 
 // Spine-animated projectile constants
-PROJ_SPINE_ASSET_PATH :: "anims/reusable-weapons/projectiles/013RED_projectile.spine";
+PROJ_SPINE_ASSET_PATH :: "reusable_weapons/anims/reusable-weapons/projectiles/013RED_projectile.spine";
 TRAVEL_LOOP :: "013RED/Travel_Loop";
 TRAVEL_LOOP_SPINNING :: "013RED/Travel_Loop_Spinning";
 

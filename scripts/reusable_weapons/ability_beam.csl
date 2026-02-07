@@ -6,7 +6,7 @@ Beam_Ability :: class : Ability_Base {
 
     on_init :: proc(ability: Ability_Base) {
         ability.name = "Beam";
-        ability.icon = get_asset(Texture_Asset, "sprites/reusable-weapons/weapon_icons/weapon_icons_250x250/fireray.png");
+        ability.icon = get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/weapon_icons/weapon_icons_250x250/fireray.png");
         ability.disable_keybind = true;
         ability.is_aimed_ability = true;
     }
@@ -56,12 +56,12 @@ Beam_Ability :: class : Ability_Base {
                     start_desc := SFX.default_sfx_desc();
                     start_desc.entity_to_follow = p.entity.id;
                     start_desc.volume = 0.7;
-                    SFX.play(get_asset(SFX_Asset, "sounds/reusable-weapons/octosiphoner_start.wav"), start_desc);
+                    SFX.play(get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/octosiphoner_start.wav"), start_desc);
 
                     loop_desc := SFX.default_sfx_desc();
                     loop_desc.entity_to_follow = p.entity.id;
                     loop_desc.volume = 0.5;
-                    self.octo_loop_sound_id = SFX.play(get_asset(SFX_Asset, "sounds/reusable-weapons/octosiphoner_loop.wav"), loop_desc);
+                    self.octo_loop_sound_id = SFX.play(get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/octosiphoner_loop.wav"), loop_desc);
                 }
 
                 self.was_shooting = true;
@@ -153,7 +153,7 @@ Beam_Ability :: class : Ability_Base {
                 end_desc := SFX.default_sfx_desc();
                 end_desc.entity_to_follow = p.entity.id;
                 end_desc.volume = 0.7;
-                SFX.play(get_asset(SFX_Asset, "sounds/reusable-weapons/octosiphoner_end.wav"), end_desc);
+                SFX.play(get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/octosiphoner_end.wav"), end_desc);
             }
 
             self.was_shooting = false;
@@ -180,7 +180,7 @@ Beam_Ability :: class : Ability_Base {
                     end_desc := SFX.default_sfx_desc();
                     end_desc.entity_to_follow = p.entity.id;
                     end_desc.volume = 0.7;
-                    SFX.play(get_asset(SFX_Asset, "sounds/reusable-weapons/octosiphoner_end.wav"), end_desc);
+                    SFX.play(get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/octosiphoner_end.wav"), end_desc);
                 }
 
                 self.was_shooting = false;

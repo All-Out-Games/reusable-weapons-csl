@@ -54,7 +54,7 @@ Boomwheel_Cannon :: class : Component {
 
         // Play/stop roll sound on movement change
         if is_moving && !was_moving {
-            roll_sfx := get_asset(SFX_Asset, "sounds/reusable-weapons/cannon_roll_loop.wav");
+            roll_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/cannon_roll_loop.wav");
             desc := SFX.default_sfx_desc();
             desc.entity_to_follow = entity.id;
             desc.volume = 0.5;

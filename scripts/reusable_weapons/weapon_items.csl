@@ -58,61 +58,61 @@ get_ammo_info :: proc(index: s64) -> Ammo_Info {
         case 0: { // AR Rounds
             info.id = "ar_ammo";
             info.name = "AR Rounds";
-            info.icon_path = "sprites/reusable-weapons/ammo_icons/bullet.png";
+            info.icon_path = "reusable_weapons/sprites/reusable-weapons/ammo_icons/bullet.png";
             info.stack_size = 480;
         }
         case 1: { // Heavy Shots
             info.id = "heavy_ammo";
             info.name = "Heavy Shots";
-            info.icon_path = "sprites/reusable-weapons/ammo_icons/cannonball.png";
+            info.icon_path = "reusable_weapons/sprites/reusable-weapons/ammo_icons/cannonball.png";
             info.stack_size = 60;
         }
         case 2: { // Explosive Rounds
             info.id = "explosive_ammo";
             info.name = "Explosive Rounds";
-            info.icon_path = "sprites/reusable-weapons/ammo_icons/shotgunshell.png";
+            info.icon_path = "reusable_weapons/sprites/reusable-weapons/ammo_icons/shotgunshell.png";
             info.stack_size = 36;
         }
         case 3: { // Cryo Cells
             info.id = "cryo_ammo";
             info.name = "Cryo Cells";
-            info.icon_path = "sprites/reusable-weapons/ammo_icons/cryocell.png";
+            info.icon_path = "reusable_weapons/sprites/reusable-weapons/ammo_icons/cryocell.png";
             info.stack_size = 60;
         }
         case 4: { // Tornado Shots
             info.id = "tornado_ammo";
             info.name = "Tornado Shots";
-            info.icon_path = "sprites/reusable-weapons/ammo_icons/tornadoshot.png";
+            info.icon_path = "reusable_weapons/sprites/reusable-weapons/ammo_icons/tornadoshot.png";
             info.stack_size = 48;
         }
         case 5: { // Energy Cells
             info.id = "energy_ammo";
             info.name = "Energy Cells";
-            info.icon_path = "sprites/reusable-weapons/ammo_icons/energycells.png";
+            info.icon_path = "reusable_weapons/sprites/reusable-weapons/ammo_icons/energycells.png";
             info.stack_size = 216;
         }
         case 6: { // Solar Cores
             info.id = "solar_ammo";
             info.name = "Solar Cores";
-            info.icon_path = "sprites/reusable-weapons/ammo_icons/solarcores.png";
+            info.icon_path = "reusable_weapons/sprites/reusable-weapons/ammo_icons/solarcores.png";
             info.stack_size = 120;
         }
         case 7: { // Sawblades
             info.id = "sawblade_ammo";
             info.name = "Sawblades";
-            info.icon_path = "sprites/reusable-weapons/ammo_icons/buzzsaw.png";
+            info.icon_path = "reusable_weapons/sprites/reusable-weapons/ammo_icons/buzzsaw.png";
             info.stack_size = 60;
         }
         case 8: { // LMG Rounds
             info.id = "lmg_ammo";
             info.name = "LMG Rounds";
-            info.icon_path = "sprites/reusable-weapons/ammo_icons/bullet_alt.png";
+            info.icon_path = "reusable_weapons/sprites/reusable-weapons/ammo_icons/bullet_alt.png";
             info.stack_size = 720;
         }
         case 9: { // Water Balloons
             info.id = "waterballoon_ammo";
             info.name = "Water Balloons";
-            info.icon_path = "sprites/reusable-weapons/ammo_icons/waterballoon.png";
+            info.icon_path = "reusable_weapons/sprites/reusable-weapons/ammo_icons/waterballoon.png";
             info.stack_size = 36;
         }
     }
@@ -123,7 +123,7 @@ init_weapon_items :: proc() {
     if g_weapon_items_initialized return;
     g_weapon_items_initialized = true;
 
-    g_weapon_equip_sound = get_asset(SFX_Asset, "sounds/reusable-weapons/equip_gun.wav");
+    g_weapon_equip_sound = get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/equip_gun.wav");
 
     // Register all ammo types
     i := 0;
@@ -187,88 +187,88 @@ register_weapon :: proc(wt: Weapon_Type) {
 
 load_fire_sounds :: proc() {
     // Assault Rifle (7 sounds)
-    load_sound_range(.ASSAULT_RIFLE, "sounds/reusable-weapons/assault_rifle_0", 7);
+    load_sound_range(.ASSAULT_RIFLE, "reusable_weapons/sounds/reusable-weapons/assault_rifle_0", 7);
 
     // Submachine Gun (10 sounds: 01-09 zero-padded, then 10)
-    load_sound_range(.SUBMACHINE_GUN, "sounds/reusable-weapons/smg_shoot_0", 9);
+    load_sound_range(.SUBMACHINE_GUN, "reusable_weapons/sounds/reusable-weapons/smg_shoot_0", 9);
     smg_idx := weapon_type_to_index(.SUBMACHINE_GUN);
-    g_weapon_fire_sounds[smg_idx][9] = get_asset(SFX_Asset, "sounds/reusable-weapons/smg_shoot_10.wav");
+    g_weapon_fire_sounds[smg_idx][9] = get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/smg_shoot_10.wav");
     g_weapon_fire_sound_counts[smg_idx] = 10;
 
     // Gatling Gun (6 sounds)
-    load_sound_range(.GATLING_GUN, "sounds/reusable-weapons/gatling_gun_0", 6);
+    load_sound_range(.GATLING_GUN, "reusable_weapons/sounds/reusable-weapons/gatling_gun_0", 6);
 
     // Beam Machine (5 sounds)
-    load_sound_range(.BEAM_MACHINE, "sounds/reusable-weapons/beam_machine_0", 5);
+    load_sound_range(.BEAM_MACHINE, "reusable_weapons/sounds/reusable-weapons/beam_machine_0", 5);
 
     // Water Gun (6 sounds)
-    load_sound_range(.WATER_GUN, "sounds/reusable-weapons/water_gun_shoot_0", 6);
+    load_sound_range(.WATER_GUN, "reusable_weapons/sounds/reusable-weapons/water_gun_shoot_0", 6);
 
     // Missile Barrage (4 sounds)
-    load_sound_range(.MISSILE_BARRAGE, "sounds/reusable-weapons/missile_barrage_shoot_0", 4);
+    load_sound_range(.MISSILE_BARRAGE, "reusable_weapons/sounds/reusable-weapons/missile_barrage_shoot_0", 4);
 
     // Blunderbuss (1 sound)
-    load_single_sound(.BLUNDERBUSS, "sounds/reusable-weapons/blunderbuss_shoot.wav");
+    load_single_sound(.BLUNDERBUSS, "reusable_weapons/sounds/reusable-weapons/blunderbuss_shoot.wav");
 
     // Ray Gun (1 sound)
-    load_single_sound(.RAY_GUN, "sounds/reusable-weapons/ray_gun_shoot.wav");
+    load_single_sound(.RAY_GUN, "reusable_weapons/sounds/reusable-weapons/ray_gun_shoot.wav");
 
     // Plasma Burst (5 sounds)
-    load_sound_range(.PLASMA_BURST, "sounds/reusable-weapons/plasma_gun_shoot_0", 5);
+    load_sound_range(.PLASMA_BURST, "reusable_weapons/sounds/reusable-weapons/plasma_gun_shoot_0", 5);
 
     // Mega Blade (4 sounds)
-    load_sound_range(.MEGA_BLADE, "sounds/reusable-weapons/mega_blade_shoot_0", 4);
+    load_sound_range(.MEGA_BLADE, "reusable_weapons/sounds/reusable-weapons/mega_blade_shoot_0", 4);
 
     // Buzzshot (1 sound)
-    load_single_sound(.BUZZSHOT, "sounds/reusable-weapons/buzzshot_shoot.wav");
+    load_single_sound(.BUZZSHOT, "reusable_weapons/sounds/reusable-weapons/buzzshot_shoot.wav");
 
     // Explosive Shotgun (1 sound)
-    load_single_sound(.EXPLOSIVE_SHOTGUN, "sounds/reusable-weapons/explosive_shotgun_shoot.wav");
+    load_single_sound(.EXPLOSIVE_SHOTGUN, "reusable_weapons/sounds/reusable-weapons/explosive_shotgun_shoot.wav");
 
     // Sunny Side Shotty (1 sound)
-    load_single_sound(.SUNNY_SIDE_SHOTTY, "sounds/reusable-weapons/sunny_side_shotty_shoot.wav");
+    load_single_sound(.SUNNY_SIDE_SHOTTY, "reusable_weapons/sounds/reusable-weapons/sunny_side_shotty_shoot.wav");
 
     // Golden Rocket Launcher (1 sound)
-    load_single_sound(.GOLDEN_ROCKET_LAUNCHER, "sounds/reusable-weapons/rocket_launcher_shoot.wav");
+    load_single_sound(.GOLDEN_ROCKET_LAUNCHER, "reusable_weapons/sounds/reusable-weapons/rocket_launcher_shoot.wav");
 
     // Water Balloon RPG (1 sound)
-    load_single_sound(.WATER_BALLOON_RPG, "sounds/reusable-weapons/waterballoon_rpg_shoot.wav");
+    load_single_sound(.WATER_BALLOON_RPG, "reusable_weapons/sounds/reusable-weapons/waterballoon_rpg_shoot.wav");
 
     // Poison Grenade (1 sound)
-    load_single_sound(.POISON_GRENADE, "sounds/reusable-weapons/player_throw_grenade.wav");
+    load_single_sound(.POISON_GRENADE, "reusable_weapons/sounds/reusable-weapons/player_throw_grenade.wav");
 
     // Boomwheel (1 sound)
-    load_single_sound(.BOOMWHEEL, "sounds/reusable-weapons/grenade_explode.wav");
+    load_single_sound(.BOOMWHEEL, "reusable_weapons/sounds/reusable-weapons/grenade_explode.wav");
 
     // Fire Ray - uses loop sounds handled in ability
-    load_single_sound(.FIRE_RAY, "sounds/reusable-weapons/shoot_flamethrower_start.wav");
+    load_single_sound(.FIRE_RAY, "reusable_weapons/sounds/reusable-weapons/shoot_flamethrower_start.wav");
 
     // Ice Launcher - uses loop sounds handled in ability
-    load_single_sound(.ICE_LAUNCHER, "sounds/reusable-weapons/fire_ice_launcher_intro.wav");
+    load_single_sound(.ICE_LAUNCHER, "reusable_weapons/sounds/reusable-weapons/fire_ice_launcher_intro.wav");
 
     // Glaciator - same as ice launcher
-    load_single_sound(.GLACIATOR, "sounds/reusable-weapons/fire_ice_launcher_intro.wav");
+    load_single_sound(.GLACIATOR, "reusable_weapons/sounds/reusable-weapons/fire_ice_launcher_intro.wav");
 
     // Solar Siphoner (1 loop sound)
-    load_single_sound(.SOLAR_SIPHONER, "sounds/reusable-weapons/solar_siphoner_fire_loop.wav");
+    load_single_sound(.SOLAR_SIPHONER, "reusable_weapons/sounds/reusable-weapons/solar_siphoner_fire_loop.wav");
 
     // Octo Siphoner (1 sound)
-    load_single_sound(.OCTO_SIPHONER, "sounds/reusable-weapons/octosiphoner_start.wav");
+    load_single_sound(.OCTO_SIPHONER, "reusable_weapons/sounds/reusable-weapons/octosiphoner_start.wav");
 
     // Void Splitter (1 sound)
-    load_single_sound(.VOID_SPLITTER, "sounds/reusable-weapons/void_splitter_shoot_start.wav");
+    load_single_sound(.VOID_SPLITTER, "reusable_weapons/sounds/reusable-weapons/void_splitter_shoot_start.wav");
 
     // Akimbo Pistols (4 sounds)
-    load_sound_range(.AKIMBO_PISTOLS, "sounds/reusable-weapons/pistol_shoot_0", 4);
+    load_sound_range(.AKIMBO_PISTOLS, "reusable_weapons/sounds/reusable-weapons/pistol_shoot_0", 4);
 
     // Wind Blaster (1 sound)
-    load_single_sound(.WIND_BLASTER, "sounds/reusable-weapons/fire_wind_blaster.wav");
+    load_single_sound(.WIND_BLASTER, "reusable_weapons/sounds/reusable-weapons/fire_wind_blaster.wav");
 
     // Storm's Eye (1 sound)
-    load_single_sound(.STORMS_EYE, "sounds/reusable-weapons/storms_eye_start_full.wav");
+    load_single_sound(.STORMS_EYE, "reusable_weapons/sounds/reusable-weapons/storms_eye_start_full.wav");
 
     // Hydro Cannon (1 sound)
-    load_single_sound(.HYDRO_CANNON, "sounds/reusable-weapons/waterballoon_rpg_shoot.wav");
+    load_single_sound(.HYDRO_CANNON, "reusable_weapons/sounds/reusable-weapons/waterballoon_rpg_shoot.wav");
 }
 
 load_sound_range :: proc(wt: Weapon_Type, prefix: string, count: s64) {

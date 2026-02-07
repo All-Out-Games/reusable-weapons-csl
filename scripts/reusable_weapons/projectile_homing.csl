@@ -51,7 +51,7 @@ Homing_Projectile :: class : Component {
                         hit_player.health = 0;
                     }
 
-                    hit_sfx := get_asset(SFX_Asset, "sounds/reusable-weapons/bullet_hit.wav");
+                    hit_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/bullet_hit.wav");
                     sfx_desc := SFX.default_sfx_desc();
                     sfx_desc->set_position(pos);
                     sfx_desc.range_multiplier = 2.0;
@@ -80,7 +80,7 @@ spawn_homing_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) 
     angle := atan2(direction.y, direction.x);
     proj_entity->set_local_rotation(to_degrees(angle));
 
-    missile_texture := get_asset(Texture_Asset, "sprites/reusable-weapons/projectiles/missile.png");
+    missile_texture := get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/projectiles/missile.png");
     sprite := proj_entity->add_component(Sprite_Renderer);
     sprite->set_texture(missile_texture);
     proj_entity->set_local_scale({2, 2});

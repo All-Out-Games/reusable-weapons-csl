@@ -54,7 +54,7 @@ AOE_Projectile :: class : Component {
                         apply_aoe_damage(pos, owner_id, aoe_radius, aoe_damage);
                     }
 
-                    sfx := get_asset(SFX_Asset, "sounds/reusable-weapons/cannon_explode.wav");
+                    sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/cannon_explode.wav");
                     sfx_desc := SFX.default_sfx_desc();
                     sfx_desc->set_position(pos);
                     sfx_desc.range_multiplier = 3.0;
@@ -83,7 +83,7 @@ spawn_aoe_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     angle := atan2(direction.y, direction.x);
     proj_entity->set_local_rotation(to_degrees(angle));
 
-    texture_path := "sprites/reusable-weapons/projectiles/shotgun_bullet2.png";
+    texture_path := "reusable_weapons/sprites/reusable-weapons/projectiles/shotgun_bullet2.png";
     proj_texture := get_asset(Texture_Asset, texture_path);
     sprite := proj_entity->add_component(Sprite_Renderer);
     sprite->set_texture(proj_texture);

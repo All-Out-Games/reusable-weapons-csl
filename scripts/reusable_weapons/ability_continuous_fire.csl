@@ -3,7 +3,7 @@ Continuous_Fire_Ability :: class : Ability_Base {
 
     on_init :: proc(ability: Ability_Base) {
         ability.name = "Shoot";
-        ability.icon = get_asset(Texture_Asset, "sprites/reusable-weapons/weapon_icons/weapon_icons_250x250/assaultrifle.png");
+        ability.icon = get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/weapon_icons/weapon_icons_250x250/assaultrifle.png");
         ability.disable_keybind = true;
         ability.is_aimed_ability = true;
     }

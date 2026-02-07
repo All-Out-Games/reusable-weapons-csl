@@ -2,7 +2,7 @@
 Melee_Ability :: class : Ability_Base {
     on_init :: proc(ability: Ability_Base) {
         ability.name = "Melee";
-        ability.icon = get_asset(Texture_Asset, "sprites/reusable-weapons/katana.png");
+        ability.icon = get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/katana.png");
         ability.disable_keybind = true;
         ability.is_aimed_ability = false;
     }
@@ -26,7 +26,7 @@ Melee_Ability :: class : Ability_Base {
             sfx_desc := SFX.default_sfx_desc();
             sfx_desc->set_position(p.entity.world_position);
             sfx_desc.range_multiplier = 2.0;
-            SFX.play(get_asset(SFX_Asset, "sounds/reusable-weapons/katana_slash.wav"), sfx_desc);
+            SFX.play(get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/katana_slash.wav"), sfx_desc);
 
             // Damage nearby players
             if Game.is_server() {
@@ -56,7 +56,7 @@ Special_Ability :: class : Ability_Base {
 
     on_init :: proc(ability: Ability_Base) {
         ability.name = "Special";
-        ability.icon = get_asset(Texture_Asset, "sprites/reusable-weapons/weapon_icons/weapon_icons_250x250/akimbo_pistols.png");
+        ability.icon = get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/weapon_icons/weapon_icons_250x250/akimbo_pistols.png");
         ability.disable_keybind = true;
         ability.is_aimed_ability = true;
     }

@@ -53,7 +53,7 @@ Piercing_Projectile :: class : Component {
                 }
 
                 if !mute_hit_sound {
-                    hit_sfx := get_asset(SFX_Asset, "sounds/reusable-weapons/bullet_hit.wav");
+                    hit_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/bullet_hit.wav");
                     sfx_desc := SFX.default_sfx_desc();
                     sfx_desc->set_position(pos);
                     sfx_desc.range_multiplier = 2.0;
@@ -79,7 +79,7 @@ spawn_piercing_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type
     angle := atan2(direction.y, direction.x);
     proj_entity->set_local_rotation(to_degrees(angle));
 
-    bullet_texture := get_asset(Texture_Asset, "sprites/reusable-weapons/projectiles/MachineGunBullet.png");
+    bullet_texture := get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/projectiles/MachineGunBullet.png");
     sprite := proj_entity->add_component(Sprite_Renderer);
     sprite->set_texture(bullet_texture);
     proj_entity->set_local_scale({2, 2});

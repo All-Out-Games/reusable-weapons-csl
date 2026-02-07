@@ -30,10 +30,7 @@
       "mcp__allout__rig_bones",
       "mcp__allout__rig_events",
       "mcp__allout__compile",
-      "mcp__allout__products_list",
-      "Bash(findstr:*)",
-      "Bash(dir:*)",
-      "Bash(ls -la \"C:\\\\Users\\\\matth\\\\OneDrive\\\\Desktop\\\\ao\\\\games\\\\ns-evals-test-project\\\\res\\\\anims\\\\reusable-weapons\"\" | grep -i \"poison|wind|tornado \")"
+      "mcp__allout__products_list"
     ]
   },
   "enableAllProjectMcpServers": true,

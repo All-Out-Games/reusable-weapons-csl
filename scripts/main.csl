@@ -167,9 +167,9 @@ draw_health_bar :: proc(player: Player) {
     health_rect = health_rect->grow(13, 70, 0, 70);
     border_rect := health_rect->grow(5.5, 4, 5.5, 4)->offset(0, -2);
 
-    back := get_asset(Texture_Asset, "sprites/reusable-weapons/hud_elements/health_bar_green/healthbar_back.png");
-    fill := get_asset(Texture_Asset, "sprites/reusable-weapons/hud_elements/health_bar_green/healthbar_fill.png");
-    pip := get_asset(Texture_Asset, "sprites/reusable-weapons/hud_elements/health_bar_green/healthbar_pip.png");
+    back := get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/hud_elements/health_bar_green/healthbar_back.png");
+    fill := get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/hud_elements/health_bar_green/healthbar_fill.png");
+    pip := get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/hud_elements/health_bar_green/healthbar_pip.png");
 
     // Background
     UI.quad(border_rect, back, {1, 1, 1, 1});
