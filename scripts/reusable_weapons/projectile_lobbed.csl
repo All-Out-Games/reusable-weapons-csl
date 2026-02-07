@@ -60,6 +60,9 @@ on_lobbed_land :: proc(pos: v2, owner_id: u64, radius: float, damage: float, wt:
             desc->set_position(pos);
             desc.range_multiplier = 3.0;
             SFX.play(sfx, desc);
+
+            // Spawn gold nuke mushroom cloud VFX
+            spawn_simple_vfx("reusable_weapons/VFX_GoldNuke.prefab", pos, {0.5, 0.5}, "GOLD109_Imposter/nuke_explosion", 0.85);
         }
         case .WATER_BALLOON_RPG: {
             // Random splash sound
@@ -116,19 +119,23 @@ spawn_lobbed_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) 
 
     proj_entity := Scene.create_entity();
     proj_entity->set_local_position(spawn_pos);
+    proj_entity->set_local_rotation(to_degrees(atan2(direction.y, direction.x)));
 
-    // Choose texture based on weapon
-    texture_path := "reusable_weapons/sprites/reusable-weapons/projectiles/grenade.png";
-    switch wt {
-        case .GOLDEN_ROCKET_LAUNCHER: { texture_path = "reusable_weapons/sprites/reusable-weapons/projectiles/golden_nuke.png"; }
-        case .WATER_BALLOON_RPG: { texture_path = "reusable_weapons/sprites/reusable-weapons/projectiles/waterballoon.png"; }
-        case .BOOMWHEEL: { texture_path = "reusable_weapons/sprites/reusable-weapons/projectiles/cannonball.png"; }
+    // Golden Rocket uses spine-animated projectile; others use sprite textures
+    if wt == .GOLDEN_ROCKET_LAUNCHER {
+        proj_entity->set_local_scale({2, 2});
+        setup_projectile_spine(proj_entity, "gold_rocket", TRAVEL_LOOP);
+    } else {
+        texture_path := "reusable_weapons/sprites/reusable-weapons/projectiles/grenade.png";
+        switch wt {
+            case .WATER_BALLOON_RPG: { texture_path = "reusable_weapons/sprites/reusable-weapons/projectiles/waterballoon.png"; }
+            case .BOOMWHEEL: { texture_path = "reusable_weapons/sprites/reusable-weapons/projectiles/cannonball.png"; }
+        }
+        proj_texture := get_asset(Texture_Asset, texture_path);
+        sprite := proj_entity->add_component(Sprite_Renderer);
+        sprite->set_texture(proj_texture);
+        proj_entity->set_local_scale({2, 2});
     }
-
-    proj_texture := get_asset(Texture_Asset, texture_path);
-    sprite := proj_entity->add_component(Sprite_Renderer);
-    sprite->set_texture(proj_texture);
-    proj_entity->set_local_scale({2, 2});
 
     proj := proj_entity->add_component(Lobbed_Projectile);
     proj.damage = config.base_damage;

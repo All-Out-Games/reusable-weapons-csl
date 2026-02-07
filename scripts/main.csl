@@ -2,6 +2,7 @@ import "core:ao"
 import "reusable_weapons"
 
 Player :: class : Player_Base {
+    // -- REUSABLE WEAPONS -- //
     health: float;
     max_health: float;
     equipped_weapon_type: Weapon_Type;
@@ -16,7 +17,14 @@ Player :: class : Player_Base {
 
         if Game.is_server() {
             init_weapon_items();
+        }
+        // NOTE/TODO: this currently adds the additive layer which you may want to do in your own code, so in the future we'll try to make this not interfere with your own state machine setup.
+        // For now you may just want to add inside here :monkaS
+        setup_reusable_weapons_player_state_machine(this);
 
+
+        // (Optional) Give the player all the weapons/ammo to start for debugging
+        if (Game.is_server()) {
             // Expand inventory to fit all weapons + ammo
             Items.set_capacity(default_inventory, 40);
 
@@ -58,11 +66,6 @@ Player :: class : Player_Base {
                 i += 1;
             }
         }
-
-        setup_weapon_animations(this);
-
-        // Zoom out camera
-        camera.size = 6.0;
     }
 
     ao_late_update :: method(dt: float) {
@@ -78,7 +81,7 @@ Player :: class : Player_Base {
                     case .BEAM:        { draw_ability_button(this, Beam_Ability, 0); }
                     case .SPECIAL:     { draw_ability_button(this, Special_Ability, 0); }
                 }
-                // Always draw melee at index 1
+                // (Optional) melee ability
                 draw_ability_button(this, Melee_Ability, 1);
             }
 
@@ -92,7 +95,7 @@ Player :: class : Player_Base {
 
             hotbar := Items.draw_hotbar(this, default_inventory, options);
 
-            // Show equipped weapon name above hotbar
+            // (Optional) Show equipped weapon name above hotbar
             if equipped_weapon_type != .NONE {
                 config := get_weapon_config(equipped_weapon_type);
                 label_rect := hotbar.entire_rect->top_rect()->grow(20, 0, 0, 0);
@@ -106,29 +109,30 @@ Player :: class : Player_Base {
                 UI.text(label_rect, ts, config.item_name);
             }
 
-            // Handle equip/unequip on selection change
-            if hotbar.selected_item_index != last_selected_index {
-                last_selected_index = hotbar.selected_item_index;
-
-                selected_item: Item_Instance;
-                if hotbar.selected_item_index >= 0 && hotbar.selected_item_index < default_inventory.capacity {
-                    selected_item = default_inventory->get_item(hotbar.selected_item_index);
-                }
-                handle_equip_change(selected_item);
-            }
+            // Handle equip/unequip on selection change or item swap in current slot
+            handle_equipped_item_changing(hotbar.selected_item_index);
         }
 
-        // Draw health bar for all clients (skip server-only)
         if !Game.is_server() {
             draw_health_bar(this);
         }
     }
 
-    handle_equip_change :: method(new_item: Item_Instance) {
-        new_def: Item_Definition;
-        if new_item != null {
-            new_def = new_item->get_definition();
+    handle_equipped_item_changing :: method(selected_index: s64) {
+        // Resolve item from hotbar index
+        selected_item: Item_Instance;
+        if selected_index >= 0 && selected_index < default_inventory.capacity {
+            selected_item = default_inventory->get_item(selected_index);
         }
+
+        new_def: Item_Definition;
+        if selected_item != null {
+            new_def = selected_item->get_definition();
+        }
+
+        // Skip if nothing changed
+        if selected_index == last_selected_index && new_def == equipped_item_def return;
+        last_selected_index = selected_index;
 
         // Skip if same item definition
         if new_def == equipped_item_def return;
@@ -149,56 +153,5 @@ Player :: class : Player_Base {
                 equipped_item_def = new_def;
             }
         }
-    }
-}
-
-draw_health_bar :: proc(player: Player) {
-    UI.push_world_draw_context();
-    defer UI.pop_draw_context();
-
-    pos := player.entity.world_position;
-    UI.push_z(pos.y - 0.0001);
-    defer UI.pop_z();
-
-    UI.push_scale_factor(5.0 / 540.0);
-    defer UI.pop_scale_factor();
-
-    health_rect := player.username_rect->top_center_rect()->offset(0, 5);
-    health_rect = health_rect->grow(13, 70, 0, 70);
-    border_rect := health_rect->grow(5.5, 4, 5.5, 4)->offset(0, -2);
-
-    back := get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/hud_elements/health_bar_green/healthbar_back.png");
-    fill := get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/hud_elements/health_bar_green/healthbar_fill.png");
-    pip := get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/hud_elements/health_bar_green/healthbar_pip.png");
-
-    // Background
-    UI.quad(border_rect, back, {1, 1, 1, 1});
-
-    // Health fill
-    health_pct := player.health / player.max_health;
-    fill_rect := health_rect->subrect(0, 0, health_pct, 1);
-    UI.quad(fill_rect, fill, {1, 1, 1, 1});
-
-    // Pip markers
-    total_pips :: 6;
-    health_per_pip := player.max_health / total_pips.(float);
-    left_offset :: 0.05;
-    right_offset :: 0.05;
-    available_width := 1.0 - left_offset - right_offset;
-    pip_width := available_width / total_pips.(float);
-    shrink :: 0.3;
-
-    i := 0;
-    while i < total_pips {
-        pip_threshold := (i + 1).(float) * health_per_pip;
-        if player.health >= pip_threshold {
-            x_min := left_offset + i.(float) * pip_width;
-            new_width := pip_width * shrink;
-            new_x_min := x_min + (pip_width - new_width) / 2.0;
-            new_x_max := new_x_min + new_width;
-            pip_rect := health_rect->subrect(new_x_min, 0, new_x_max, 1);
-            UI.quad(pip_rect, pip, {1, 1, 1, 1});
-        }
-        i += 1;
     }
 }

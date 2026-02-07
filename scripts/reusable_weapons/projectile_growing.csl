@@ -31,7 +31,7 @@ Growing_Projectile :: class : Component {
                 radius = 0.8;
             }
 
-            pos := entity.world_position + v2{0, 0.4};
+            pos := entity.world_position + v2{0, -0.5};
             nearby: [..]Player;
             Scene.get_all_components_in_range(pos, radius, ref nearby);
 

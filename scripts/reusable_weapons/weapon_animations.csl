@@ -1,4 +1,4 @@
-setup_weapon_animations :: proc(player: Player) {
+setup_reusable_weapons_player_state_machine :: proc(player: Player) {
     sm := player.animator.instance.state_machine;
     base_layer := sm->try_get_layer("main");
     additive_layer := sm->create_layer("additive_layer", 1);
