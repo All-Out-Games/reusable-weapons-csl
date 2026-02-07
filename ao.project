@@ -1,0 +1,10 @@
+{
+    csl: true,
+    projects:
+    [
+        {
+            name: "ns-evals"
+            id: "69656dbdda5626277f25de72"
+        }
+    ]
+}

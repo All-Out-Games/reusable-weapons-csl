@@ -1,0 +1,80 @@
+Boomwheel_Cannon :: class : Component {
+    owner_id: u64;
+    cannon_animator: Spine_Animator;
+    state_machine: State_Machine;
+    roll_sound_id: u64;
+    was_moving: bool;
+    last_pos: v2;
+
+    ao_start :: method() {
+        cannon_animator = entity->get_component(Spine_Animator);
+        cannon_animator->awaken();
+
+        // Create state machine for cannon animations
+        state_machine = State_Machine.create();
+
+        moving_var := state_machine->create_variable("moving", .BOOL);
+        shoot_trigger := state_machine->create_variable("shoot", .TRIGGER);
+
+        layer := state_machine->create_layer("main", 0);
+
+        idle_state := layer->create_state("idle", true);
+        roll_state := layer->create_state("roll_loop", true);
+        shoot_state := layer->create_state("shoot", false);
+
+        layer->set_initial_state(idle_state);
+
+        // Idle <-> Roll based on moving
+        layer->create_transition(idle_state, roll_state, false)->create_bool_condition(moving_var, true);
+        layer->create_transition(roll_state, idle_state, false)->create_bool_condition(moving_var, false);
+
+        // Shoot from any state
+        to_shoot := layer->create_global_transition(shoot_state, false);
+        to_shoot->create_trigger_condition(shoot_trigger);
+
+        // Return to idle after shoot completes
+        layer->create_transition(shoot_state, idle_state, true);
+
+        cannon_animator.instance->set_state_machine(state_machine, true);
+
+        last_pos = entity.world_position;
+        was_moving = false;
+    }
+
+    ao_update :: method(dt: float) {
+        current_pos := entity.world_position;
+        dx := current_pos.x - last_pos.x;
+        dy := current_pos.y - last_pos.y;
+        dist_sq := dx * dx + dy * dy;
+        is_moving := dist_sq > 0.0001;
+        last_pos = current_pos;
+
+        // Update cannon moving state
+        state_machine->set_bool("moving", is_moving);
+
+        // Play/stop roll sound on movement change
+        if is_moving && !was_moving {
+            roll_sfx := get_asset(SFX_Asset, "sounds/reusable-weapons/cannon_roll_loop.wav");
+            desc := SFX.default_sfx_desc();
+            desc.entity_to_follow = entity.id;
+            desc.volume = 0.5;
+            roll_sound_id = SFX.play(roll_sfx, desc);
+        } else if !is_moving && was_moving {
+            if roll_sound_id != 0 {
+                SFX.stop(roll_sound_id);
+                roll_sound_id = 0;
+            }
+        }
+        was_moving = is_moving;
+    }
+
+    shoot :: method() {
+        state_machine->set_trigger("shoot");
+    }
+
+    ao_end :: method() {
+        if roll_sound_id != 0 {
+            SFX.stop(roll_sound_id);
+        }
+    }
+}
