@@ -75,12 +75,6 @@ Matrix4 :: struct {
 
 
 
-Time :: struct {
-    nanoseconds_since_epoch :: proc() -> u64 #foreign "time_nanoseconds_since_epoch";
-}
-
-
-
 new_string  :: proc(count: int)  -> string #foreign;
 copy_string :: proc(str: string) -> string #foreign;
 to_lower    :: proc(str: string) -> string #foreign;

@@ -21,13 +21,13 @@ draw_health_bar :: proc(player: Player) {
     UI.quad(border_rect, back, {1, 1, 1, 1});
 
     // Health fill
-    health_pct := player.health / player.max_health;
+    health_pct := player.weapon_target.health / player.weapon_target.max_health;
     fill_rect := health_rect->subrect(0, 0, health_pct, 1);
     UI.quad(fill_rect, fill, {1, 1, 1, 1});
 
     // Pip markers
     total_pips :: 6;
-    health_per_pip := player.max_health / total_pips.(float);
+    health_per_pip := player.weapon_target.max_health / total_pips.(float);
     left_offset :: 0.05;
     right_offset :: 0.05;
     available_width := 1.0 - left_offset - right_offset;
@@ -37,7 +37,7 @@ draw_health_bar :: proc(player: Player) {
     i := 0;
     while i < total_pips {
         pip_threshold := (i + 1).(float) * health_per_pip;
-        if player.health >= pip_threshold {
+        if player.weapon_target.health >= pip_threshold {
             x_min := left_offset + i.(float) * pip_width;
             new_width := pip_width * shrink;
             new_x_min := x_min + (pip_width - new_width) / 2.0;

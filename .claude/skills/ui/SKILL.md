@@ -2,8 +2,6 @@
 name: ui
 description: "Any UI related work **MUST** reference this before you start."
 ---
-**When doing live UI iteration** (starting the game, clicking through screens, taking screenshots to verify visual results), you **MUST** also reference the `ui-automation` skill which documents the `start_game`, `in_game_screenshot`, `client_click`, `client_ui_tree`, and related MCP tools.
-
 ## Core Principles
 
 1. **Y grows upward** - (0, 0) is bottom-left of screen

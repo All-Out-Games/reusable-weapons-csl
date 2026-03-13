@@ -81,9 +81,9 @@ Hydro_Cannon_Geyser :: class : Component {
             return;
         }
 
-        // Damage nearby players
+        // Damage nearby targets
         pos := entity.world_position;
-        nearby: [..]Player;
+        nearby: [..]Weapon_Target;
         Scene.get_all_components_in_range(pos, GEYSER_HIT_RADIUS, ref nearby);
 
         for target: nearby {
@@ -107,10 +107,7 @@ Hydro_Cannon_Geyser :: class : Component {
                 hit_count += 1;
             }
 
-            target.health -= GEYSER_DAMAGE;
-            if target.health < 0 {
-                target.health = 0;
-            }
+            weapon_target_apply_damage(target, GEYSER_DAMAGE, owner_id);
         }
     }
 }

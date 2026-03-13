@@ -28,17 +28,14 @@ Melee_Ability :: class : Ability_Base {
             sfx_desc.range_multiplier = 2.0;
             SFX.play(get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/katana_slash.wav"), sfx_desc);
 
-            // Damage nearby players
-            nearby: [..]Player;
+            // Damage nearby targets
+            nearby: [..]Weapon_Target;
             pos := p.entity.world_position;
             Scene.get_all_components_in_range(pos, 1.5, ref nearby);
             for hit: nearby {
                 if hit != null {
                     if hit.entity.id != p.entity.id {
-                        hit.health -= 25.0;
-                        if hit.health < 0 {
-                            hit.health = 0;
-                        }
+                        weapon_target_apply_damage(hit, 25.0, p.entity.id);
                     }
                 }
             }

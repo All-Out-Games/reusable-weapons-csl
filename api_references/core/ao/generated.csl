@@ -85,8 +85,9 @@ Sprite_Renderer :: class : Component {
     depth_offset: float #offset 144;
     layer: s32          #offset 148;
     scale: v2           #offset 156;
-    flip_x: bool        #offset 154;
-    flip_y: bool        #offset 155;
+    flip_x: bool           #offset 154;
+    flip_y: bool           #offset 155;
+    mask_in_shadow: bool   #offset 153;
 } #foreign_struct "Sprite_Renderer" #size 256
 
 Circle_Collider :: class : Component {
@@ -149,6 +150,7 @@ Interactable :: class : Component {
 Spine_Animator :: class : Component {
     depth_offset: float #offset 120;
     layer: s32 #offset 128;
+    mask_in_shadow: bool #offset 125;
     instance: Spine_Instance #read_only #offset 328;
 } #foreign_struct "Spine_Animator" #size 336
 
@@ -220,7 +222,6 @@ Texture_Asset :: class : Asset {
     get_width :: method() -> s64 #foreign "texture_asset_get_width";
     get_height :: method() -> s64 #foreign "texture_asset_get_height";
     get_aspect :: method() -> float #foreign "texture_asset_get_aspect";
-    get_uvs :: method() -> v2, v2 #foreign "texture_asset_get_uvs";
 } #foreign_struct "Texture"
 
 SFX_Asset :: class : Asset {
@@ -338,7 +339,7 @@ SFX_Desc :: struct {
         positional = true;
         #unsafe position = p;
     }
-} #foreign_struct "SFX::Play_Sound_Desc" #size 72
+} #foreign_struct "SFX::Play_Sound_Desc" #size 64
 
 Text_Settings :: struct {
     Vertical_Alignment :: enum {
@@ -399,11 +400,11 @@ Button_Settings :: struct {
     text_unpressed_offset:       v2                      #offset 180;
     click_sound:                 SFX_Asset               #offset 192;
     click_sound_desc:            SFX_Desc                #offset 208;
-    stay_hot_while_active:       bool                    #offset 280;
-    return_to_center_to_cancel:  bool                    #offset 281;
-    sprite_fit_aspect:           bool                    #offset 282;
-    keybind:                     u64                     #offset 288;
-} #foreign_struct "UI::Button_Settings" #size 296
+    stay_hot_while_active:       bool                    #offset 272;
+    return_to_center_to_cancel:  bool                    #offset 273;
+    sprite_fit_aspect:           bool                    #offset 274;
+    keybind:                     u64                     #offset 280;
+} #foreign_struct "UI::Button_Settings" #size 288
 
 Interact_Mouse_Button :: struct {
     time_last_clicked: float #offset 0;

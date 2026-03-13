@@ -391,15 +391,10 @@ get_asset :: proc($T: typeid, id: string) -> T {
 }
 
 get_time :: proc() -> float #foreign;
-
-#deprecate_soft "get_real_time() is being deprecated. If being used for an RNG seed switch to rng_root_seed(). If you have another use-case let me know!"
 get_real_time :: proc() -> float #foreign;
 
-rng_root_seed :: proc() -> u64 #foreign;
-
-#deprecate_soft "rng_seed_time() is being deprecated. Use rng_root_seed(). It will always be the same within a game instance."
 rng_seed_time :: proc() -> u64 {
-    return rng_root_seed();
+    return rng_seed((get_real_time() * 1000000000).(u64));
 }
 
 get_input_down   :: proc(input: Input, consume: bool) -> bool #foreign;
@@ -1236,7 +1231,6 @@ Keybinds :: struct {
 SFX :: struct {
     play :: proc(asset: SFX_Asset, desc: SFX_Desc) -> u64 #foreign "sfx_play";
     stop :: proc(id: u64) #foreign "sfx_stop";
-    fade_out_and_stop :: proc(id: u64, fade_time: float) #foreign "sfx_fade_out_and_stop";
 
     default_sfx_desc :: proc() -> SFX_Desc {
         #static initted: bool;

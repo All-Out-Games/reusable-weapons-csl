@@ -202,10 +202,10 @@ Tornado_Entity :: class : Component {
             return;
         }
 
-        // Homing toward nearest player
+        // Homing toward nearest target
         pos := entity.world_position;
         if homing_radius > 0 {
-            target, found := Scene.get_closest_component_in_range(pos, homing_radius, Player);
+            target, found := Scene.get_closest_component_in_range(pos, homing_radius, Weapon_Target);
             if found && target != null && target.entity.id != owner_id {
                 to_target := v2{target.entity.world_position.x - pos.x, target.entity.world_position.y - pos.y};
                 dist := length(to_target);

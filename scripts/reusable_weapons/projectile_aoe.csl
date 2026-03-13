@@ -1,14 +1,11 @@
-// AOE damage helper: damages all players in radius except owner
+// AOE damage helper: damages all targets in radius except owner
 apply_aoe_damage :: proc(pos: v2, owner_id: u64, radius: float, damage: float) {
-    nearby: [..]Player;
+    nearby: [..]Weapon_Target;
     Scene.get_all_components_in_range(pos, radius, ref nearby);
 
-    for p: nearby {
-        if p.entity.id == owner_id continue;
-        p.health -= damage;
-        if p.health < 0 {
-            p.health = 0;
-        }
+    for t: nearby {
+        if t.entity.id == owner_id continue;
+        weapon_target_apply_damage(t, damage, owner_id);
     }
 }
 
@@ -37,14 +34,11 @@ AOE_Projectile :: class : Component {
         entity->add_local_position(move);
 
         pos := entity.world_position + v2{0, -0.5};
-        hit_player, found := Scene.get_closest_component_in_range(pos, 0.8, Player);
-        if found && hit_player != null {
-            if hit_player.entity.id != owner_id {
+        hit_target, found := Scene.get_closest_component_in_range(pos, 0.8, Weapon_Target);
+        if found && hit_target != null {
+            if hit_target.entity.id != owner_id {
                 // Direct hit damage
-                hit_player.health -= damage;
-                if hit_player.health < 0 {
-                    hit_player.health = 0;
-                }
+                weapon_target_apply_damage(hit_target, damage, owner_id);
 
                 // AOE damage
                 if aoe_radius > 0 {

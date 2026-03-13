@@ -23,21 +23,22 @@ import "reusable_weapons"
 
 ```csl
 Player :: class : Player_Base {
-    health: float;
-    max_health: float;
+    weapon_target: Weapon_Target;
     equipped_weapon_type: Weapon_Type;
     equipped_item_def: Item_Definition;
     last_selected_index: s64;
     boomwheel_cannon: Boomwheel_Cannon; // only needed if using Boomwheel
 
     ao_start :: method() {
-        health = 100.0;
-        max_health = 100.0;
+        wt := entity->add_component(Weapon_Target);
+        wt.health = 100.0;
+        wt.max_health = 100.0;
+        wt.owner_entity_id = entity.id;
+        weapon_target = wt;
+
         last_selected_index = -1;
 
-        if Game.is_server() {
-            init_weapon_items();
-        }
+        init_weapon_items();
         setup_reusable_weapons_player_state_machine(this);
     }
 }
@@ -152,7 +153,93 @@ See `weapon_items.csl` for all ammo type indices (0-9).
 5. Add firing logic in the matching ability file (or create a new one for a new fire mode)
 6. Create a projectile prefab in `res/reusable_weapons/`
 
+## Making custom entities damageable by weapons
+
+The weapons system uses a `Weapon_Target` component for all hit detection. Any entity with a `Weapon_Target` can be hit by any weapon — players, mobs, destructibles, bosses, etc.
+
+### Basic usage
+
+Add a `Weapon_Target` component to any entity you want weapons to hit:
+
+```csl
+My_Mob :: class : Component {
+    ao_start :: method() {
+        target := entity->add_component(Weapon_Target);
+        target.health = 50.0;
+        target.max_health = 50.0;
+        // That's it — all weapons now hit this entity
+    }
+
+    ao_update :: method(dt: float) {
+        target := entity->get_component(Weapon_Target);
+        if target.health <= 0 {
+            // Handle death
+            entity->destroy();
+        }
+    }
+}
+```
+
+### Reacting to damage
+
+Set the `on_damaged` callback to run custom logic when hit (death animations, loot drops, knockback, etc.):
+
+```csl
+My_Mob :: class : Component {
+    ao_start :: method() {
+        target := entity->add_component(Weapon_Target);
+        target.health = 50.0;
+        target.max_health = 50.0;
+        target.on_damaged_userdata = this;
+        target.on_damaged = proc(target: Weapon_Target, damage: float, attacker_id: u64, userdata: Object) {
+            mob := userdata.(My_Mob);
+            if target.health <= 0 {
+                // Spawn loot, play death animation, etc.
+                target.entity->destroy();
+            }
+        };
+    }
+}
+```
+
+### Friendly-fire exclusion
+
+The `owner_entity_id` field prevents weapons from hitting their own source entity. For the player this is set automatically. For entities owned by a player (turrets, pets), set it to the player's entity ID:
+
+```csl
+target := turret_entity->add_component(Weapon_Target);
+target.health = 200.0;
+target.max_health = 200.0;
+target.owner_entity_id = player.entity.id; // player's weapons won't hit their own turret
+```
+
+### Weapon_Target fields
+
+| Field | Type | Description |
+|---|---|---|
+| `health` | `float` | Current health |
+| `max_health` | `float` | Maximum health |
+| `owner_entity_id` | `u64` | Entity ID of the owner (for self-hit exclusion) |
+| `on_damaged` | `proc` | Callback fired after damage is applied |
+| `on_damaged_userdata` | `Object` | Userdata passed to the callback |
+
+### Reading health from the Player
+
+Player health now lives on the `Weapon_Target` component. Access it via the `weapon_target` field:
+
+```csl
+// Reading player health
+current_hp := player.weapon_target.health;
+max_hp := player.weapon_target.max_health;
+
+// Healing the player
+player.weapon_target.health += 10.0;
+if player.weapon_target.health > player.weapon_target.max_health {
+    player.weapon_target.health = player.weapon_target.max_health;
+}
+```
+
 ## Notes
 
 - **Animations**: `setup_reusable_weapons_player_state_machine()` adds an additive animation layer to the player. If you have your own state machine setup, you may need to merge the two — check `weapon_animations.csl`.
-- **Health**: The system uses `player.health` and `player.max_health` fields directly. If you have your own health system, search for those references and swap them.
+- **Health**: Player health lives on the `Weapon_Target` component, accessed via `player.weapon_target.health` and `player.weapon_target.max_health`.

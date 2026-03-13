@@ -18,10 +18,10 @@ Homing_Projectile :: class : Component {
             return;
         }
 
-        // Homing: lerp direction toward nearest player
+        // Homing: lerp direction toward nearest target
         if homing_radius > 0 {
             pos := entity.world_position;
-            target, found := Scene.get_closest_component_in_range(pos, homing_radius, Player);
+            target, found := Scene.get_closest_component_in_range(pos, homing_radius, Weapon_Target);
             if found && target != null && target.entity.id != owner_id {
                 to_target := v2{target.entity.world_position.x - pos.x, target.entity.world_position.y - pos.y};
                 dist := length(to_target);
@@ -42,13 +42,10 @@ Homing_Projectile :: class : Component {
         entity->add_local_position(move);
 
         pos := entity.world_position + v2{0, -0.5};
-        hit_player, found := Scene.get_closest_component_in_range(pos, 0.8, Player);
-        if found && hit_player != null {
-            if hit_player.entity.id != owner_id {
-                hit_player.health -= damage;
-                if hit_player.health < 0 {
-                    hit_player.health = 0;
-                }
+        hit_target, found := Scene.get_closest_component_in_range(pos, 0.8, Weapon_Target);
+        if found && hit_target != null {
+            if hit_target.entity.id != owner_id {
+                weapon_target_apply_damage(hit_target, damage, owner_id);
 
                 hit_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/bullet_hit.wav");
                 sfx_desc := SFX.default_sfx_desc();

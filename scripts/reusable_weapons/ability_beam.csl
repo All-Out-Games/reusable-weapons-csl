@@ -81,10 +81,10 @@ Beam_Ability :: class : Ability_Base {
                 hit_count := beam_radius_damage(p, origin, config.beam_range, config.base_damage);
 
                 // Spawn beam entities for each target in range
-                nearby: [..]Player;
-                Scene.get_all_components_in_range(origin, config.beam_range, ref nearby);
+                nearby_targets: [..]Weapon_Target;
+                Scene.get_all_components_in_range(origin, config.beam_range, ref nearby_targets);
                 beam_count := 0;
-                for target: nearby {
+                for target: nearby_targets {
                     if target.entity.id == p.entity.id continue;
                     if target.health <= 0 continue;
                     if beam_count >= 5 break;
@@ -97,8 +97,8 @@ Beam_Ability :: class : Ability_Base {
                     heal_scale := hit_count.(float);
                     if heal_scale > 5.0 { heal_scale = 5.0; }
                     heal := config.heal_amount * heal_scale / 5.0;
-                    p.health += heal;
-                    if p.health > p.max_health { p.health = p.max_health; }
+                    p.weapon_target.health += heal;
+                    if p.weapon_target.health > p.weapon_target.max_health { p.weapon_target.health = p.weapon_target.max_health; }
                 }
             } else if wt == .VOID_SPLITTER {
                 // Line beam damage + single directional beam entity
@@ -118,8 +118,8 @@ Beam_Ability :: class : Ability_Base {
                 }
 
                 if config.heals_self {
-                    p.health += config.heal_amount;
-                    if p.health > p.max_health { p.health = p.max_health; }
+                    p.weapon_target.health += config.heal_amount;
+                    if p.weapon_target.health > p.weapon_target.max_health { p.weapon_target.health = p.weapon_target.max_health; }
                 }
             }
 
