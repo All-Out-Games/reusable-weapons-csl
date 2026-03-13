@@ -94,7 +94,7 @@ Items.move_item_to_inventory(ammo, player.default_inventory);
 
 See `weapon_items.csl` for all ammo type indices (0-9).
 
-### 6. Updaet your scene.config file to set the default_player_rig to the reusable weapons one:
+### 6. Update your scene.config file to set the default_player_rig to the reusable weapons one:
 ```json
 {
   "default_player_rig": "reusable_weapons/anims/reusable-weapons/player/player.merged_spine_rig#output"
