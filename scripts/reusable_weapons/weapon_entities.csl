@@ -37,9 +37,7 @@ Poison_Cloud :: class : Component {
         tick_timer += dt;
         if tick_timer >= tick_rate {
             tick_timer = 0;
-            if Game.is_server() {
-                apply_aoe_damage(entity.world_position, owner_id, radius, damage_per_tick);
-            }
+            apply_aoe_damage(entity.world_position, owner_id, radius, damage_per_tick);
         }
     }
 
@@ -144,18 +142,16 @@ Cluster_Bomb :: class : Component {
         entity->set_local_position({current_x, current_y + arc_height});
 
         if t >= 1.0 {
-            if Game.is_server() {
-                apply_aoe_damage(target_pos, owner_id, aoe_radius, damage);
+            apply_aoe_damage(target_pos, owner_id, aoe_radius, damage);
 
-                sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/dynamite_explode.wav");
-                desc := SFX.default_sfx_desc();
-                desc->set_position(target_pos);
-                desc.range_multiplier = 2.0;
-                SFX.play(sfx, desc);
+            sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/dynamite_explode.wav");
+            desc := SFX.default_sfx_desc();
+            desc->set_position(target_pos);
+            desc.range_multiplier = 2.0;
+            SFX.play(sfx, desc);
 
-                // Spawn explosion VFX
-                spawn_simple_vfx("reusable_weapons/VFX_ShotgunExplosion.prefab", target_pos, {2, 2}, "explode", 1.5);
-            }
+            // Spawn explosion VFX
+            spawn_simple_vfx("reusable_weapons/VFX_ShotgunExplosion.prefab", target_pos, {2, 2}, "explode", 1.5);
             entity->destroy();
         }
     }
@@ -193,13 +189,11 @@ Tornado_Entity :: class : Component {
                 sound_id = 0;
             }
             // Play end sound
-            if Game.is_server() {
-                end_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/fire_tornado_end.wav");
-                end_desc := SFX.default_sfx_desc();
-                end_desc->set_position(entity.world_position);
-                end_desc.range_multiplier = 2.0;
-                SFX.play(end_sfx, end_desc);
-            }
+            end_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/fire_tornado_end.wav");
+            end_desc := SFX.default_sfx_desc();
+            end_desc->set_position(entity.world_position);
+            end_desc.range_multiplier = 2.0;
+            SFX.play(end_sfx, end_desc);
             despawning = true;
         }
 
@@ -230,9 +224,7 @@ Tornado_Entity :: class : Component {
         tick_timer += dt;
         if tick_timer >= tick_rate {
             tick_timer = 0;
-            if Game.is_server() {
-                apply_aoe_damage(entity.world_position, owner_id, aoe_radius, damage_per_tick);
-            }
+            apply_aoe_damage(entity.world_position, owner_id, aoe_radius, damage_per_tick);
         }
     }
 
@@ -244,7 +236,6 @@ Tornado_Entity :: class : Component {
 }
 
 spawn_tornado_entity :: proc(player: Player, direction: v2, wt: Weapon_Type) {
-    if !Game.is_server() return;
 
     config := get_weapon_config(wt);
     spawn_pos := player.entity.world_position;
@@ -333,9 +324,7 @@ Storms_Eye_Tornado :: class : Component {
         tick_timer += dt;
         if tick_timer >= tick_rate {
             tick_timer = 0;
-            if Game.is_server() {
-                apply_aoe_damage(entity.world_position, owner_id, aoe_radius, damage_per_tick);
-            }
+            apply_aoe_damage(entity.world_position, owner_id, aoe_radius, damage_per_tick);
         }
     }
 
@@ -347,7 +336,6 @@ Storms_Eye_Tornado :: class : Component {
 }
 
 spawn_storms_eye_tornado :: proc(player: Player) {
-    if !Game.is_server() return;
 
     config := get_weapon_config(.STORMS_EYE);
 

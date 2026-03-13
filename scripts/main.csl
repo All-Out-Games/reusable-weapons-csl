@@ -15,56 +15,52 @@ Player :: class : Player_Base {
         max_health = 100.0;
         last_selected_index = -1;
 
-        if Game.is_server() {
-            init_weapon_items();
-        }
+        init_weapon_items();
         // NOTE/TODO: this currently adds the additive layer which you may want to do in your own code, so in the future we'll try to make this not interfere with your own state machine setup.
         // For now you may just want to add inside here :monkaS
         setup_reusable_weapons_player_state_machine(this);
 
 
         // (Optional) Give the player all the weapons/ammo to start for debugging
-        if (Game.is_server()) {
-            // Expand inventory to fit all weapons + ammo
-            Items.set_capacity(default_inventory, 40);
+        // Expand inventory to fit all weapons + ammo
+        Items.set_capacity(default_inventory, 40);
 
-            // Give all weapons
-            give_weapon(.ASSAULT_RIFLE, default_inventory);
-            give_weapon(.SUBMACHINE_GUN, default_inventory);
-            give_weapon(.GATLING_GUN, default_inventory);
-            give_weapon(.BEAM_MACHINE, default_inventory);
-            give_weapon(.WATER_GUN, default_inventory);
-            give_weapon(.MISSILE_BARRAGE, default_inventory);
-            give_weapon(.BLUNDERBUSS, default_inventory);
-            give_weapon(.RAY_GUN, default_inventory);
-            give_weapon(.PLASMA_BURST, default_inventory);
-            give_weapon(.MEGA_BLADE, default_inventory);
-            give_weapon(.BUZZSHOT, default_inventory);
-            give_weapon(.EXPLOSIVE_SHOTGUN, default_inventory);
-            give_weapon(.SUNNY_SIDE_SHOTTY, default_inventory);
-            give_weapon(.GOLDEN_ROCKET_LAUNCHER, default_inventory);
-            give_weapon(.WATER_BALLOON_RPG, default_inventory);
-            give_weapon(.POISON_GRENADE, default_inventory);
-            give_weapon(.BOOMWHEEL, default_inventory);
-            give_weapon(.FIRE_RAY, default_inventory);
-            give_weapon(.ICE_LAUNCHER, default_inventory);
-            give_weapon(.GLACIATOR, default_inventory);
-            give_weapon(.SOLAR_SIPHONER, default_inventory);
-            give_weapon(.OCTO_SIPHONER, default_inventory);
-            give_weapon(.VOID_SPLITTER, default_inventory);
-            give_weapon(.AKIMBO_PISTOLS, default_inventory);
-            give_weapon(.WIND_BLASTER, default_inventory);
-            give_weapon(.STORMS_EYE, default_inventory);
-            give_weapon(.HYDRO_CANNON, default_inventory);
+        // Give all weapons
+        give_weapon(.ASSAULT_RIFLE, default_inventory);
+        give_weapon(.SUBMACHINE_GUN, default_inventory);
+        give_weapon(.GATLING_GUN, default_inventory);
+        give_weapon(.BEAM_MACHINE, default_inventory);
+        give_weapon(.WATER_GUN, default_inventory);
+        give_weapon(.MISSILE_BARRAGE, default_inventory);
+        give_weapon(.BLUNDERBUSS, default_inventory);
+        give_weapon(.RAY_GUN, default_inventory);
+        give_weapon(.PLASMA_BURST, default_inventory);
+        give_weapon(.MEGA_BLADE, default_inventory);
+        give_weapon(.BUZZSHOT, default_inventory);
+        give_weapon(.EXPLOSIVE_SHOTGUN, default_inventory);
+        give_weapon(.SUNNY_SIDE_SHOTTY, default_inventory);
+        give_weapon(.GOLDEN_ROCKET_LAUNCHER, default_inventory);
+        give_weapon(.WATER_BALLOON_RPG, default_inventory);
+        give_weapon(.POISON_GRENADE, default_inventory);
+        give_weapon(.BOOMWHEEL, default_inventory);
+        give_weapon(.FIRE_RAY, default_inventory);
+        give_weapon(.ICE_LAUNCHER, default_inventory);
+        give_weapon(.GLACIATOR, default_inventory);
+        give_weapon(.SOLAR_SIPHONER, default_inventory);
+        give_weapon(.OCTO_SIPHONER, default_inventory);
+        give_weapon(.VOID_SPLITTER, default_inventory);
+        give_weapon(.AKIMBO_PISTOLS, default_inventory);
+        give_weapon(.WIND_BLASTER, default_inventory);
+        give_weapon(.STORMS_EYE, default_inventory);
+        give_weapon(.HYDRO_CANNON, default_inventory);
 
-            // Give all ammo types
-            i := 0;
-            while i < AMMO_TYPE_COUNT {
-                info := get_ammo_info(i);
-                ammo_inst := Items.create_item_instance(g_ammo_item_defs[i], info.stack_size);
-                Items.move_item_to_inventory(ammo_inst, default_inventory);
-                i += 1;
-            }
+        // Give all ammo types
+        i := 0;
+        while i < AMMO_TYPE_COUNT {
+            info := get_ammo_info(i);
+            ammo_inst := Items.create_item_instance(g_ammo_item_defs[i], info.stack_size);
+            Items.move_item_to_inventory(ammo_inst, default_inventory);
+            i += 1;
         }
     }
 
@@ -113,7 +109,7 @@ Player :: class : Player_Base {
             handle_equipped_item_changing(hotbar.selected_item_index);
         }
 
-        if !Game.is_server() {
+        if is_local() {
             draw_health_bar(this);
         }
     }

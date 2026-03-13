@@ -47,27 +47,25 @@ Continuous_Fire_Ability :: class : Ability_Base {
             weapon_shoot(p, wt);
 
             // Spawn projectile based on weapon type
-            if Game.is_server() {
-                switch wt {
-                    case .BEAM_MACHINE: {
-                        spawn_beam_machine_projectile(p, aiming.aim_direction, wt);
-                    }
-                    case .MISSILE_BARRAGE: {
-                        spawn_homing_projectile(p, aiming.aim_direction, wt);
-                    }
-                    // AR, SMG, Gatling, WaterGun: standard projectile
-                    case .ASSAULT_RIFLE: {
-                        weapon_spawn_standard_projectile(p, aiming.aim_direction, wt);
-                    }
-                    case .SUBMACHINE_GUN: {
-                        weapon_spawn_standard_projectile(p, aiming.aim_direction, wt);
-                    }
-                    case .GATLING_GUN: {
-                        weapon_spawn_standard_projectile(p, aiming.aim_direction, wt);
-                    }
-                    case .WATER_GUN: {
-                        spawn_water_gun_projectile(p, aiming.aim_direction, wt);
-                    }
+            switch wt {
+                case .BEAM_MACHINE: {
+                    spawn_beam_machine_projectile(p, aiming.aim_direction, wt);
+                }
+                case .MISSILE_BARRAGE: {
+                    spawn_homing_projectile(p, aiming.aim_direction, wt);
+                }
+                // AR, SMG, Gatling, WaterGun: standard projectile
+                case .ASSAULT_RIFLE: {
+                    weapon_spawn_standard_projectile(p, aiming.aim_direction, wt);
+                }
+                case .SUBMACHINE_GUN: {
+                    weapon_spawn_standard_projectile(p, aiming.aim_direction, wt);
+                }
+                case .GATLING_GUN: {
+                    weapon_spawn_standard_projectile(p, aiming.aim_direction, wt);
+                }
+                case .WATER_GUN: {
+                    spawn_water_gun_projectile(p, aiming.aim_direction, wt);
                 }
             }
 

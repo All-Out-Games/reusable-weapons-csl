@@ -76,7 +76,7 @@ weapon_unequip :: proc(player: Player, wt: Weapon_Type) {
     }
 
     // Destroy any active beam visuals for this player
-    if Game.is_server() && config.fire_mode == .BEAM {
+    if config.fire_mode == .BEAM {
         destroy_player_beams(player.entity.id);
     }
 }
@@ -157,8 +157,6 @@ weapon_get_ammo_count :: proc(player: Player, wt: Weapon_Type) -> s64 {
 }
 
 weapon_consume_ammo :: proc(player: Player, wt: Weapon_Type, amount: s64) {
-    if !Game.is_server() return;
-
     ammo_def := get_ammo_def_for_weapon(wt);
     if ammo_def == null return;
 
@@ -183,8 +181,6 @@ weapon_consume_ammo :: proc(player: Player, wt: Weapon_Type, amount: s64) {
 }
 
 weapon_spawn_standard_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
-    if !Game.is_server() return;
-
     config := get_weapon_config(wt);
 
     bone_local := player.animator.instance->get_bone_local_position("PROJECTILE");
@@ -237,7 +233,6 @@ setup_projectile_spine :: proc(proj_entity: Entity, skin_name: string, travel_an
 
 // Blunderbuss: cannonball projectile with spinning animation
 spawn_blunderbuss_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
-    if !Game.is_server() return;
     config := get_weapon_config(wt);
 
     spawn_pos := get_projectile_spawn_pos(player, direction);
@@ -258,7 +253,6 @@ spawn_blunderbuss_projectile :: proc(player: Player, direction: v2, wt: Weapon_T
 
 // Ray Gun: ray_gun projectile with normal animation
 spawn_ray_gun_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
-    if !Game.is_server() return;
     config := get_weapon_config(wt);
 
     spawn_pos := get_projectile_spawn_pos(player, direction);
@@ -279,7 +273,6 @@ spawn_ray_gun_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type)
 
 // Beam Machine: laser_bolt piercing projectile, no hit sound
 spawn_beam_machine_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
-    if !Game.is_server() return;
     config := get_weapon_config(wt);
 
     spawn_pos := get_projectile_spawn_pos(player, direction);
@@ -301,7 +294,6 @@ spawn_beam_machine_projectile :: proc(player: Player, direction: v2, wt: Weapon_
 
 // Water Gun: water_gun skin projectile
 spawn_water_gun_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
-    if !Game.is_server() return;
     config := get_weapon_config(wt);
 
     spawn_pos := get_projectile_spawn_pos(player, direction);

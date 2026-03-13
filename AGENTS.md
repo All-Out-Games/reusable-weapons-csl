@@ -1,21 +1,24 @@
 You will be developing a multiplayer game in a custom scripting language (.csl)
 
 ## Networking
-- All gameplay state is automatically synced from the server to the client. You do not need to write RPCs or network spawn things. 
-- Do not forget that **multiple players will be connecting**. Avoid global state that will break with multiple players. Store these as fields on the player. 
+
+> **NEVER wrap gameplay logic in `Game.is_server()`.** The engine uses client-side prediction with automatic server reconciliation. Gameplay code **must** run on both client and server for smooth behavior.
+
+- All gameplay state is automatically synced. You do not need to write RPCs or manually replicate state.
+- The client runs the same gameplay code as the server and predicts outcomes immediately. The server's authoritative result is reconciled automatically — you get correctness **and** responsiveness for free, but **only if the code runs on both sides**.
+- Do not forget that **multiple players will be connecting**. Avoid global state that will break with multiple players. Store these as fields on the player.
 
 ### is_local_or_server() vs is_local()
 ```csl
 Player :: class : Player_Base {
     ao_late_update :: method(dt: float) {
-        // Use for gameplay UI and inputs (runs on server + local client)
+        // Use for gameplay UI and inputs (runs on server + local client only, 
+        // skips remote clients who don't need this player's UI/input)
         if is_local_or_server() {
             draw_ability_button(this, Shoot_Ability, 0);
-            // Handle inputs that affect game state
-            // Movement is handled automatically
         }
         
-        // Use for purely cosmetic effects (runs only on local client)
+        // Use for purely cosmetic/local-only effects (runs only on local client, rarely used since gameplay code should run on both)
         if is_local() {
             UI.text(..., "Waiting for host to start the game...");
             // Particle effects, cosmetic UI, etc.
@@ -26,21 +29,17 @@ Player :: class : Player_Base {
 ```
 
 ## Imports
+All imports go in main.csl only. You only need to import folders you create, not individual scripts.
 ```csl
 // main.csl
 import "core:ao"
+import "ui" // add folder imports here if needed
 ```
-
-If you create a new folder (e.g. `/ui`), import once in your main.csl to bring all those files into scope. 
-```csl
-// main.csl
-import "core:ao"
-import "ui"
-```
-You should not import anything anywhere else. 
 
 ## Assets/Resources
-- Game assets are available in the /res directory. 
+Find assets with the MCP: 
+asset_local_search (query: "tree")
+
 - When referencing assets use <path>.<ext>, omit /res from the path. 
 - Engine assets are available with the $AO prefix.
 - Check that assets actually exist before using. 
@@ -49,14 +48,13 @@ You should not import anything anywhere else.
 ```csl
 texture := get_asset(Texture_Asset, "ui/button.png");
 sound := get_asset(SFX_Asset, "sfx/click.wav");
-font := get_asset(Font_Asset, "$AO/fonts/Barlow-Black.ttf");
+spine := get_asset(Spine_Asset, "anims/dog/dog.spine");
 ```
 
 ## Entities
-- Entities exist in the scene at startup when manually placed by the user in the editor. 
-- You can inspect .e files in the scene directory to see entities and their components. 
+Most entities should be placed in the scene using the mcp. 
 
-### Adding entities to the scene at runtime
+Use scripts to add entities that must be dynamically spawned (like towers or waves of enemies in a tower defense game)
 ```csl
 entity := Scene.create_entity();
 entity->set_local_position({10, 20});
@@ -89,8 +87,6 @@ sprite.layer = 10;
 ```
 
 #### Prefab_Asset
-> Prefabs must be created by the user. You can check what prefabs exist by listing .prefab folders in the res directory. 
-
 ```csl
 prefab_asset := get_asset(Prefab_Asset, "MyPrefab.prefab");
 entity := instantiate(prefab_asset);
@@ -100,7 +96,7 @@ entity := instantiate(prefab_asset);
 Reference the spine skill when working with Spine_Animators 
 
 ### Creating Custom Components
-> Make new components in dedicated files. 
+> Make new components in dedicated files. You do not need to import them unless they're in a separate folder. 
 
 Can override these lifecycle methods:
 
@@ -134,7 +130,7 @@ Orbiter :: class : Component {
     }
 }
 ```
-> If you create a new component to be added to an entity in the scene manually, let the user know.
+> You can add components you've made to entities in the scene using the modify_scene tool. 
 
 #### Iterating Components
 
@@ -144,35 +140,19 @@ foreach player: component_iterator(My_Player) {
 ```
 
 #### Finding components close to the player
-> csl does not have collision callbacks. To know when a player collides with something get components near them and check distance
+> csl does not have collision callbacks instead get components near them and check distance
 ```csl
-Scene.get_all_components_in_range :: proc(position: v2, range: float, results: ref [..]$T)
-Scene.get_closest_component_in_range :: proc(position: v2, range: float, $T: typeid) -> T
+nearby: [..]Enemy;
+Scene.get_all_components_in_range(player_pos, 5.0, ref nearby);
+
+closest, found := Scene.get_closest_component_in_range(player_pos, 2.0, Pickup);
 ```
 
-Example usage:
-```csl
-// Get all enemies within 5 units of the player
-nearby_enemies: [..]Enemy;
-Scene.get_all_components_in_range(player_pos, 5.0, ref nearby_enemies);
-
-for enemy: nearby_enemies {
-    
-}
-
-// Get the single closest pickup within 2 units
-closest_pickup := Scene.get_closest_component_in_range(player_pos, 2.0, Pickup);
-if closest_pickup != null {
-
-}
-```
-
-## Random Numbers
-
+## Random Generators
 ```csl
 rng: u64 = rng_seed(entity.id);
 // or
-rng: u64 = rng_seed_time();
+rng: u64 = rng_root_seed();
 
 // Pass seed using ref. Range values are inclusive.
 random_float := rng_range_float(ref rng, 0, 1);
@@ -193,31 +173,27 @@ value := 3.14159;
 format_string("pi: %", {format_float(value, decimals=2)}); // "pi: 3.14"
 ```
 
-Use my_str.count for length 
+my_str.count gets length 
 
 ## Time
 
 ```csl
-current_time := get_time(); // Game time
-real_time := get_real_time() // Real-world time
-frame := get_frame_number(); // Current frame number
+current_time := get_time(); // Float seconds since game start
+frame := get_frame_number();
 ```
 
 ## SFX
 ```csl
-// Play sound
 desc := SFX.default_sfx_desc();
 desc.entity_to_follow = entity.id;
 desc.delay = 0.25;
 sound_id := SFX.play(sound_asset, desc);
 
-// Stop sound
 SFX.stop(sound_id);
 ```
-> Play important long sounds server-only using Game.is_server() to prevent mispredicted playback of music, death sfx, etc...
 
 ## Economy
-> Automatically persist currencies (cash, points, etc...)
+> Automatically persists currencies (cash, points, etc...)
 ```csl
 Economy.register_currency("Coins", coin_texture_asset);
 
@@ -233,44 +209,26 @@ if Economy.can_withdraw_currency(player, "Coins", COST) {
 ```
 
 ## Math Functions
-```csl
-angle_rad := sin(x);
-angle_cos := cos(x);
-
-result := pow(2.0, 3.0);  // 8.0
-root := sqrt(16.0);       // 4.0
-
-value := lerp(0.0, 100.0, 0.5);     // 50.0
-clamped := clamp(value, 0.0, 10.0); // Limit range
-absolute := abs(-5);                 // 5
-minimum := min(5, 10);               // 5
-maximum := max(5, 10);               // 10
-
-len := length(vector);
-len_sq := length_squared(vector);
-normalized := normalize(vector);
-```
-> ^ These are the only math functions available to you. 
+`sin`, `cos`, `pow`, `sqrt`, `lerp`, `clamp`, `abs`, `min`, `max`, `length`, `length_squared`, `normalize` there are no other math functions. 
 
 ### Player_Base Reference
-- p->get_username() -> string
+- p->get_username()
 - p->get_user_id() -> string
 - p.avatar_color -> Color_Replace_Color 
 - p.device_kind -> .PHONE, .TABLET, .PC 
 - p->add_freeze_reason(reason: string)
-- p-> add_invisibility_reason(reason: string)
+- p->add_invisibility_reason(reason: string)
 
 ### Serialized fields
 Use `@ao_serialize` to expose a field to the user in the editor. 
 
 ## Best Practices
-- Do not hallucinate syntax from other languages. If you are unsure on syntax or available APIs, check skills.
-- These games are mobile-first so don't use any keyboard input. 
+- Do not hallucinate syntax from other languages. Use skills to keep up on syntax and APIs.
+- These games are mobile-first, don't rely on keyboard input. 
 - Logging: `log_info("Name: %, age: %", {get_name(), get_age()});`
-- To display feedback to a specific player from the server, use `Notifier.notify(player, "Not enough cash!")` which sends an RPC. For local-only notifications, use `Notifier.notify("message")` wrapped with is_local checks. 
 - CSL does not have closures, if needed add a `userdata: Object` field alongside the callbacks. Any class instance can be stored in an `Object` variable and cast back to its original type.
-- When starting fresh you **must** reference the syntax skill. 
-- If the task you're working on requires any UI, you **must** use the ui skill. 
-- If designing new gameplay systems, you **must** use the game-design skill.
 
-After you make changes you **must** run the All Out MCP compile tool.
+After you make script changes, run the All Out MCP compile tool.
+When the prompt requires building a game world, prefer doing so using the allout MCP scene editing tools instead of scripts. 
+
+To add weapons to your game clone the https://github.com/All-Out-Games/reusable-weapons-csl.git repo with curl/https and follow the README. 

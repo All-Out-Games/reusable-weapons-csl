@@ -38,10 +38,8 @@ Lobbed_Projectile :: class : Component {
 
         // Landed
         if travel_distance >= max_distance {
-            if Game.is_server() {
-                land_pos := v2{start_pos.x + direction.x * max_distance, start_pos.y + direction.y * max_distance};
-                on_lobbed_land(land_pos, owner_id, aoe_radius, aoe_damage, weapon_type);
-            }
+            land_pos := v2{start_pos.x + direction.x * max_distance, start_pos.y + direction.y * max_distance};
+            on_lobbed_land(land_pos, owner_id, aoe_radius, aoe_damage, weapon_type);
             entity->destroy();
             return;
         }
@@ -109,8 +107,6 @@ on_lobbed_land :: proc(pos: v2, owner_id: u64, radius: float, damage: float, wt:
 }
 
 spawn_lobbed_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
-    if !Game.is_server() return;
-
     config := get_weapon_config(wt);
     bone_local := player.animator.instance->get_bone_local_position("PROJECTILE");
     barrel_dist := length(bone_local);

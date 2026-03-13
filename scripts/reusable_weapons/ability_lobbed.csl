@@ -42,9 +42,7 @@ Lobbed_Shot_Ability :: class : Ability_Base {
         if should_fire && params.can_use && ability.current_cooldown <= 0 {
             weapon_shoot(p, wt);
 
-            if Game.is_server() {
-                spawn_lobbed_projectile(p, aiming.aim_direction, wt);
-            }
+            spawn_lobbed_projectile(p, aiming.aim_direction, wt);
 
             ability.current_cooldown = config.fire_rate;
         }

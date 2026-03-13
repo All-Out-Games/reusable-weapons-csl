@@ -29,17 +29,15 @@ Melee_Ability :: class : Ability_Base {
             SFX.play(get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/katana_slash.wav"), sfx_desc);
 
             // Damage nearby players
-            if Game.is_server() {
-                nearby: [..]Player;
-                pos := p.entity.world_position;
-                Scene.get_all_components_in_range(pos, 1.5, ref nearby);
-                for hit: nearby {
-                    if hit != null {
-                        if hit.entity.id != p.entity.id {
-                            hit.health -= 25.0;
-                            if hit.health < 0 {
-                                hit.health = 0;
-                            }
+            nearby: [..]Player;
+            pos := p.entity.world_position;
+            Scene.get_all_components_in_range(pos, 1.5, ref nearby);
+            for hit: nearby {
+                if hit != null {
+                    if hit.entity.id != p.entity.id {
+                        hit.health -= 25.0;
+                        if hit.health < 0 {
+                            hit.health = 0;
                         }
                     }
                 }
@@ -99,23 +97,17 @@ Special_Ability :: class : Ability_Base {
             switch wt {
                 case .AKIMBO_PISTOLS: {
                     weapon_shoot(p, wt);
-                    if Game.is_server() {
-                        // Fire two projectiles with slight offset
-                        weapon_spawn_standard_projectile(p, aiming.aim_direction, wt);
-                        weapon_spawn_standard_projectile(p, aiming.aim_direction, wt);
-                    }
+                    // Fire two projectiles with slight offset
+                    weapon_spawn_standard_projectile(p, aiming.aim_direction, wt);
+                    weapon_spawn_standard_projectile(p, aiming.aim_direction, wt);
                 }
                 case .WIND_BLASTER: {
                     weapon_shoot(p, wt);
-                    if Game.is_server() {
-                        spawn_tornado_entity(p, aiming.aim_direction, wt);
-                    }
+                    spawn_tornado_entity(p, aiming.aim_direction, wt);
                 }
                 case .STORMS_EYE: {
                     weapon_shoot(p, wt);
-                    if Game.is_server() {
-                        spawn_storms_eye_tornado(p);
-                    }
+                    spawn_storms_eye_tornado(p);
                 }
             }
             ability.current_cooldown = config.fire_rate;

@@ -72,56 +72,54 @@ Beam_Ability :: class : Ability_Base {
                 weapon_consume_ammo(p, wt, config.ammo_per_shot);
             }
 
-            // Server: damage detection and beam entity management
-            if Game.is_server() {
-                origin := p.entity.world_position;
+            // Damage detection and beam entity management
+            origin := p.entity.world_position;
 
-                if wt == .OCTO_SIPHONER {
-                    // Radius-based damage, heal scales with targets hit
-                    destroy_player_beams(p.entity.id);
-                    hit_count := beam_radius_damage(p, origin, config.beam_range, config.base_damage);
+            if wt == .OCTO_SIPHONER {
+                // Radius-based damage, heal scales with targets hit
+                destroy_player_beams(p.entity.id);
+                hit_count := beam_radius_damage(p, origin, config.beam_range, config.base_damage);
 
-                    // Spawn beam entities for each target in range
-                    nearby: [..]Player;
-                    Scene.get_all_components_in_range(origin, config.beam_range, ref nearby);
-                    beam_count := 0;
-                    for target: nearby {
-                        if target.entity.id == p.entity.id continue;
-                        if target.health <= 0 continue;
-                        if beam_count >= 5 break;
-                        spawn_beam_entity(p.entity.id, target.entity.id, "pink", "pink_beam_loop_AL_mIK", config.beam_range);
-                        beam_count += 1;
-                    }
+                // Spawn beam entities for each target in range
+                nearby: [..]Player;
+                Scene.get_all_components_in_range(origin, config.beam_range, ref nearby);
+                beam_count := 0;
+                for target: nearby {
+                    if target.entity.id == p.entity.id continue;
+                    if target.health <= 0 continue;
+                    if beam_count >= 5 break;
+                    spawn_beam_entity(p.entity.id, target.entity.id, "pink", "pink_beam_loop_AL_mIK", config.beam_range);
+                    beam_count += 1;
+                }
 
-                    // Heal based on number of targets (scaled, max at 5 targets)
-                    if config.heals_self && hit_count > 0 {
-                        heal_scale := hit_count.(float);
-                        if heal_scale > 5.0 { heal_scale = 5.0; }
-                        heal := config.heal_amount * heal_scale / 5.0;
-                        p.health += heal;
-                        if p.health > p.max_health { p.health = p.max_health; }
-                    }
-                } else if wt == .VOID_SPLITTER {
-                    // Line beam damage + single directional beam entity
-                    beam_line_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_width, config.base_damage);
+                // Heal based on number of targets (scaled, max at 5 targets)
+                if config.heals_self && hit_count > 0 {
+                    heal_scale := hit_count.(float);
+                    if heal_scale > 5.0 { heal_scale = 5.0; }
+                    heal := config.heal_amount * heal_scale / 5.0;
+                    p.health += heal;
+                    if p.health > p.max_health { p.health = p.max_health; }
+                }
+            } else if wt == .VOID_SPLITTER {
+                // Line beam damage + single directional beam entity
+                beam_line_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_width, config.base_damage);
 
-                    if !self.beams_spawned {
-                        spawn_beam_entity(p.entity.id, 0, "blue", "lightning_beam_loop_AL_mIK", config.beam_range);
-                        self.beams_spawned = true;
-                    }
+                if !self.beams_spawned {
+                    spawn_beam_entity(p.entity.id, 0, "blue", "lightning_beam_loop_AL_mIK", config.beam_range);
+                    self.beams_spawned = true;
+                }
+            } else {
+                // Fire Ray, Ice Launcher, Glaciator, Solar Siphoner
+                // Beam visual is part of weapon animation (animation-based beams)
+                if config.beam_cone_angle > 0 {
+                    beam_cone_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_cone_angle, config.base_damage);
                 } else {
-                    // Fire Ray, Ice Launcher, Glaciator, Solar Siphoner
-                    // Beam visual is part of weapon animation (animation-based beams)
-                    if config.beam_cone_angle > 0 {
-                        beam_cone_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_cone_angle, config.base_damage);
-                    } else {
-                        beam_line_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_width, config.base_damage);
-                    }
+                    beam_line_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_width, config.base_damage);
+                }
 
-                    if config.heals_self {
-                        p.health += config.heal_amount;
-                        if p.health > p.max_health { p.health = p.max_health; }
-                    }
+                if config.heals_self {
+                    p.health += config.heal_amount;
+                    if p.health > p.max_health { p.health = p.max_health; }
                 }
             }
 
@@ -158,9 +156,7 @@ Beam_Ability :: class : Ability_Base {
 
             self.was_shooting = false;
             self.beams_spawned = false;
-            if Game.is_server() {
-                destroy_player_beams(p.entity.id);
-            }
+            destroy_player_beams(p.entity.id);
         }
 
         // Out of ammo
@@ -185,9 +181,7 @@ Beam_Ability :: class : Ability_Base {
 
                 self.was_shooting = false;
                 self.beams_spawned = false;
-                if Game.is_server() {
-                    destroy_player_beams(p.entity.id);
-                }
+                destroy_player_beams(p.entity.id);
             }
         }
     }

@@ -32,39 +32,37 @@ Hydro_Cannon_Projectile :: class : Component {
         move := v2{direction.x * speed * dt, direction.y * speed * dt};
         entity->add_local_position(move);
 
-        // Spawn geysers along path (server only)
-        if Game.is_server() {
-            if geysers_spawned < MAX_GEYSER_SPAWNS {
-                geyser_timer += dt;
-                if geyser_timer >= GEYSER_SPAWN_INTERVAL {
-                    geyser_timer = 0.0;
-                    geysers_spawned += 1;
+        // Spawn geysers along path
+        if geysers_spawned < MAX_GEYSER_SPAWNS {
+            geyser_timer += dt;
+            if geyser_timer >= GEYSER_SPAWN_INTERVAL {
+                geyser_timer = 0.0;
+                geysers_spawned += 1;
 
-                    geyser_prefab := get_asset(Prefab_Asset, "reusable_weapons/Weapon_HydroCannonGeyser.prefab");
-                    geyser_entity := Scene.instantiate(geyser_prefab);
-                    geyser_entity->set_local_position(entity.world_position);
+                geyser_prefab := get_asset(Prefab_Asset, "reusable_weapons/Weapon_HydroCannonGeyser.prefab");
+                geyser_entity := Scene.instantiate(geyser_prefab);
+                geyser_entity->set_local_position(entity.world_position);
 
-                    geyser := geyser_entity->add_component(Hydro_Cannon_Geyser);
-                    geyser.owner_id = owner_id;
+                geyser := geyser_entity->add_component(Hydro_Cannon_Geyser);
+                geyser.owner_id = owner_id;
 
-                    // Set up splash animation
-                    spine := geyser_entity->get_component(Spine_Animator);
-                    if spine != null {
-                        spine->awaken();
-                        spine.instance->set_animation("013RED/Splash", false, 0);
-                    }
-
-                    // Play random splash sound
-                    rng: u64 = rng_seed_time();
-                    splash_index := rng_range_int(ref rng, 1, 3);
-                    splash_path := "reusable_weapons/sounds/reusable-weapons/geyser_splash_01.wav";
-                    if splash_index == 2 { splash_path = "reusable_weapons/sounds/reusable-weapons/geyser_splash_02.wav"; }
-                    if splash_index == 3 { splash_path = "reusable_weapons/sounds/reusable-weapons/geyser_splash_03.wav"; }
-                    sfx_desc := SFX.default_sfx_desc();
-                    sfx_desc->set_position(entity.world_position);
-                    sfx_desc.range_multiplier = 2.0;
-                    SFX.play(get_asset(SFX_Asset, splash_path), sfx_desc);
+                // Set up splash animation
+                spine := geyser_entity->get_component(Spine_Animator);
+                if spine != null {
+                    spine->awaken();
+                    spine.instance->set_animation("013RED/Splash", false, 0);
                 }
+
+                // Play random splash sound
+                rng: u64 = rng_seed_time();
+                splash_index := rng_range_int(ref rng, 1, 3);
+                splash_path := "reusable_weapons/sounds/reusable-weapons/geyser_splash_01.wav";
+                if splash_index == 2 { splash_path = "reusable_weapons/sounds/reusable-weapons/geyser_splash_02.wav"; }
+                if splash_index == 3 { splash_path = "reusable_weapons/sounds/reusable-weapons/geyser_splash_03.wav"; }
+                sfx_desc := SFX.default_sfx_desc();
+                sfx_desc->set_position(entity.world_position);
+                sfx_desc.range_multiplier = 2.0;
+                SFX.play(get_asset(SFX_Asset, splash_path), sfx_desc);
             }
         }
     }
@@ -77,8 +75,6 @@ Hydro_Cannon_Geyser :: class : Component {
     hit_count: s64;
 
     ao_update :: method(dt: float) {
-        if !Game.is_server() return;
-
         lifetime += dt;
         if lifetime >= GEYSER_LIFETIME {
             entity->destroy();
@@ -120,8 +116,6 @@ Hydro_Cannon_Geyser :: class : Component {
 }
 
 spawn_hydrocannon_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
-    if !Game.is_server() return;
-
     config := get_weapon_config(wt);
 
     bone_local := player.animator.instance->get_bone_local_position("PROJECTILE");

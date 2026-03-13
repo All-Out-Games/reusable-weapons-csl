@@ -42,26 +42,24 @@ Single_Shot_Ability :: class : Ability_Base {
         if should_fire && params.can_use && ability.current_cooldown <= 0 {
             weapon_shoot(p, wt);
 
-            if Game.is_server() {
-                switch wt {
-                    case .MEGA_BLADE: {
-                        spawn_bouncing_projectile(p, aiming.aim_direction, wt);
-                    }
-                    case .BUZZSHOT: {
-                        spawn_bouncing_projectile(p, aiming.aim_direction, wt);
-                    }
-                    case .PLASMA_BURST: {
-                        spawn_growing_projectile(p, aiming.aim_direction, wt);
-                    }
-                    case .BLUNDERBUSS: {
-                        spawn_blunderbuss_projectile(p, aiming.aim_direction, wt);
-                    }
-                    case .RAY_GUN: {
-                        spawn_ray_gun_projectile(p, aiming.aim_direction, wt);
-                    }
-                    case .HYDRO_CANNON: {
-                        spawn_hydrocannon_projectile(p, aiming.aim_direction, wt);
-                    }
+            switch wt {
+                case .MEGA_BLADE: {
+                    spawn_bouncing_projectile(p, aiming.aim_direction, wt);
+                }
+                case .BUZZSHOT: {
+                    spawn_bouncing_projectile(p, aiming.aim_direction, wt);
+                }
+                case .PLASMA_BURST: {
+                    spawn_growing_projectile(p, aiming.aim_direction, wt);
+                }
+                case .BLUNDERBUSS: {
+                    spawn_blunderbuss_projectile(p, aiming.aim_direction, wt);
+                }
+                case .RAY_GUN: {
+                    spawn_ray_gun_projectile(p, aiming.aim_direction, wt);
+                }
+                case .HYDRO_CANNON: {
+                    spawn_hydrocannon_projectile(p, aiming.aim_direction, wt);
                 }
             }
 

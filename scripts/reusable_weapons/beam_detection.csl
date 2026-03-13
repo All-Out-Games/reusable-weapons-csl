@@ -99,7 +99,7 @@ Beam_Visual :: class : Component {
             }
         }
         if source == null {
-            if Game.is_server() { entity->destroy(); }
+            entity->destroy();
             return;
         }
 
@@ -120,7 +120,7 @@ Beam_Visual :: class : Component {
                 }
             }
             if target == null || target.health <= 0 {
-                if Game.is_server() { entity->destroy(); }
+                entity->destroy();
                 return;
             }
             end_pos = target.entity.world_position;

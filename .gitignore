@@ -16,3 +16,8 @@ res/.preprocessed
 *.psd
 .cursor
 example-scripts
+.agents
+.claude
+.mcp.json
+AGENTS.md
+ao_debug.lock
