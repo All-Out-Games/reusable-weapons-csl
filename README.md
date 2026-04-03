@@ -1,6 +1,6 @@
 # Reusable Weapons Pack
 
-A drop-in weapon system just for you with 27 weapons, 6 fire modes, and 10 ammo types! :D 
+A drop-in weapon system just for you with 27 weapons, 6 fire modes, and 10 ammo types
 
 ## Setup
 
@@ -95,14 +95,24 @@ Items.move_item_to_inventory(ammo, player.default_inventory);
 
 See `weapon_items.csl` for all ammo type indices (0-9).
 
-### 6. Update your scene.config file to set the default_player_rig to the reusable weapons one:
+### 6. Set the default_player_rig to your merged rig
+
+For agents, call 
+mcp_tool_set_default_player_rig
+```json                                                                                                                                                                                                            
+{                                                                                                                                                                                                                  
+  "default_player_rig": "reusable_weapons/anims/reusable-weapons/player/player.merged_spine_rig#output"                                                                                                            
+}
+```
+
+For humans, edit scene.config
 ```json
 {
   "default_player_rig": "reusable_weapons/anims/reusable-weapons/player/player.merged_spine_rig#output"
 }
 ```
 
-## Key files you'll want to change
+## Key files you can change
 
 | File | What's in it | Why you'd change it |
 |---|---|---|
@@ -242,4 +252,4 @@ if player.weapon_target.health > player.weapon_target.max_health {
 ## Notes
 
 - **Animations**: `setup_reusable_weapons_player_state_machine()` adds an additive animation layer to the player. If you have your own state machine setup, you may need to merge the two — check `weapon_animations.csl`.
-- **Health**: Player health lives on the `Weapon_Target` component, accessed via `player.weapon_target.health` and `player.weapon_target.max_health`.
+- **Health**: Player health lives on the `Weapon_Target` component, accessed via `player.weapon_target.health` and `player.weapon_target.max_health` but you can integrate this into your own health system if you have one. 
