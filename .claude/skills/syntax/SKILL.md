@@ -107,7 +107,7 @@ fixed: [4]int = {1, 2, 3, 4};
 spawn_points: [3]v2 = {{0, 0}, {5, 0}, {0, 5}};
 view: []int = fixed;
 
-hit := Damage_Desc{amount=10, knockback={2, 1}};
+hit := Damage_Desc{amount=10, knockback={2, 1}};  // named fields use = (NOT :)
 ```
 
 ### Dynamic Arrays
@@ -137,11 +137,22 @@ switch tier {
 }
 ```
 
+Cases support **multiple values** (comma-separated) and **ranges** (`..`, inclusive):
+
+```csl
+switch level {
+    case 1, 2, 3: tier = .BEGINNER;
+    case 4..10:   tier = .INTERMEDIATE;
+    case 11..20, 25, 30..50: tier = .ADVANCED;
+    default:      tier = .UNKNOWN;
+}
+```
+
 Multi-statement bodies must use braces:
 
 ```csl
 switch tier {
-    case .COMMON: {
+    case .COMMON, .UNCOMMON: {
         color = {0.7, 0.7, 0.7, 1.0};
         label = "Common";
     }

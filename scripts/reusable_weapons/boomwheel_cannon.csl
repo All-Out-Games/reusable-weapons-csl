@@ -17,7 +17,7 @@ Boomwheel_Cannon :: class : Component {
         is_moving := dist_sq > 0.0001;
         last_pos = current_pos;
 
-        state_machine->set_bool("moving", is_moving);
+        state_machine.set_bool("moving", is_moving);
 
         // Play/stop roll sound on movement change
         if is_moving && !was_moving {
@@ -36,7 +36,7 @@ Boomwheel_Cannon :: class : Component {
     }
 
     shoot :: method() {
-        state_machine->set_trigger("shoot");
+        state_machine.set_trigger("shoot");
     }
 
     ao_end :: method() {

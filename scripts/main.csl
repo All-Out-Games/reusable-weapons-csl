@@ -10,7 +10,7 @@ Player :: class : Player_Base {
     boomwheel_cannon: Boomwheel_Cannon;
 
     ao_start :: method() {
-        wt := entity->add_component(Weapon_Target);
+        wt := entity.add_component(Weapon_Target);
         wt.health = 100.0;
         wt.max_health = 100.0;
         wt.owner_entity_id = entity.id;
@@ -97,7 +97,7 @@ Player :: class : Player_Base {
             // (Optional) Show equipped weapon name above hotbar
             if equipped_weapon_type != .NONE {
                 config := get_weapon_config(equipped_weapon_type);
-                label_rect := hotbar.entire_rect->top_rect()->grow(20, 0, 0, 0);
+                label_rect := hotbar.entire_rect.top_rect().grow(20, 0, 0, 0);
                 ts := UI.default_text_settings();
                 ts.size = 36;
                 ts.halign = .CENTER;
@@ -121,12 +121,12 @@ Player :: class : Player_Base {
         // Resolve item from hotbar index
         selected_item: Item_Instance;
         if selected_index >= 0 && selected_index < default_inventory.capacity {
-            selected_item = default_inventory->get_item(selected_index);
+            selected_item = default_inventory.get_item(selected_index);
         }
 
         new_def: Item_Definition;
         if selected_item != null {
-            new_def = selected_item->get_definition();
+            new_def = selected_item.get_definition();
         }
 
         // Skip if nothing changed

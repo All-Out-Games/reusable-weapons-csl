@@ -72,7 +72,7 @@ Matrix4 :: struct {
     multiply :: proc(a: Matrix4, b: Matrix4) -> Matrix4 #foreign "matrix4_multiply_matrix4";
 
     rotate_about_point :: proc(point: v2, degrees: float) -> Matrix4 {
-        return Matrix4.translate(point)->multiply(Matrix4.rotate(degrees, {0, 0, 1})->multiply(Matrix4.translate(-point)));
+        return Matrix4.translate(point).multiply(Matrix4.rotate(degrees, {0, 0, 1}).multiply(Matrix4.translate(-point)));
     }
 }
 
@@ -124,7 +124,7 @@ rng_disk :: proc(rng: ref u64, inner_radius: float, outer_radius: float) -> v2 {
 
 append :: proc(list: ref [..]$T, element: T) {
     if list.count >= list.capacity {
-        list->reserve(max(next_power_of_two(list.count+1), 8));
+        list.reserve(max(next_power_of_two(list.count+1), 8));
     }
     i := list.count;
     #unsafe list.count += 1;

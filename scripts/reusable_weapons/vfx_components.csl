@@ -6,7 +6,7 @@ Simple_VFX :: class : Component {
     ao_update :: method(dt: float) {
         elapsed += dt;
         if lifetime > 0 && elapsed >= lifetime {
-            entity->destroy();
+            entity.destroy();
         }
     }
 }
@@ -23,15 +23,15 @@ Looping_VFX :: class : Component {
 
         // Trigger outro animation before end
         if !outro_triggered && outro_time > 0 && elapsed >= (lifetime - outro_time) {
-            spine := entity->get_component(Spine_Animator);
+            spine := entity.get_component(Spine_Animator);
             if spine != null {
-                spine.instance.state_machine->set_trigger("outro");
+                spine.instance.state_machine.set_trigger("outro");
             }
             outro_triggered = true;
         }
 
         if lifetime > 0 && elapsed >= lifetime {
-            entity->destroy();
+            entity.destroy();
         }
     }
 }
@@ -39,22 +39,22 @@ Looping_VFX :: class : Component {
 // Spawn a simple VFX: creates entity from scratch, plays one animation then self-destructs
 spawn_simple_vfx :: proc(spine_path: string, skin: string, pos: v2, scale: v2, anim_name: string, lifetime: float) -> Entity {
     vfx_entity := Scene.create_entity();
-    vfx_entity->set_local_position(pos);
-    vfx_entity->set_local_scale(scale);
+    vfx_entity.set_local_position(pos);
+    vfx_entity.set_local_scale(scale);
 
-    spine := vfx_entity->add_component(Spine_Animator);
-    spine->awaken();
-    spine.instance->set_skeleton(get_asset(Spine_Asset, spine_path));
-    spine.instance->enable_skin(skin);
-    spine.instance->refresh_skins();
+    spine := vfx_entity.add_component(Spine_Animator);
+    spine.awaken();
+    spine.instance.set_skeleton(get_asset(Spine_Asset, spine_path));
+    spine.instance.enable_skin(skin);
+    spine.instance.refresh_skins();
 
     sm := State_Machine.create();
-    layer := sm->create_layer("main", 0);
-    state := layer->create_state(anim_name, false);
-    layer->set_initial_state(state);
-    spine.instance->set_state_machine(sm, true);
+    layer := sm.create_layer("main", 0);
+    state := layer.create_state(anim_name, false);
+    layer.set_initial_state(state);
+    spine.instance.set_state_machine(sm, true);
 
-    vfx := vfx_entity->add_component(Simple_VFX);
+    vfx := vfx_entity.add_component(Simple_VFX);
     vfx.lifetime = lifetime;
 
     return vfx_entity;
@@ -63,28 +63,28 @@ spawn_simple_vfx :: proc(spine_path: string, skin: string, pos: v2, scale: v2, a
 // Spawn a looping VFX: creates entity from scratch, plays intro -> loop -> outro then self-destructs
 spawn_looping_vfx :: proc(spine_path: string, skin: string, pos: v2, scale: v2, intro_anim: string, loop_anim: string, outro_anim: string, lifetime: float, outro_time: float) -> Entity {
     vfx_entity := Scene.create_entity();
-    vfx_entity->set_local_position(pos);
-    vfx_entity->set_local_scale(scale);
+    vfx_entity.set_local_position(pos);
+    vfx_entity.set_local_scale(scale);
 
-    spine := vfx_entity->add_component(Spine_Animator);
-    spine->awaken();
-    spine.instance->set_skeleton(get_asset(Spine_Asset, spine_path));
-    spine.instance->enable_skin(skin);
-    spine.instance->refresh_skins();
+    spine := vfx_entity.add_component(Spine_Animator);
+    spine.awaken();
+    spine.instance.set_skeleton(get_asset(Spine_Asset, spine_path));
+    spine.instance.enable_skin(skin);
+    spine.instance.refresh_skins();
 
     sm := State_Machine.create();
-    outro_var := sm->create_variable("outro", .TRIGGER);
-    layer := sm->create_layer("main", 0);
-    intro_state := layer->create_state(intro_anim, false);
-    loop_state := layer->create_state(loop_anim, true);
-    outro_state := layer->create_state(outro_anim, false);
-    layer->set_initial_state(intro_state);
-    layer->create_transition(intro_state, loop_state, true);
-    trans := layer->create_transition(loop_state, outro_state, false);
-    trans->create_trigger_condition(outro_var);
-    spine.instance->set_state_machine(sm, true);
+    outro_var := sm.create_variable("outro", .TRIGGER);
+    layer := sm.create_layer("main", 0);
+    intro_state := layer.create_state(intro_anim, false);
+    loop_state := layer.create_state(loop_anim, true);
+    outro_state := layer.create_state(outro_anim, false);
+    layer.set_initial_state(intro_state);
+    layer.create_transition(intro_state, loop_state, true);
+    trans := layer.create_transition(loop_state, outro_state, false);
+    trans.create_trigger_condition(outro_var);
+    spine.instance.set_state_machine(sm, true);
 
-    vfx := vfx_entity->add_component(Looping_VFX);
+    vfx := vfx_entity.add_component(Looping_VFX);
     vfx.lifetime = lifetime;
     vfx.outro_time = outro_time;
 

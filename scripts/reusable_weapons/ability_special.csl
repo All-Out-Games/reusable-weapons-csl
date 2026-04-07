@@ -16,15 +16,15 @@ Melee_Ability :: class : Ability_Base {
 
         if params.pressed && params.can_use && ability.current_cooldown <= 0 {
             // Trigger melee animation
-            p.animator.instance.state_machine->set_trigger("melee_AL");
+            p.animator.instance.state_machine.set_trigger("melee_AL");
 
             // Enable katana skin briefly
-            p.animator.instance->enable_skin("weapons/katana");
-            p.animator.instance->refresh_skins();
+            p.animator.instance.enable_skin("weapons/katana");
+            p.animator.instance.refresh_skins();
 
             // Play katana sound
             sfx_desc := SFX.default_sfx_desc();
-            sfx_desc->set_position(p.entity.world_position);
+            sfx_desc.set_position(p.entity.world_position);
             sfx_desc.range_multiplier = 2.0;
             SFX.play(get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/katana_slash.wav"), sfx_desc);
 
@@ -79,11 +79,11 @@ Special_Ability :: class : Ability_Base {
 
         if aiming.aim {
             p.last_aim_direction = aiming.aim_direction;
-            p->set_mouse_ik_enabled(true);
-            p->set_aim_target(p.entity.world_position + aiming.aim_direction * 5.0);
+            p.set_mouse_ik_enabled(true);
+            p.set_aim_target(p.entity.world_position + aiming.aim_direction * 5.0);
             draw_thin_aiming_line(p.entity.world_position, aiming.aim_direction, 1.0);
         } else {
-            p->set_mouse_ik_enabled(false);
+            p.set_mouse_ik_enabled(false);
         }
 
         should_fire := false;
@@ -128,7 +128,7 @@ Special_Ability :: class : Ability_Base {
         }
 
         if should_fire && !weapon_has_ammo(p, wt) {
-            if p->is_local() {
+            if p.is_local() {
                 Notifier.notify("Out of ammo!");
             }
         }

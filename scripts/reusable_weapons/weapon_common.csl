@@ -10,49 +10,49 @@ weapon_equip :: proc(player: Player, wt: Weapon_Type) {
 
     // Enable weapon skin (skip if empty, e.g. Boomwheel)
     if config.weapon_skin != "" {
-        player.animator.instance->enable_skin(config.weapon_skin);
-        player.animator.instance->refresh_skins();
+        player.animator.instance.enable_skin(config.weapon_skin);
+        player.animator.instance.refresh_skins();
     }
 
     // Set IK variable
     if config.use_ik_var != "" {
-        player.animator.instance.state_machine->set_bool(config.use_ik_var, true);
+        player.animator.instance.state_machine.set_bool(config.use_ik_var, true);
     }
 
     // Boomwheel: create cannon entity from scratch (not from prefab)
     if wt == .BOOMWHEEL {
         cannon_entity := Scene.create_entity();
-        cannon_entity->set_parent(player.entity, false);
-        cannon_entity->set_local_position({1.0, 0.15});
-        cannon_entity->set_local_scale({1.5, 1.5});
+        cannon_entity.set_parent(player.entity, false);
+        cannon_entity.set_local_position({1.0, 0.15});
+        cannon_entity.set_local_scale({1.5, 1.5});
 
-        spine := cannon_entity->add_component(Spine_Animator);
-        spine->awaken();
+        spine := cannon_entity.add_component(Spine_Animator);
+        spine.awaken();
         cannon_asset := get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/bomb_shooter/bomb_shooter.spine");
-        spine.instance->set_skeleton(cannon_asset);
-        spine.instance->enable_skin("A_standard");
-        spine.instance->refresh_skins();
+        spine.instance.set_skeleton(cannon_asset);
+        spine.instance.enable_skin("A_standard");
+        spine.instance.refresh_skins();
 
         sm := State_Machine.create();
-        moving_var := sm->create_variable("moving", .BOOL);
-        shoot_trigger := sm->create_variable("shoot", .TRIGGER);
+        moving_var := sm.create_variable("moving", .BOOL);
+        shoot_trigger := sm.create_variable("shoot", .TRIGGER);
 
-        layer := sm->create_layer("main", 0);
-        idle_state := layer->create_state("idle", true);
-        roll_state := layer->create_state("roll_loop", true);
-        shoot_state := layer->create_state("shoot", false);
-        layer->set_initial_state(idle_state);
+        layer := sm.create_layer("main", 0);
+        idle_state := layer.create_state("idle", true);
+        roll_state := layer.create_state("roll_loop", true);
+        shoot_state := layer.create_state("shoot", false);
+        layer.set_initial_state(idle_state);
 
-        layer->create_transition(idle_state, roll_state, false)->create_bool_condition(moving_var, true);
-        layer->create_transition(roll_state, idle_state, false)->create_bool_condition(moving_var, false);
+        layer.create_transition(idle_state, roll_state, false).create_bool_condition(moving_var, true);
+        layer.create_transition(roll_state, idle_state, false).create_bool_condition(moving_var, false);
 
-        to_shoot := layer->create_global_transition(shoot_state, false);
-        to_shoot->create_trigger_condition(shoot_trigger);
-        layer->create_transition(shoot_state, idle_state, true);
+        to_shoot := layer.create_global_transition(shoot_state, false);
+        to_shoot.create_trigger_condition(shoot_trigger);
+        layer.create_transition(shoot_state, idle_state, true);
 
-        spine.instance->set_state_machine(sm, true);
+        spine.instance.set_state_machine(sm, true);
 
-        cannon := cannon_entity->add_component(Boomwheel_Cannon);
+        cannon := cannon_entity.add_component(Boomwheel_Cannon);
         cannon.owner_id = player.entity.id;
         cannon.cannon_animator = spine;
         cannon.state_machine = sm;
@@ -60,11 +60,11 @@ weapon_equip :: proc(player: Player, wt: Weapon_Type) {
         cannon.initialized = true;
         player.boomwheel_cannon = cannon;
 
-        player.animator.instance.state_machine->set_trigger("hands_out_start");
+        player.animator.instance.state_machine.set_trigger("hands_out_start");
     }
 
     // Play equip sound
-    if player->is_local() {
+    if player.is_local() {
         desc := SFX.default_sfx_desc();
         desc.entity_to_follow = player.entity.id;
         desc.volume = 0.6;
@@ -84,21 +84,21 @@ weapon_unequip :: proc(player: Player, wt: Weapon_Type) {
                 SFX.stop(player.boomwheel_cannon.roll_sound_id);
                 player.boomwheel_cannon.roll_sound_id = 0;
             }
-            player.boomwheel_cannon.entity->destroy();
+            player.boomwheel_cannon.entity.destroy();
             player.boomwheel_cannon = null;
         }
-        player.animator.instance.state_machine->set_trigger("hands_out_end");
+        player.animator.instance.state_machine.set_trigger("hands_out_end");
     }
 
     // Disable IK variable
     if config.use_ik_var != "" {
-        player.animator.instance.state_machine->set_bool(config.use_ik_var, false);
+        player.animator.instance.state_machine.set_bool(config.use_ik_var, false);
     }
 
     // Disable weapon skin
     if config.weapon_skin != "" {
-        player.animator.instance->disable_skin(config.weapon_skin);
-        player.animator.instance->refresh_skins();
+        player.animator.instance.disable_skin(config.weapon_skin);
+        player.animator.instance.refresh_skins();
     }
 
     // Destroy any active beam visuals for this player
@@ -119,7 +119,7 @@ weapon_play_fire_sound :: proc(player: Player, wt: Weapon_Type) {
     }
 
     desc := SFX.default_sfx_desc();
-    desc->set_position(player.entity.world_position);
+    desc.set_position(player.entity.world_position);
     desc.volume = 0.7;
     desc.volume_perturb = 0.1;
     desc.speed_perturb = 0.1;
@@ -130,16 +130,16 @@ weapon_play_fire_sound :: proc(player: Player, wt: Weapon_Type) {
 weapon_start_shoot_anim :: proc(player: Player, wt: Weapon_Type) {
     config := get_weapon_config(wt);
     if config.shoot_start_trigger != "" {
-        player.animator.instance.state_machine->set_trigger(config.shoot_start_trigger);
+        player.animator.instance.state_machine.set_trigger(config.shoot_start_trigger);
     } else if config.shoot_trigger != "" {
-        player.animator.instance.state_machine->set_trigger(config.shoot_trigger);
+        player.animator.instance.state_machine.set_trigger(config.shoot_trigger);
     }
 }
 
 weapon_stop_shoot_anim :: proc(player: Player, wt: Weapon_Type) {
     config := get_weapon_config(wt);
     if config.shoot_end_trigger != "" {
-        player.animator.instance.state_machine->set_trigger(config.shoot_end_trigger);
+        player.animator.instance.state_machine.set_trigger(config.shoot_end_trigger);
     }
 }
 
@@ -153,7 +153,7 @@ weapon_shoot :: proc(player: Player, wt: Weapon_Type) {
 
     // Boomwheel: trigger cannon shoot animation
     if player.boomwheel_cannon != null {
-        player.boomwheel_cannon->shoot();
+        player.boomwheel_cannon.shoot();
     }
 }
 
@@ -171,9 +171,9 @@ weapon_get_ammo_count :: proc(player: Player, wt: Weapon_Type) -> s64 {
     inventory := player.default_inventory;
     i := 0;
     while i < inventory.capacity {
-        item := inventory->get_item(i);
+        item := inventory.get_item(i);
         if item != null {
-            if item->get_definition() == ammo_def {
+            if item.get_definition() == ammo_def {
                 count += item.quantity;
             }
         }
@@ -190,9 +190,9 @@ weapon_consume_ammo :: proc(player: Player, wt: Weapon_Type, amount: s64) {
     remaining := amount;
     i := 0;
     while i < inventory.capacity && remaining > 0 {
-        item := inventory->get_item(i);
+        item := inventory.get_item(i);
         if item != null {
-            if item->get_definition() == ammo_def {
+            if item.get_definition() == ammo_def {
                 if item.quantity <= remaining {
                     remaining -= item.quantity;
                     Items.destroy_item_instance(item);
@@ -209,24 +209,24 @@ weapon_consume_ammo :: proc(player: Player, wt: Weapon_Type, amount: s64) {
 weapon_spawn_standard_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     config := get_weapon_config(wt);
 
-    bone_local := player.animator.instance->get_bone_local_position("PROJECTILE");
+    bone_local := player.animator.instance.get_bone_local_position("PROJECTILE");
     barrel_dist := length(bone_local);
     dir := normalize(direction);
     spawn_pos := v2{player.animator.entity.world_position.x + dir.x * barrel_dist, player.animator.entity.world_position.y + dir.y * barrel_dist};
 
     proj_entity := Scene.create_entity();
-    proj_entity->set_local_position(spawn_pos);
+    proj_entity.set_local_position(spawn_pos);
 
     angle := atan2(direction.y, direction.x);
     angle_deg := to_degrees(angle);
-    proj_entity->set_local_rotation(angle_deg);
+    proj_entity.set_local_rotation(angle_deg);
 
     bullet_texture := get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/projectiles/MachineGunBullet.png");
-    sprite := proj_entity->add_component(Sprite_Renderer);
-    sprite->set_texture(bullet_texture);
-    proj_entity->set_local_scale({2, 2});
+    sprite := proj_entity.add_component(Sprite_Renderer);
+    sprite.set_texture(bullet_texture);
+    proj_entity.set_local_scale({2, 2});
 
-    proj := proj_entity->add_component(Standard_Projectile);
+    proj := proj_entity.add_component(Standard_Projectile);
     proj.damage = config.base_damage;
     proj.direction = normalize(direction);
     proj.owner_id = player.entity.id;
@@ -241,7 +241,7 @@ TRAVEL_LOOP_SPINNING :: "013RED/Travel_Loop_Spinning";
 
 // Helper: compute projectile spawn position from PROJECTILE bone
 get_projectile_spawn_pos :: proc(player: Player, direction: v2) -> v2 {
-    bone_local := player.animator.instance->get_bone_local_position("PROJECTILE");
+    bone_local := player.animator.instance.get_bone_local_position("PROJECTILE");
     barrel_dist := length(bone_local);
     dir := normalize(direction);
     return v2{player.animator.entity.world_position.x + dir.x * barrel_dist, player.animator.entity.world_position.y + dir.y * barrel_dist};
@@ -249,12 +249,12 @@ get_projectile_spawn_pos :: proc(player: Player, direction: v2) -> v2 {
 
 // Helper: set up spine visual on a projectile entity
 setup_projectile_spine :: proc(proj_entity: Entity, skin_name: string, travel_anim: string) {
-    spine := proj_entity->add_component(Spine_Animator);
-    spine->awaken();
-    spine.instance->set_skeleton(get_asset(Spine_Asset, PROJ_SPINE_ASSET_PATH));
-    spine.instance->enable_skin(skin_name);
-    spine.instance->refresh_skins();
-    spine.instance->set_animation(travel_anim, true, 0);
+    spine := proj_entity.add_component(Spine_Animator);
+    spine.awaken();
+    spine.instance.set_skeleton(get_asset(Spine_Asset, PROJ_SPINE_ASSET_PATH));
+    spine.instance.enable_skin(skin_name);
+    spine.instance.refresh_skins();
+    spine.instance.set_animation(travel_anim, true, 0);
 }
 
 // Blunderbuss: cannonball projectile with spinning animation
@@ -263,13 +263,13 @@ spawn_blunderbuss_projectile :: proc(player: Player, direction: v2, wt: Weapon_T
 
     spawn_pos := get_projectile_spawn_pos(player, direction);
     proj_entity := Scene.create_entity();
-    proj_entity->set_local_position(spawn_pos);
-    proj_entity->set_local_rotation(to_degrees(atan2(direction.y, direction.x)));
-    proj_entity->set_local_scale({1.5, 1.5});
+    proj_entity.set_local_position(spawn_pos);
+    proj_entity.set_local_rotation(to_degrees(atan2(direction.y, direction.x)));
+    proj_entity.set_local_scale({1.5, 1.5});
 
     setup_projectile_spine(proj_entity, "cannonball", TRAVEL_LOOP_SPINNING);
 
-    proj := proj_entity->add_component(Standard_Projectile);
+    proj := proj_entity.add_component(Standard_Projectile);
     proj.damage = config.base_damage;
     proj.direction = normalize(direction);
     proj.owner_id = player.entity.id;
@@ -283,13 +283,13 @@ spawn_ray_gun_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type)
 
     spawn_pos := get_projectile_spawn_pos(player, direction);
     proj_entity := Scene.create_entity();
-    proj_entity->set_local_position(spawn_pos);
-    proj_entity->set_local_rotation(to_degrees(atan2(direction.y, direction.x)));
-    proj_entity->set_local_scale({2, 2});
+    proj_entity.set_local_position(spawn_pos);
+    proj_entity.set_local_rotation(to_degrees(atan2(direction.y, direction.x)));
+    proj_entity.set_local_scale({2, 2});
 
     setup_projectile_spine(proj_entity, "ray_gun", TRAVEL_LOOP);
 
-    proj := proj_entity->add_component(Standard_Projectile);
+    proj := proj_entity.add_component(Standard_Projectile);
     proj.damage = config.base_damage;
     proj.direction = normalize(direction);
     proj.owner_id = player.entity.id;
@@ -303,13 +303,13 @@ spawn_beam_machine_projectile :: proc(player: Player, direction: v2, wt: Weapon_
 
     spawn_pos := get_projectile_spawn_pos(player, direction);
     proj_entity := Scene.create_entity();
-    proj_entity->set_local_position(spawn_pos);
-    proj_entity->set_local_rotation(to_degrees(atan2(direction.y, direction.x)));
-    proj_entity->set_local_scale({2, 2});
+    proj_entity.set_local_position(spawn_pos);
+    proj_entity.set_local_rotation(to_degrees(atan2(direction.y, direction.x)));
+    proj_entity.set_local_scale({2, 2});
 
     setup_projectile_spine(proj_entity, "laser_bolt", TRAVEL_LOOP);
 
-    proj := proj_entity->add_component(Piercing_Projectile);
+    proj := proj_entity.add_component(Piercing_Projectile);
     proj.damage = config.base_damage;
     proj.direction = normalize(direction);
     proj.owner_id = player.entity.id;
@@ -324,13 +324,13 @@ spawn_water_gun_projectile :: proc(player: Player, direction: v2, wt: Weapon_Typ
 
     spawn_pos := get_projectile_spawn_pos(player, direction);
     proj_entity := Scene.create_entity();
-    proj_entity->set_local_position(spawn_pos);
-    proj_entity->set_local_rotation(to_degrees(atan2(direction.y, direction.x)));
-    proj_entity->set_local_scale({2, 2});
+    proj_entity.set_local_position(spawn_pos);
+    proj_entity.set_local_rotation(to_degrees(atan2(direction.y, direction.x)));
+    proj_entity.set_local_scale({2, 2});
 
     setup_projectile_spine(proj_entity, "water_gun", TRAVEL_LOOP);
 
-    proj := proj_entity->add_component(Standard_Projectile);
+    proj := proj_entity.add_component(Standard_Projectile);
     proj.damage = config.base_damage;
     proj.direction = normalize(direction);
     proj.owner_id = player.entity.id;

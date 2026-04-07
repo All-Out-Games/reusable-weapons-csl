@@ -49,7 +49,7 @@ Chat :: struct {
     is_open :: proc() -> bool #foreign "chat_is_open";
 }
 
-#deprecate_soft "Use entity->destroy()."
+#deprecate_soft "Use entity.destroy()."
 destroy_entity :: proc(entity: Entity) #foreign "entity_destroy";
 
 Scene :: struct {
@@ -156,7 +156,7 @@ core_before_scene_load :: proc() {
                 info: User_Ability_Info;
                 info.class_type = dti.id;
                 info.on_init = try_get_constant_procedure(struct_type, "on_init", proc(ability: Ability_Base));
-                core_globals.all_abilities->append(info);
+                core_globals.all_abilities.append(info);
                 break;
             }
             current = current.inherits_from;
@@ -280,7 +280,7 @@ core_player_start :: proc(player: Player) {
         instance := dynamic_new(ability.class_type).(Ability_Base);
         instance.type = ability.class_type;
         instance.player = player;
-        player.abilities->append(instance);
+        player.abilities.append(instance);
         if ability.on_init != null {
             ability.on_init(instance);
         }
@@ -316,7 +316,7 @@ component_iterator :: proc($T: typeid, include_disabled := false) -> Component_I
 }
 
 next :: proc(it: ref Component_Iterator($T)) -> bool {
-    return (&it).(*Component_Iterator(Component)).*->component_iterator_next_raw();
+    return (&it).(*Component_Iterator(Component)).*.component_iterator_next_raw();
 }
 
 // #deprecate_soft "Use [..]T."
@@ -327,7 +327,7 @@ List :: struct($T: typeid) {
 
 append :: proc(list: ref List($T), element: T) {
     if list.elements.count >= list.capacity {
-        list->reserve(max(next_power_of_two(list.elements.count+1), 8));
+        list.reserve(max(next_power_of_two(list.elements.count+1), 8));
     }
     i := list.elements.count;
     #unsafe list.elements.count += 1;
@@ -473,7 +473,7 @@ UI :: struct {
     pop_matrix :: proc() #foreign "ui_pop_matrix";
 
     begin_world_space_ui :: proc(entity: Entity) {
-        push_interpolation_offset(entity->calculate_interpolation_offset());
+        push_interpolation_offset(entity.calculate_interpolation_offset());
     }
 
     end_world_space_ui :: pop_interpolation_offset;
@@ -610,7 +610,7 @@ UI :: struct {
             if cur_x == 0 {
                 cur_y += 1;
             }
-            result := root_entry_rect->offset_unscaled(cur_x.(float) * element_width, -cur_y.(float) * element_height)->inset(half_padding);
+            result := root_entry_rect.offset_unscaled(cur_x.(float) * element_width, -cur_y.(float) * element_height).inset(half_padding);
             UI.expand_current_scroll_view(result);
             return result;
         }
@@ -623,24 +623,24 @@ UI :: struct {
         grid.cur_y = -1;
 
         grid.half_padding = padding * 0.5;
-        fake_inflated_rect := rect->inset(grid.half_padding);
+        fake_inflated_rect := rect.inset(grid.half_padding);
         if size_source == .ELEMENT_SIZE {
             sf := UI.get_current_scale_factor();
             grid.element_width      = width.(float)  * sf;
             grid.element_height     = height.(float) * sf;
-            if grid.element_width  < 0 grid.element_width  = fake_inflated_rect->width();
-            if grid.element_height < 0 grid.element_height = fake_inflated_rect->height();
-            grid.elements_per_row    = max(1, (fake_inflated_rect->width()  / grid.element_width).(int));
-            grid.elements_per_column = max(1, (fake_inflated_rect->height() / grid.element_height).(int));
+            if grid.element_width  < 0 grid.element_width  = fake_inflated_rect.width();
+            if grid.element_height < 0 grid.element_height = fake_inflated_rect.height();
+            grid.elements_per_row    = max(1, (fake_inflated_rect.width()  / grid.element_width).(int));
+            grid.elements_per_column = max(1, (fake_inflated_rect.height() / grid.element_height).(int));
         }
         else {
-            grid.element_width      = fake_inflated_rect->width()  / width.(float);
-            grid.element_height     = fake_inflated_rect->height() / height.(float);
+            grid.element_width      = fake_inflated_rect.width()  / width.(float);
+            grid.element_height     = fake_inflated_rect.height() / height.(float);
             grid.elements_per_row    = max(1, width);
             grid.elements_per_column = max(1, height);
         }
 
-        grid.root_entry_rect = fake_inflated_rect->top_left_rect()->grow_unscaled(0, grid.element_width, grid.element_height, 0);
+        grid.root_entry_rect = fake_inflated_rect.top_left_rect().grow_unscaled(0, grid.element_width, grid.element_height, 0);
         return grid;
     }
 
@@ -657,20 +657,20 @@ UI :: struct {
 
         next :: method(size: float) -> Rect {
             switch direction {
-                case .LEFT:  return cut->cut_right(size);
-                case .RIGHT: return cut->cut_left(size);
-                case .UP:    return cut->cut_bottom(size);
-                case .DOWN:  return cut->cut_top(size);
+                case .LEFT:  return cut.cut_right(size);
+                case .RIGHT: return cut.cut_left(size);
+                case .UP:    return cut.cut_bottom(size);
+                case .DOWN:  return cut.cut_top(size);
             }
             return cut;
         }
 
         next_unscaled :: method(size: float) -> Rect {
             switch direction {
-                case .LEFT:  return cut->cut_right_unscaled(size);
-                case .RIGHT: return cut->cut_left_unscaled(size);
-                case .UP:    return cut->cut_bottom_unscaled(size);
-                case .DOWN:  return cut->cut_top_unscaled(size);
+                case .LEFT:  return cut.cut_right_unscaled(size);
+                case .RIGHT: return cut.cut_left_unscaled(size);
+                case .UP:    return cut.cut_bottom_unscaled(size);
+                case .DOWN:  return cut.cut_top_unscaled(size);
             }
             return cut;
         }
@@ -1126,7 +1126,7 @@ Items :: struct {
 
     destroy_all_items :: proc(inventory: Inventory) {
         for i: 0..inventory.capacity-1 {
-            item := inventory->get_item(i);
+            item := inventory.get_item(i);
             if item != null {
                 Items.destroy_item_instance(item);
             }
@@ -1461,10 +1461,10 @@ Effect_Base :: class {
 
         if player != null {
             if player_specific.disable_movement_inputs {
-                player->remove_disable_movement_input_reason("effect");
+                player.remove_disable_movement_input_reason("effect");
             }
             if player_specific.freeze_player {
-                player->remove_freeze_reason("effect");
+                player.remove_freeze_reason("effect");
             }
         }
 
@@ -1504,7 +1504,7 @@ set_active_effect :: proc(entity: Entity, new_active_effect: $T) #unsafe {
     }
     current_active_effect := entity.effect_data.active_effect;
     if current_active_effect != null {
-        current_active_effect->remove_effect(true);
+        current_active_effect.remove_effect(true);
     }
     if entity.effect_data.active_effect != null {
         assert(false, "seems like you may have added an effect in %.effect_end even though interrupt was true", {current_active_effect.#type});
@@ -1519,7 +1519,7 @@ add_passive_effect :: proc(entity: Entity, new_effect: $T) #unsafe {
 
     new_effect.start_time = get_time();
     new_effect.entity = entity;
-    new_effect.player = entity->get_component(Player);
+    new_effect.player = entity.get_component(Player);
 
     #if #exists(T.effect_start) {
         new_effect.internal.start_proc = T.effect_start;
@@ -1559,17 +1559,17 @@ add_passive_effect :: proc(entity: Entity, new_effect: $T) #unsafe {
 
     if new_effect.player != null {
         if new_effect.player_specific.freeze_player {
-            new_effect.player->add_freeze_reason("effect");
+            new_effect.player.add_freeze_reason("effect");
         }
 
         if new_effect.player_specific.disable_movement_inputs {
-            new_effect.player->add_disable_movement_input_reason("effect");
+            new_effect.player.add_disable_movement_input_reason("effect");
         }
     }
 
     if new_effect.internal.duration != 0 {
         // the user may have called this before adding the effect, so start_time wasn't initialized yet, so lets re-call it
-        new_effect->set_duration(new_effect.internal.duration);
+        new_effect.set_duration(new_effect.internal.duration);
     }
 }
 
@@ -1578,7 +1578,7 @@ remove_all_effects :: proc(entity: Entity) {
         return;
     }
     while entity.effect_data.first_effect != null {
-        entity.effect_data.first_effect->remove_effect(true);
+        entity.effect_data.first_effect.remove_effect(true);
     }
 }
 
@@ -1589,7 +1589,7 @@ remove_effect :: proc(entity: Entity, type: typeid, interrupt: bool) -> bool {
     effect := entity.effect_data.first_effect;
     while effect != null {
         if effect.#type == type {
-            effect->remove_effect(interrupt);
+            effect.remove_effect(interrupt);
             return true;
         }
         effect = effect.next_effect;
@@ -1660,7 +1660,7 @@ get_effect :: proc(entity: Entity, $T: typeid, mode := Try_Get_Effect_Mode.EXACT
 }
 
 has_effect :: proc(entity: Entity, $T: typeid, mode := Try_Get_Effect_Mode.EXACT_MATCH) -> bool {
-    return entity->try_get_effect_dynamic(T, mode) != null;
+    return entity.try_get_effect_dynamic(T, mode) != null;
 }
 
 core_update_effects :: proc(entity: Entity, dt: float) {
@@ -1676,7 +1676,7 @@ core_update_effects :: proc(entity: Entity, dt: float) {
 
         if current.internal.remove_at_time != 0 {
             if current_time >= current.internal.remove_at_time {
-                current->remove_effect(false);
+                current.remove_effect(false);
                 continue;
             }
         }
@@ -1764,10 +1764,10 @@ draw_thin_aiming_line :: proc(world_position: v2, dir: v2, scale: float) {
 
     screen_position := world_to_screen(world_position);
     degrees := to_degrees(atan2(dir.y, dir.x));
-    line_rect := Rect{screen_position, screen_position}->grow(10, 500, 10, 0);
+    line_rect := Rect{screen_position, screen_position}.grow(10, 500, 10, 0);
 
-    offset := line_rect->left_center();
-    matrix := Matrix4.translate(offset)->multiply(Matrix4.rotate(degrees, {0, 0, 1})->multiply(Matrix4.translate(-offset)));
+    offset := line_rect.left_center();
+    matrix := Matrix4.translate(offset).multiply(Matrix4.rotate(degrees, {0, 0, 1}).multiply(Matrix4.translate(-offset)));
 
     UI.push_matrix(matrix);
     defer UI.pop_matrix();
@@ -1787,10 +1787,10 @@ draw_aiming_line :: proc(world_position: v2, dir: v2, scale: float) {
 
     screen_position := world_to_screen(world_position);
     degrees := to_degrees(atan2(dir.y, dir.x));
-    line_rect := Rect{screen_position, screen_position}->grow(60, 500, 60, 0);
+    line_rect := Rect{screen_position, screen_position}.grow(60, 500, 60, 0);
 
-    offset := line_rect->left_center();
-    matrix := Matrix4.translate(offset)->multiply(Matrix4.rotate(degrees, {0, 0, 1})->multiply(Matrix4.translate(-offset)));
+    offset := line_rect.left_center();
+    matrix := Matrix4.translate(offset).multiply(Matrix4.rotate(degrees, {0, 0, 1}).multiply(Matrix4.translate(-offset)));
 
     UI.push_matrix(matrix);
     defer UI.pop_matrix();
@@ -1806,8 +1806,8 @@ draw_aiming_arrows :: proc(rect: Rect, arrow_count: int, fade_percent: float, fa
     arrow_trip_time := 6.0;
     arrow_offset := arrow_trip_time / arrow_count.(float);
 
-    start_pos := rect->left_center();
-    end_pos   := rect->right_center();
+    start_pos := rect.left_center();
+    end_pos   := rect.right_center();
     time := get_time();
     for i: 0..arrow_count-1 {
         t := ((time + arrow_offset * i.(float)) % arrow_trip_time) / arrow_trip_time;
@@ -1820,8 +1820,8 @@ draw_aiming_arrows :: proc(rect: Rect, arrow_count: int, fade_percent: float, fa
 
         pos := lerp(start_pos, end_pos, t);
         arrow_rect := Rect{pos, pos};
-        h := rect->height() / 2 - UI.get_current_scale_factor() * 10;
-        arrow_rect = arrow_rect->grow_unscaled(h, 0, h, 0)->fit_aspect(core_globals.aiming_arrow->get_aspect(), .KEEP_HEIGHT);
+        h := rect.height() / 2 - UI.get_current_scale_factor() * 10;
+        arrow_rect = arrow_rect.grow_unscaled(h, 0, h, 0).fit_aspect(core_globals.aiming_arrow.get_aspect(), .KEEP_HEIGHT);
         UI.quad(arrow_rect, core_globals.aiming_arrow, {1, 1, 1, 0.5 * alpha});
     }
 }
@@ -1938,12 +1938,12 @@ draw_ability_button :: proc(player: Player, $T: typeid, index: int) {
         bs.sprite_pressed = button_pressed_sprite;
         bs.press_scaling = 1;
 
-        ability_button_rect = UI.get_safe_screen_rect()->bottom_right_rect()->grow(button_half_size)->offset(button_offset.x, button_offset.y);
+        ability_button_rect = UI.get_safe_screen_rect().bottom_right_rect().grow(button_half_size).offset(button_offset.x, button_offset.y);
         interact = UI.begin_button(ability_button_rect, bs, {}, ""); {
             defer UI.end_button();
 
             if ability.icon != null {
-                UI.quad(interact.rect->fit_aspect(ability.icon->get_aspect())->scale(0.7, 0.7), ability.icon);
+                UI.quad(interact.rect.fit_aspect(ability.icon.get_aspect()).scale(0.7, 0.7), ability.icon);
             }
             else if ability.name.count > 0 {
                 #static ts := UI.default_text_settings();
@@ -1952,10 +1952,10 @@ draw_ability_button :: proc(player: Player, $T: typeid, index: int) {
             }
 
             if should_draw_keybind {
-                keybind_rect := interact.rect->top_left_rect()->grow(35)->offset(10, -10);
+                keybind_rect := interact.rect.top_left_rect().grow(35).offset(10, -10);
                 keybind_sprite, found_keybind := Keybinds.get_sprite_for_keybind(player, keybind);
                 if found_keybind {
-                    UI.quad(keybind_rect->fit_aspect(keybind_sprite->get_aspect(), .KEEP_BIGGER), keybind_sprite);
+                    UI.quad(keybind_rect.fit_aspect(keybind_sprite.get_aspect(), .KEEP_BIGGER), keybind_sprite);
                 }
                 else {
                     #static ts := UI.default_text_settings();
@@ -1972,7 +1972,7 @@ draw_ability_button :: proc(player: Player, $T: typeid, index: int) {
     {
         if ability.current_cooldown > 0 {
             #static cooldown_ts := UI.default_text_settings();
-            cooldown_ts.size = ability_button_rect->height() / UI.get_current_scale_factor() * 0.5;
+            cooldown_ts.size = ability_button_rect.height() / UI.get_current_scale_factor() * 0.5;
             UI.text(ability_button_rect, cooldown_ts, "%", {format_float(ability.current_cooldown, decimals=1)});
         }
     }
@@ -1991,7 +1991,7 @@ draw_ability_button :: proc(player: Player, $T: typeid, index: int) {
     params.can_use = can_use;
     if params.active || params.clicked || params.released {
         offset := params.mouse_position - ability.mouse_position_on_press;
-        drag := normalize_vector_to_radius(offset, ability_button_rect->width() * 0.5);
+        drag := normalize_vector_to_radius(offset, ability_button_rect.width() * 0.5);
         params.drag_offset = drag;
         params.drag_direction = normalize(offset);
     }
@@ -2208,7 +2208,7 @@ Tutorial_Arrow :: struct {
             arrow_sprite = core_globals.tutorial_arrow;
         }
 
-        arrow_rect := Rect{arrow_position, arrow_position}->grow(0.5)->fit_aspect(arrow_sprite->get_aspect());
+        arrow_rect := Rect{arrow_position, arrow_position}.grow(0.5).fit_aspect(arrow_sprite.get_aspect());
 
         if length_squared(arrow_position - target_position) > 0.1 {
             if options.far {
@@ -2220,7 +2220,7 @@ Tutorial_Arrow :: struct {
 
                 dir := normalize(offset_to_target);
                 rads := atan2(dir.y, dir.x);
-                UI.push_matrix(Matrix4.rotate_about_point(arrow_rect->center(), to_degrees(rads)));
+                UI.push_matrix(Matrix4.rotate_about_point(arrow_rect.center(), to_degrees(rads)));
                 defer UI.pop_matrix();
                 UI.quad(arrow_rect, arrow_sprite);
             }
@@ -2234,8 +2234,8 @@ Tutorial_Arrow :: struct {
                 defer UI.pop_z();
 
                 y := (sin(2 * PI * get_time()) * 0.5 + 0.5) * options.bob_scale;
-                arrow_rect = arrow_rect->offset(0, options.bob_bias + y);
-                UI.push_matrix(Matrix4.rotate_about_point(arrow_rect->center(), 270));
+                arrow_rect = arrow_rect.offset(0, options.bob_bias + y);
+                UI.push_matrix(Matrix4.rotate_about_point(arrow_rect.center(), 270));
                 defer UI.pop_matrix();
                 UI.quad(arrow_rect, arrow_sprite);
             }
@@ -2270,8 +2270,8 @@ World_Progress_Bar :: struct {
         hw := options.width * 0.5 * options.scale;
         hh := options.height * 0.5 * options.scale;
         position.y += options.y_bias;
-        bg_rect := Rect{position, position}->grow(hh, hw, hh, hw);
-        fill_rect := bg_rect->inset(0.02)->subrect(0, 0, progress, 1);
+        bg_rect := Rect{position, position}.grow(hh, hw, hh, hw);
+        fill_rect := bg_rect.inset(0.02).subrect(0, 0, progress, 1);
 
         UI.quad(bg_rect, core_globals.white_sprite, {0.0, 0.0, 0.0, 1});
         fill_color := lerp(v4{1, 0.1, 0.1, 1}, {0.1, 1, 0.1, 1}, progress);
@@ -2569,7 +2569,7 @@ UIK :: struct {
         title:            string;
         style:            Title_Area_Style;
         icon:             Texture_Asset;
-        show_exit_button: bool;
+        show_exit: bool;
         tint:             v4;
     }
 
@@ -2607,7 +2607,7 @@ UIK :: struct {
         height:           Size;
         cross_align:      Cross_Align;
         main_align:       Main_Align;
-        background_style: Panel_Background_Kind;
+        background:       Panel_Background_Kind;
         gap:              float;
         padding:          v4;
         tint:             v4;
@@ -2746,7 +2746,7 @@ UIK :: struct {
         desc.height = flex(1);
         desc.cross_align = .STRETCH;
         desc.main_align = .START;
-        desc.background_style = .BACKGROUND_NONE;
+        desc.background = .BACKGROUND_NONE;
         desc.gap = 0;
         desc.padding = .{0, 0, 0, 0};
         desc.tint = .{1, 1, 1, 0};
@@ -2773,7 +2773,7 @@ UIK :: struct {
         desc.height = flex(1);
         desc.cross_align = .STRETCH;
         desc.main_align = .START;
-        desc.background_style = .BACKGROUND_NONE;
+        desc.background = .BACKGROUND_NONE;
         desc.gap = 0;
         desc.padding = .{0, 0, 0, 0};
         desc.tint = .{1, 1, 1, 0};
@@ -2802,9 +2802,9 @@ UIK :: struct {
     }
 
     /// Vertical flex-fill column with a background style.
-    panel_styled :: proc(background_style: Panel_Background_Kind) -> Panel_Desc {
+    panel_styled :: proc(bg: Panel_Background_Kind) -> Panel_Desc {
         desc := layout_column();
-        desc.background_style = background_style;
+        desc.background = bg;
         return desc;
     }
 
@@ -2895,7 +2895,7 @@ UIK :: struct {
         desc.height = height;
         desc.cross_align = .STRETCH;
         desc.main_align = .START;
-        desc.background_style = .BACKGROUND_NONE;
+        desc.background = .BACKGROUND_NONE;
         desc.gap = 0;
         desc.padding = .{0, 0, 0, 0};
         desc.tint = .{1, 1, 1, 0};
@@ -2938,14 +2938,14 @@ UIK :: struct {
         return d;
     }
 
-    widget_desc_button_default :: proc(background_style: Panel_Background_Kind = .BUTTON_BASIC_YELLOW1) -> Widget_Desc {
+    widget_desc_button_default :: proc(bg: Panel_Background_Kind = .BUTTON_BASIC_YELLOW1) -> Widget_Desc {
         w: Widget_Desc;
         w.panel.axis = .VERTICAL;
         w.panel.width = fit();
         w.panel.height = fit();
         w.panel.cross_align = .CENTER;
         w.panel.main_align = .CENTER;
-        w.panel.background_style = background_style;
+        w.panel.background = bg;
         w.panel.gap = 4;
         w.panel.padding = v4{10, 20, 10, 20};
         w.panel.tint = v4{1, 1, 1, 1};
@@ -2967,23 +2967,23 @@ UIK :: struct {
         return w;
     }
 
-    widget_desc_button_auto_default :: proc(background_style: Panel_Background_Kind = .BUTTON_BASIC_YELLOW1) -> Widget_Desc {
-        w := widget_desc_button_default(background_style);
+    widget_desc_button_auto_default :: proc(bg: Panel_Background_Kind = .BUTTON_BASIC_YELLOW1) -> Widget_Desc {
+        w := widget_desc_button_default(bg);
         w.label_text.role = .BUTTON_AUTO;
         return w;
     }
 
     Begin_Desc :: struct {
-        root_rect:      Rect  #offset 0;
+        rect:           Rect  #offset 0;
         layer:          s64   #offset 16;
         backdrop:       bool  #offset 24;
         backdrop_color: v4    #offset 28;
         blocks_input:   bool  #offset 44;
     } #foreign_struct "UIK::Begin_Desc" #size 48
 
-    window :: proc(root_rect: Rect) -> Begin_Desc {
+    window :: proc(rect: Rect) -> Begin_Desc {
         desc: Begin_Desc;
-        desc.root_rect = root_rect;
+        desc.rect = rect;
         desc.layer = 0;
         desc.backdrop = false;
         desc.backdrop_color = .{0, 0, 0, 0.5};
@@ -2991,9 +2991,9 @@ UIK :: struct {
         return desc;
     }
 
-    modal :: proc(root_rect: Rect, layer: s64) -> Begin_Desc {
+    modal :: proc(rect: Rect, layer: s64) -> Begin_Desc {
         desc: Begin_Desc;
-        desc.root_rect = root_rect;
+        desc.rect = rect;
         desc.layer = layer;
         desc.backdrop = true;
         desc.backdrop_color = .{0, 0, 0, 0.5};
@@ -3001,9 +3001,9 @@ UIK :: struct {
         return desc;
     }
 
-    modal :: proc(root_rect: Rect, layer: s64, backdrop_color: v4) -> Begin_Desc {
+    modal :: proc(rect: Rect, layer: s64, backdrop_color: v4) -> Begin_Desc {
         desc: Begin_Desc;
-        desc.root_rect = root_rect;
+        desc.rect = rect;
         desc.layer = layer;
         desc.backdrop = true;
         desc.backdrop_color = backdrop_color;
@@ -3060,7 +3060,10 @@ UIK :: struct {
         return card_desc(width, height, tint, .LANDSCAPE, 0.35, 0.0, 0.0);
     }
 
-    divider :: proc(thickness: float, color: v4) #foreign "uik_divider";
+    divider_impl :: proc(thickness: float, color: v4) #foreign "uik_divider";
+    divider :: proc(thickness: float = 1.0, color: v4 = {1, 1, 1, 0.2}) {
+        divider_impl(thickness, color);
+    }
     image_fitted :: proc(texture: Texture_Asset, desc: Image_Desc, tint: v4 = {1, 1, 1, 1}) #foreign "uik_image_fitted";
     overlay_begin :: proc(anchor: Overlay_Anchor, offset: v2 = {0, 0}) #foreign "uik_overlay_begin";
     overlay_begin :: proc(anchor: Overlay_Anchor, desc: Panel_Desc, offset: v2 = {0, 0}) #foreign "uik_overlay_begin_desc";
@@ -3085,7 +3088,7 @@ UIK :: struct {
         desc: Title_Area_Desc;
         desc.title = title;
         desc.style = style;
-        desc.show_exit_button = show_exit;
+        desc.show_exit = show_exit;
         desc.tint = v4{0, 0, 0, 0};
         return desc;
     }
@@ -3182,7 +3185,7 @@ UIK :: struct {
         bg.main_align = .CENTER;
         bg.cross_align = .CENTER;
         if has_bg {
-            bg.background_style = .BANNER_NORMAL;
+            bg.background = .BANNER_NORMAL;
             bg.show_background = true;
             if desc.tint.w > 0 {
                 bg.tint = desc.tint;
@@ -3210,7 +3213,7 @@ UIK :: struct {
         panel_end(); // bg
 
         // Exit button overlay: top right of outer
-        if desc.show_exit_button {
+        if desc.show_exit {
             exit_tex := get_asset(Texture_Asset, "$AO/ui/kit/Icons/misc_icons_2/exit_button_large.png");
             exit_overlay: Panel_Desc = {};
             exit_overlay.opacity = 1;

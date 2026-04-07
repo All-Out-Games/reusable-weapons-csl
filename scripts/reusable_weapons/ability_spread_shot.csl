@@ -25,11 +25,11 @@ Spread_Shot_Ability :: class : Ability_Base {
 
         if aiming.aim {
             p.last_aim_direction = aiming.aim_direction;
-            p->set_mouse_ik_enabled(true);
-            p->set_aim_target(p.entity.world_position + aiming.aim_direction * 5.0);
+            p.set_mouse_ik_enabled(true);
+            p.set_aim_target(p.entity.world_position + aiming.aim_direction * 5.0);
             draw_thin_aiming_line(p.entity.world_position, aiming.aim_direction, 1.0);
         } else {
-            p->set_mouse_ik_enabled(false);
+            p.set_mouse_ik_enabled(false);
         }
 
         should_fire := false;
@@ -70,7 +70,7 @@ Spread_Shot_Ability :: class : Ability_Base {
         }
 
         if should_fire && !weapon_has_ammo(p, wt) {
-            if p->is_local() {
+            if p.is_local() {
                 Notifier.notify("Out of ammo!");
             }
         }

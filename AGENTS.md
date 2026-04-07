@@ -9,7 +9,7 @@ You will be developing a multiplayer game in a custom scripting language (.csl)
 
 ### is_local_or_server() vs is_local()
 
-Both are **methods on Player_Base** — call as `is_local_or_server()` (implicit `this`) or `this->is_local_or_server()` inside a Player method. They are not standalone global functions.
+Both are **methods on Player_Base** — call as `is_local_or_server()` (implicit `this`) or `this.is_local_or_server()` inside a Player method. They are not standalone global functions.
 
 ```csl
 Player :: class : Player_Base {
@@ -57,15 +57,15 @@ Most entities should be placed in the scene using the mcp tools.
 Use scripts to add entities that must be dynamically spawned (like towers or waves of enemies in a tower defense game)
 ```csl
 e := Scene.create_entity();
-e->set_local_position({10, 20});
-e->set_local_scale({2.5, 2.5});
-e->set_local_rotation(0);
-e->set_local_enabled(false);
+e.set_local_position({10, 20});
+e.set_local_scale({2.5, 2.5});
+e.set_local_rotation(0);
+e.set_local_enabled(false);
 
-my_comp := e->add_component(My_Component);
-other := e->get_component(Other_Component);
+my_comp := e.add_component(My_Component);
+other := e.get_component(Other_Component);
 
-e->destroy();
+e.destroy();
 ```
 
 ### Iterating Entities
@@ -91,8 +91,8 @@ visit :: proc(entity: Entity) {
 ### Out-of-the-box components
 #### Sprite_Renderer
 ```csl
-sprite := entity->get_component(Sprite_Renderer);
-sprite->set_texture(texture);
+sprite := entity.get_component(Sprite_Renderer);
+sprite.set_texture(texture);
 sprite.color = {1, 1, 1, 1}; // RGBA
 sprite.depth_offset = 0.5;
 sprite.layer = 10;
@@ -138,7 +138,7 @@ Orbiter :: class : Component {
         offset_y := sin(angle) * radius;
         
         new_pos := v2{center.x + offset_x, center.y + offset_y};
-        entity->set_local_position(new_pos);
+        entity.set_local_position(new_pos);
     }
 }
 ```
@@ -235,15 +235,15 @@ if Economy.can_withdraw_currency(player, "Coins", COST) {
 `sin`, `cos`, `pow`, `sqrt`, `lerp`, `clamp`, `abs`, `min`, `max`, `length`, `length_squared`, `normalize` there are no other math functions. 
 
 ### Player_Base Reference
-- p->get_username()
-- p->get_user_id() -> string
+- p.get_username()
+- p.get_user_id() -> string
 - p.avatar_color -> Color_Replace_Color 
 - p.device_kind -> .PHONE, .TABLET, .PC 
-- p->add_freeze_reason(reason: string)
-- p->add_invisibility_reason(reason: string)
+- p.add_freeze_reason(reason: string)
+- p.add_invisibility_reason(reason: string)
 
 ### Serialized fields
-Use `@ao_serialize` to expose a field to the user in the editor. 
+Use `@ao_serialize` to expose a field in the editor (can be modified with the modify_scene mcp tool). Prefer using this for referencing other Entities instead of e.get_name(); 
 
 ## Best Practices
 - CSL does not have closures, instead use `userdata: Object` passed to callbacks. Class instances can be stored in an `Object` variable and cast back to its original type.

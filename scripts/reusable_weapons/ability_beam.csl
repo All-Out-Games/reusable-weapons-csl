@@ -33,11 +33,11 @@ Beam_Ability :: class : Ability_Base {
 
         if aiming.aim {
             p.last_aim_direction = aiming.aim_direction;
-            p->set_mouse_ik_enabled(true);
-            p->set_aim_target(p.entity.world_position + aiming.aim_direction * 5.0);
+            p.set_mouse_ik_enabled(true);
+            p.set_aim_target(p.entity.world_position + aiming.aim_direction * 5.0);
             draw_thin_aiming_line(p.entity.world_position, aiming.aim_direction, 1.0);
         } else {
-            p->set_mouse_ik_enabled(false);
+            p.set_mouse_ik_enabled(false);
         }
 
         should_fire := false;
@@ -145,13 +145,13 @@ Beam_Ability :: class : Ability_Base {
         // Animation-based beams: position BEAM_TARGET bone each frame for beam aiming
         if self.was_shooting && (wt == .FIRE_RAY || wt == .ICE_LAUNCHER || wt == .GLACIATOR) {
             dir := p.last_aim_direction;
-            bone_local := p.animator.instance->get_bone_local_position("PROJECTILE");
+            bone_local := p.animator.instance.get_bone_local_position("PROJECTILE");
             barrel_dist := length(bone_local);
             beam_start := v2{p.animator.entity.world_position.x + dir.x * barrel_dist, p.animator.entity.world_position.y + dir.y * barrel_dist};
             beam_end := v2{beam_start.x + dir.x * config.beam_range, beam_start.y + dir.y * config.beam_range};
             anim_scale := p.animator.entity.local_scale;
             beam_end_local := v2{(beam_end.x - p.animator.entity.world_position.x) / anim_scale.x, (beam_end.y - p.animator.entity.world_position.y) / anim_scale.x};
-            p.animator.instance->set_bone_local_position("BEAM_TARGET", beam_end_local);
+            p.animator.instance.set_bone_local_position("BEAM_TARGET", beam_end_local);
         }
 
         // Stop beam
@@ -195,7 +195,7 @@ Beam_Ability :: class : Ability_Base {
 
         // Out of ammo
         if should_fire && !weapon_has_ammo(p, wt) {
-            if p->is_local() {
+            if p.is_local() {
                 Notifier.notify("Out of ammo!");
             }
             if self.was_shooting {
