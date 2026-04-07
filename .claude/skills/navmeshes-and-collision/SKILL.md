@@ -1,6 +1,6 @@
 ---
 name: navmeshes-and-collision
-description: "Reference this when implementing pathfinding, movement constraints, or navmesh-based spawning."
+description: Reference this when implementing pathfinding, movement constraints, or navmesh-based spawning.
 ---
 # CSL Navmesh System
 

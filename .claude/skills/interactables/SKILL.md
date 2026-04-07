@@ -89,40 +89,6 @@ Player :: class : Player_Base {
 
 ## Dynamic Prompt Text
 
-Change prompt text based on state using `set_text()`:
+Call `this->set_text("new prompt")` whenever state changes to update what the player sees. Return `false` from `can_use` to hide the prompt entirely.
 
-```csl
-Chest :: class : Interactable {
-    is_open: bool;
-    contains_key: bool;
-
-    ao_start :: method() {
-        this->set_listener(this);
-        update_prompt_text();
-    }
-
-    update_prompt_text :: method() {
-        if is_open {
-            if contains_key { this->set_text("Take Key"); }
-            else { this->set_text("Empty"); }
-        }
-        else { this->set_text("Open Chest"); }
-    }
-
-    can_use :: method(player: Player) -> bool {
-        if is_open && !contains_key return false;
-        return true;
-    }
-
-    on_interact :: method(player: Player) {
-        if !is_open {
-            is_open = true;
-        }
-        else if contains_key {
-            contains_key = false;
-            player.has_key = true;
-        }
-        update_prompt_text();
-    }
-}
-```
+- Use `Notifier.notify(player, "message")` to send feedback on interactions that don't otherwise have feedback (e.g. "you don't have enough money")

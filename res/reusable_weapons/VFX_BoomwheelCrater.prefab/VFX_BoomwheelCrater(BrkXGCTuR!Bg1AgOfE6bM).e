@@ -25,18 +25,4 @@
     ],
     "depth_offset": 1
   }
-},
-{
-  "cid": 3,
-  "aoid": "171179841557759:1744825798397102800",
-  "component_type": "Mono_Component",
-  "mono_component_type": "LoopingVFX",
-  "data": {
-    "Lifetime": 15,
-    "Skeleton": "473143790271407:1744302659521466100",
-    "InitialAnimationName": "MWSD116/spawn",
-    "LoopAnimationName": "MWSD116/idle",
-    "OutroAnimationName": "MWSD116/despawn",
-    "OutroAnimationTime": 0.6999999880790710
-  }
 }

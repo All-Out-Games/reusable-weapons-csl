@@ -84,13 +84,11 @@ All optional. Implement only what you need.
 - `effect_late_update(dt: float)` -- Post-update: draw UI, camera effects. Use `player->is_local()` to gate local-only visuals.
 - `effect_end(interrupt: bool)` -- Restore saved state, reset animations with `player.animator.instance.state_machine->set_trigger("RESET")`.
 
-## Iterating Effects
+## Checking Effects
 
 ```csl
-foreach effect: effect_iterator(entity) {
-    if effect.#type == Slow_Effect {
-        agent.movement_speed *= effect.(Slow_Effect).speed_multiplier;
-    }
+if has_effect(entity, Slow_Effect) {
+    agent.movement_speed *= 0.5;
 }
 ```
 
@@ -124,53 +122,30 @@ Roll_Effect :: class : Effect_Base {
 
 ### Attack Effect (Hit Detection)
 
-Key pattern: use `already_hit_list` to avoid hitting the same target twice, and `component_iterator` to find targets.
+Same structure as Roll_Effect, but add an `already_hit_list` to avoid hitting the same target twice:
 
 ```csl
-Slash_Effect :: class : Effect_Base {
-    direction: v2;
-    original_friction: float;
-    already_hit_list: [..]Player;
+already_hit_list: [..]Player;
 
-    effect_start :: method() {
-        player_specific.disable_movement_inputs = true;
-        original_friction = player.agent.friction;
-        player.agent.friction = 0;
-        player.animator.instance.state_machine->set_trigger("attack");
-        player->set_facing_right(direction.x > 0);
+effect_update :: method(dt: float) {
+    foreach other: component_iterator(Player) {
+        if other.team == player.team continue;
+        if !in_range(other.entity.world_position - player.entity.world_position, 0.75) continue;
+        if already_hit_list->contains(other) continue;
+        other->take_damage(1); // user-defined damage proc/method
+        already_hit_list->append(other);
     }
-
-    effect_update :: method(dt: float) {
-        foreach other: component_iterator(Player) {
-            if other.team == player.team continue;
-            if !in_range(other.entity.world_position - player.entity.world_position, 0.75) continue;
-            if already_hit_list->contains(other) continue;
-            other->take_damage(1);
-            already_hit_list->append(other);
-        }
-        player.agent.velocity = direction * 10;
-        if get_elapsed_time() > 0.3 {
-            remove_effect(false);
-            return;
-        }
-    }
-
-    effect_end :: method(interrupt: bool) {
-        player.agent.friction = original_friction;
-        player.animator.instance.state_machine->set_trigger("RESET");
+    player.agent.velocity = direction * 10;
+    if get_elapsed_time() > 0.3 {
+        remove_effect(false);
+        return;
     }
 }
 ```
 
 ### Death/Respawn Effect
 
-Shows timed respawn with local-only UI via `player->is_local()`. Assumes your Player class defines a `health` field and a `respawn_player` procedure.
-
 ```csl
-// Your Player class would define these:
-// health: Health_Component;
-// respawn_player :: proc(player: Player) { ... }
-
 Death_Effect :: class : Effect_Base {
     effect_start :: method() {
         player_specific.freeze_player = true;
@@ -184,7 +159,7 @@ Death_Effect :: class : Effect_Base {
             ts := UI.default_text_settings();
             ts.size = 64;
             rect := UI.get_screen_rect()->bottom_center_rect()->offset(0, 150);
-            UI.text(rect, ts, "Respawning in %s", {time_until_respawn.(int) + 1});
+            UI.text(rect, ts, "Respawning in %", {time_until_respawn.(int) + 1});
         }
         if time_until_respawn <= 0 {
             remove_effect(false);
@@ -194,8 +169,8 @@ Death_Effect :: class : Effect_Base {
 
     effect_end :: method(interrupt: bool) {
         player->remove_name_invisibility_reason("death");
-        respawn_player(player);
-        player.health->reset();
+        respawn_player(player); // user-defined respawn proc
+        player.health->reset(); // user-defined health field/object
         player.animator.instance.state_machine->set_trigger("RESET");
     }
 }
@@ -227,7 +202,7 @@ entity->set_active_effect(effect);
 Skip normal behavior while an effect is active:
 ```csl
 ao_update :: method(dt: float) {
-    if entity.active_effect != null return;
+    if entity->get_active_effect() != null return;
     // Normal behaviour...
 }
 ```
@@ -235,8 +210,9 @@ ao_update :: method(dt: float) {
 ## Checking Effects
 
 ```csl
-if entity.active_effect != null && entity.active_effect.#type == Eating_Effect {
-    entity.active_effect.(Eating_Effect)->chomp();
+effect := entity->get_active_effect();
+if effect != null && effect.#type == Eating_Effect {
+    effect.(Eating_Effect)->chomp();
 }
 
 remove_all_effects(entity);  // Remove all active and passive effects

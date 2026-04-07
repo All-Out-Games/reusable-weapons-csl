@@ -21,3 +21,5 @@ example-scripts
 .mcp.json
 AGENTS.md
 ao_debug.lock
+.gemini
+CLAUDE.md

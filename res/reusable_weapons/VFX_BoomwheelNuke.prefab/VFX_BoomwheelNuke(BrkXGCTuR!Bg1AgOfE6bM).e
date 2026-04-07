@@ -25,15 +25,4 @@
       "default"
     ]
   }
-},
-{
-  "cid": 2,
-  "aoid": "474939298577713:1744303132942544600",
-  "component_type": "Mono_Component",
-  "mono_component_type": "SimpleVFX",
-  "data": {
-    "Lifetime": 0.7500000000000000,
-    "Skeleton": "473143790271407:1744302659521466100",
-    "InitialAnimationName": "Nuke_explosion"
-  }
 }

@@ -89,7 +89,7 @@ spawn_poison_cloud :: proc(pos: v2, owner_id: u64) {
 // Cluster bombs for Boomwheel
 spawn_cluster_bombs :: proc(pos: v2, owner_id: u64) {
     count :: 10;
-    rng: u64 = rng_seed_time();
+    rng: u64 = rng_root_seed();
     i := 0;
     while i < count {
         angle := i.(float) / count.(float) * 2.0 * 3.14159;
@@ -151,7 +151,7 @@ Cluster_Bomb :: class : Component {
             SFX.play(sfx, desc);
 
             // Spawn explosion VFX
-            spawn_simple_vfx("reusable_weapons/VFX_ShotgunExplosion.prefab", target_pos, {2, 2}, "explode", 1.5);
+            spawn_simple_vfx("reusable_weapons/anims/reusable-weapons/fireball/BAT003_fireball.spine", "default", target_pos, {2, 2}, "explode", 1.5);
             entity->destroy();
         }
     }

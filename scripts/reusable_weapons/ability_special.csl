@@ -48,6 +48,9 @@ Melee_Ability :: class : Ability_Base {
 // Special weapon abilities dispatcher
 Special_Ability :: class : Ability_Base {
     was_shooting: bool;
+    akimbo_pending_shot: bool;
+    akimbo_shot_time: float;
+    akimbo_shot_direction: v2;
 
     on_init :: proc(ability: Ability_Base) {
         ability.name = "Special";
@@ -90,13 +93,21 @@ Special_Ability :: class : Ability_Base {
             should_fire = aiming.aim;
         }
 
+        // Akimbo Pistols: fire staggered second shot
+        if self.akimbo_pending_shot && get_time() >= self.akimbo_shot_time {
+            weapon_spawn_standard_projectile(p, self.akimbo_shot_direction, .AKIMBO_PISTOLS);
+            weapon_play_fire_sound(p, .AKIMBO_PISTOLS);
+            self.akimbo_pending_shot = false;
+        }
+
         if should_fire && params.can_use && ability.current_cooldown <= 0 {
             switch wt {
                 case .AKIMBO_PISTOLS: {
                     weapon_shoot(p, wt);
-                    // Fire two projectiles with slight offset
                     weapon_spawn_standard_projectile(p, aiming.aim_direction, wt);
-                    weapon_spawn_standard_projectile(p, aiming.aim_direction, wt);
+                    self.akimbo_pending_shot = true;
+                    self.akimbo_shot_time = get_time() + 0.15;
+                    self.akimbo_shot_direction = aiming.aim_direction;
                 }
                 case .WIND_BLASTER: {
                     weapon_shoot(p, wt);

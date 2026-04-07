@@ -9,11 +9,26 @@ Two ways to use Spine animations:
 2. **Spine_Instance** (Standalone) - UI animations or manual control
 
 ## Spine_Animator (Component)
+Every player has a Spine_Animator. Do not set its skeleton manually. It uses the $AO/streamed_character
+
+> **All animation/skeleton methods are on `spine.instance`, not on the Spine_Animator directly.** Use `spine.instance->set_animation(...)`, `spine.instance->set_skeleton(...)`, etc. There is no `set_spine`, `set_spine_asset`, or `set_animation` on Spine_Animator itself.
 
 ```csl
 spine := entity->get_component(Spine_Animator);
 spine->awaken();  // REQUIRED before accessing spine.instance
 spine.instance->set_animation("idle_loop", true, 0);
+```
+
+For runtime-spawned non-player entities:
+
+```csl
+entity := Scene.create_entity();
+spine := entity->add_component(Spine_Animator);
+spine->awaken();  // REQUIRED before accessing spine.instance
+spine.instance->set_skeleton(get_asset(Spine_Asset, "anims/rig.spine"));
+spine.instance->set_skin("variant");
+spine.instance->refresh_skins(); // REQUIRED after any skin change
+spine.instance->set_animation("Idle", true, 0);
 ```
 
 **You MUST call `awaken()` before accessing `spine.instance`** if your component and the Spine_Animator start at the same time on the same entity.
@@ -58,7 +73,7 @@ Popup :: class {
 }
 ```
 
-## Playing Animations
+## Playing Non-Player Animations
 
 ```csl
 // set_animation(animation_name, loop, track, speed = 1)
@@ -67,10 +82,111 @@ spine.instance->set_animation("attack", false, 0);
 spine.instance->set_animation("walk", true, 0, 1.5);  // 1.5x speed
 ```
 
-## State Machine
+## Player Animations
+### How the Player Rig Works
+
+The player's Spine rig is configured in `scene.config` and a player.merged_spine_rig file, NOT in code:
+
+```json
+"default_player_rig": "player.merged_spine_rig#output"
+```
+
+The `player.merged_spine_rig` file combines a base rig with game-specific animation rigs. 
+
+**CRITICAL NOTE**: You cannot just add any animations to this, they must be PRE-VETTED to work with the player rig. The only pre-vetted additional rig you have access to is the reusable-weapons (https://github.com/All-Out-Games/reusable-weapons-csl.git) rig. This is a generic guide to help if the user already has a merged rig set up. 
+
+```json
+{
+    "base_rig": "anims/player/004RAND_Base.spine",
+    "rigs_to_merge": [
+        { "rig": "anims/roles/Mimicer/playercharacter.spine" },
+        { "rig": "anims/roles/Pyro/playercharacter.spine" },
+        { "rig": "anims/roles/Ggg/004RAND_base.spine" },
+        // ... other rigs (e.g. reusable weapons)
+    ],
+}
+```
+
+This merges all skins & animations into a single skeleton so the player's Spine_Animator has access to every animation at runtime. It's up to you to **extend** the default state machine to support these new animations. 
+
+### Setup Pattern
 
 ```csl
-NPC :: class : Component {
+Player :: class : Player_Base {
+    sm_inited: bool;
+
+    ao_start :: proc(using this: Player) {
+        this->ensure_anim_state_machine();
+    }
+
+    ensure_anim_state_machine :: proc(using this: Player) {
+        if sm_inited return;
+        if this.animator.instance == null return;
+
+        // Get the EXISTING state machine from the editor
+        sm := this.animator.instance.state_machine;
+        if sm == null return;
+
+        // Get the existing layer and idle state
+        layer := sm->try_get_layer("main");
+        if layer == null return;
+        idle_state := layer->try_get_state("Idle");
+        if idle_state == null return;
+
+        // Extend with game-specific states (split into helper procs)
+        setup_combat_states(sm, layer, idle_state);
+        setup_role_states(sm, layer, idle_state);
+
+        sm_inited = true;
+    }
+}
+```
+
+### Adding a One-Shot Animation State
+
+The standard pattern for adding a triggered animation that plays once and returns to idle:
+
+```csl
+setup_combat_states :: proc(sm: State_Machine, layer: State_Machine_Layer, idle_state: State_Machine_State) {
+    // 1. Create a trigger variable on the state machine
+    attack_var := sm->create_variable("attack", State_Machine_Variable.Kind.TRIGGER);
+
+    // 2. Create the animation state (name, is_loop, duration)
+    attack_state := layer->create_state("Attack_Melee_1", false, 1.0);
+
+    // 3. Create a global transition INTO the state, triggered by the variable
+    layer->create_global_transition(attack_state, false)->create_trigger_condition(attack_var);
+
+    // 4. Create an auto-transition BACK to idle when the animation finishes
+    layer->create_transition(attack_state, idle_state, true);
+}
+```
+
+### Chained Animation States
+
+For animations that flow through multiple states before returning to idle (e.g., start → loop → end):
+
+```csl
+// Trapped start (one-shot) -> Trapped loop (looping) -> Trapped end (one-shot) -> Idle
+trapped_start_var := sm->create_variable("trapped_start", State_Machine_Variable.Kind.TRIGGER);
+trapped_start_state := layer->create_state("Trapped_Start", false, 0.5);
+layer->create_global_transition(trapped_start_state, false)->create_trigger_condition(trapped_start_var);
+
+trapped_loop_state := layer->create_state("Trapped_Loop", true, 0.0);
+layer->create_transition(trapped_start_state, trapped_loop_state, true); // auto after start finishes
+
+// End is triggered separately (e.g., when player is freed)
+trapped_end_var := sm->create_variable("trapped_end", State_Machine_Variable.Kind.TRIGGER);
+trapped_end_state := layer->create_state("Trapped_End", false, 0.5);
+layer->create_global_transition(trapped_end_state, false)->create_trigger_condition(trapped_end_var);
+layer->create_transition(trapped_end_state, idle_state, true); // auto back to idle
+```
+
+## NPC State Machine
+For complex non-player spines, you can create a state machine: 
+
+```csl
+Enemy_NPC :: class : Component {
     spine: Spine_Animator @ao_serialize;
     state_machine: State_Machine;
 
@@ -144,10 +260,8 @@ skins := spine.instance->get_skins();
 ## Bone Positions
 
 ```csl
-hand_pos := spine.instance->get_bone_position("hand_right");
+hand_pos := spine.instance->get_bone_local_position("Hand_R");
 ```
-
-## Accessing Editor-configured State Machine
 
 ```csl
 layer := animator.instance.state_machine->try_get_layer("main");
@@ -166,8 +280,7 @@ animator.instance.color_multiplier = {brightness, brightness, brightness, 0.25};
 ```
 
 ### Player Color Replacement
-
-Clone a player's spine for UI rendering with a different color:
+Clones a player to display them in UI, etc...
 
 ```csl
 player: Player = ...;
@@ -184,8 +297,6 @@ player_ui_instance->update(dt);
 UI.spine(UI.get_screen_rect()->center(), player_ui_instance, {100, 100});
 ```
 
-### Color_Replace_Color Values
-
 ```csl
 Color_Replace_Color :: enum {
     NONE; RED; CYAN; GREEN; YELLOW; LIGHT_GREEN; PINK; ORANGE; BLACK;
@@ -193,6 +304,3 @@ Color_Replace_Color :: enum {
     PURPLE3; RED2; WHITE1;
 }
 ```
-
-## MCP Tools
-Before using a Spine_Animator, check the available animations and skins using the All Out mcp tool.

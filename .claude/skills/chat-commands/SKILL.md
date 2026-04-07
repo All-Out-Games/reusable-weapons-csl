@@ -13,8 +13,6 @@ heal_player :: proc(player: Player, amount: int = 50) {
 } @chat_command @any
 ```
 
-Use `Notifier.notify(player, ...)` to send feedback -- it sends an RPC to that player's client.
-
 ## Permission Annotations
 
 | Annotation | Who Can Use |

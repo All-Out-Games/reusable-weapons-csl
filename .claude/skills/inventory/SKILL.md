@@ -76,6 +76,20 @@ item := Items.create_item_instance(sword_defn, Weapon_Item, 1);
 basic_item := Items.create_item_instance(basic_defn, 10);
 ```
 
+### Giving an Item to a Player
+
+Create an instance, then move it into their inventory with `Items.move_item_to_inventory`:
+
+```csl
+item := Items.create_item_instance(sword_defn, 1);
+will_destroy: bool;
+if Items.can_move_item_to_inventory(item, player.default_inventory, ref will_destroy) {
+    Items.move_item_to_inventory(item, player.default_inventory);
+}
+```
+
+To drop an item in the world instead, see the `inventory-droppable-placeable-items` skill (`Dropped_Item.spawn`).
+
 ### Adding Items to Inventory
 
 ```csl
@@ -202,10 +216,10 @@ ao_late_update :: method(dt: float) {
 
         result := Items.draw_hotbar(this, default_inventory, options);
 
-        if result.selected_item != null {
+        if #alive(result.selected_item) {
             use_item(this, result.selected_item);
         }
-        if result.dropped_item != null {
+        if #alive(result.dropped_item) {
             drop_item(this, result.dropped_item);
         }
     }
@@ -253,11 +267,16 @@ Inventory_Draw_Options :: struct {
 
 ### Draw_Hotbar_Result
 
+> **Important:** `selected_item` and `dropped_item` may be non-null yet reference
+> items that were destroyed during the same frame (e.g. consumed on use, merged
+> into a stack). A `!= null` check alone is **not** sufficient — always guard with
+> `#alive()` before calling methods on them.
+
 ```csl
 Draw_Hotbar_Result :: struct {
-    selected_item: Item_Instance;       // null if none
+    selected_item: Item_Instance;       // null if none (use #alive() before access)
     selected_item_index: s64;
-    dropped_item: Item_Instance;        // null if none
+    dropped_item: Item_Instance;        // null if none (use #alive() before access)
     entire_rect: Rect;
     inventory_open: bool;
     inventory_open_t: float;            // Animation progress 0-1
