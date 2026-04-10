@@ -45,6 +45,15 @@
             "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/block_asset_manifest_read.py\""
           }
         ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/block_scene_write.py\""
+          }
+        ]
       }
     ]
   }

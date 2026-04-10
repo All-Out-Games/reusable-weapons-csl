@@ -16,11 +16,11 @@ Melee_Ability :: class : Ability_Base {
 
         if params.pressed && params.can_use && ability.current_cooldown <= 0 {
             // Trigger melee animation
-            p.animator.instance.state_machine.set_trigger("melee_AL");
+            p.animator.state_machine.set_trigger("melee_AL");
 
             // Enable katana skin briefly
-            p.animator.instance.enable_skin("weapons/katana");
-            p.animator.instance.refresh_skins();
+            p.animator.enable_skin("weapons/katana");
+            p.animator.refresh_skins();
 
             // Play katana sound
             sfx_desc := SFX.default_sfx_desc();

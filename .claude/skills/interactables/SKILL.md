@@ -6,7 +6,7 @@ description: "Interactable system for allowing players to interact with entities
 
 ## Creating an Interactable
 
-Inherit from `Interactable`, call `this->set_listener(this)` in `ao_start`, and implement `can_use` / `on_interact`:
+Inherit from `Interactable`, call `this.set_listener(this)` in `ao_start`, and implement `can_use` / `on_interact`:
 
 ```csl
 My_Pickup :: class : Interactable {
@@ -14,7 +14,7 @@ My_Pickup :: class : Interactable {
     is_picked_up: bool;
 
     ao_start :: method() {
-        this->set_listener(this);
+        this.set_listener(this);
     }
 
     can_use :: method(player: Player) -> bool {
@@ -25,7 +25,7 @@ My_Pickup :: class : Interactable {
     on_interact :: method(player: Player) {
         is_picked_up = true;
         Economy.deposit_currency(player, "Coins", item_value.(s64));
-        entity->destroy();
+        entity.destroy();
     }
 }
 ```
@@ -44,11 +44,11 @@ Add your component to an entity and configure inherited properties:
 ## Interactable Methods
 
 ```csl
-this->set_listener(this);
-this->set_text("Pick up");
-this->set_hold_text("Picking up...");
-text := this->get_text();
-hold_text := this->get_hold_text();
+this.set_listener(this);
+this.set_text("Pick up");
+this.set_hold_text("Picking up...");
+text := this.get_text();
+hold_text := this.get_hold_text();
 ```
 
 ### Listener Callbacks
@@ -89,6 +89,6 @@ Player :: class : Player_Base {
 
 ## Dynamic Prompt Text
 
-Call `this->set_text("new prompt")` whenever state changes to update what the player sees. Return `false` from `can_use` to hide the prompt entirely.
+Call `this.set_text("new prompt")` whenever state changes to update what the player sees. Return `false` from `can_use` to hide the prompt entirely.
 
 - Use `Notifier.notify(player, "message")` to send feedback on interactions that don't otherwise have feedback (e.g. "you don't have enough money")

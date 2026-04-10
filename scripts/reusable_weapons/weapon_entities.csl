@@ -20,7 +20,7 @@ Poison_Cloud :: class : Component {
         if !disappearing && lifetime > (max_lifetime - 1.0) {
             spine := entity.get_component(Spine_Animator);
             if spine != null {
-                spine.instance.state_machine.set_trigger("disappear");
+                spine.state_machine.set_trigger("disappear");
             }
             if sound_id != 0 {
                 SFX.stop(sound_id);
@@ -56,8 +56,8 @@ spawn_poison_cloud :: proc(pos: v2, owner_id: u64) {
     // Spine visual: virus cloud with Appear -> Idle -> Disappear
     spine := cloud_entity.add_component(Spine_Animator);
     spine.awaken();
-    spine.instance.set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/Virus_Cloud/004RAND_virus_cloud.spine"));
-    spine.instance.color_multiplier = {1, 1, 1, 0.5};
+    spine.set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/Virus_Cloud/004RAND_virus_cloud.spine"));
+    spine.color_multiplier = {1, 1, 1, 0.5};
 
     sm := State_Machine.create();
     disappear_var := sm.create_variable("disappear", .TRIGGER);
@@ -69,7 +69,7 @@ spawn_poison_cloud :: proc(pos: v2, owner_id: u64) {
     appear_to_idle := layer.create_transition(appear_state, idle_state, true);
     idle_to_disappear := layer.create_transition(idle_state, disappear_state, false);
     idle_to_disappear.create_trigger_condition(disappear_var);
-    spine.instance.set_state_machine(sm, true);
+    spine.set_state_machine(sm, true);
 
     cloud := cloud_entity.add_component(Poison_Cloud);
     cloud.damage_per_tick = 3.0;
@@ -182,7 +182,7 @@ Tornado_Entity :: class : Component {
         if !despawning && lifetime > (max_lifetime - 1.317) {
             spine := entity.get_component(Spine_Animator);
             if spine != null {
-                spine.instance.state_machine.set_trigger("disappear");
+                spine.state_machine.set_trigger("disappear");
             }
             if sound_id != 0 {
                 SFX.stop(sound_id);
@@ -247,7 +247,7 @@ spawn_tornado_entity :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     // Spine visual: tornado with spin_intro -> spin_loop -> spin_outro
     spine := tornado_entity.add_component(Spine_Animator);
     spine.awaken();
-    spine.instance.set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/Tornado/Export/tornado.spine"));
+    spine.set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/Tornado/Export/tornado.spine"));
 
     sm := State_Machine.create();
     disappear_var := sm.create_variable("disappear", .TRIGGER);
@@ -259,7 +259,7 @@ spawn_tornado_entity :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     intro_to_loop := layer.create_transition(intro_state, loop_state, true);
     loop_to_outro := layer.create_transition(loop_state, outro_state, false);
     loop_to_outro.create_trigger_condition(disappear_var);
-    spine.instance.set_state_machine(sm, true);
+    spine.set_state_machine(sm, true);
 
     tornado := tornado_entity.add_component(Tornado_Entity);
     tornado.owner_id = player.entity.id;
@@ -307,7 +307,7 @@ Storms_Eye_Tornado :: class : Component {
         if !despawning && lifetime > (max_lifetime - 1.5) {
             spine := entity.get_component(Spine_Animator);
             if spine != null {
-                spine.instance.state_machine.set_trigger("outro_trigger");
+                spine.state_machine.set_trigger("outro_trigger");
             }
             if sound_id != 0 {
                 SFX.stop(sound_id);
@@ -347,7 +347,7 @@ spawn_storms_eye_tornado :: proc(player: Player) {
     // Spine visual: wind rings with intro -> loop -> outro
     spine := tornado_entity.add_component(Spine_Animator);
     spine.awaken();
-    spine.instance.set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/wind_rings/wind_rings.spine"));
+    spine.set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/wind_rings/wind_rings.spine"));
 
     sm := State_Machine.create();
     outro_var := sm.create_variable("outro_trigger", .TRIGGER);
@@ -359,7 +359,7 @@ spawn_storms_eye_tornado :: proc(player: Player) {
     intro_to_loop := layer.create_transition(intro_state, loop_state, true);
     loop_to_outro := layer.create_transition(loop_state, outro_state, false);
     loop_to_outro.create_trigger_condition(outro_var);
-    spine.instance.set_state_machine(sm, true);
+    spine.set_state_machine(sm, true);
 
     tornado := tornado_entity.add_component(Storms_Eye_Tornado);
     tornado.owner_id = player.entity.id;

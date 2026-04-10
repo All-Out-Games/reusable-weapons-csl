@@ -84,6 +84,8 @@ Time :: struct {
 
 
 
+hash_murmur32 :: proc(data: *u8, count: s64, seed: u64 = 0) -> u64 #foreign "csl_hash_bytes";
+
 new_string  :: proc(count: int)  -> string #foreign;
 copy_string :: proc(str: string) -> string #foreign;
 to_lower    :: proc(str: string) -> string #foreign;

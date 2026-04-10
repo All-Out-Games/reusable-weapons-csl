@@ -91,6 +91,9 @@ Component :: class {
 Component_Iterator :: struct($T: typeid) {
     component_iterator_next_raw :: method() -> bool #foreign "component_iterator_next";
     current: T #read_only #offset 16;
+    next :: method() -> bool {
+        return (&this).(*Component_Iterator(Component)).*.component_iterator_next_raw();
+    }
 } #foreign_struct "Hierarchical_Component_Iterator<Component_Base>" #size 40
 
 Sprite_Renderer :: class : Component {
@@ -168,6 +171,22 @@ Spine_Animator :: class : Component {
     layer: s32 #offset 96;
     mask_in_shadow: bool #offset 93;
     instance: Spine_Instance #read_only #offset 296;
+    using _instance_fields: Spine_Instance_Fields #read_only #offset 296;
+    set_color_replace_color :: method(color: Color_Replace_Color) #foreign "spine_animator_set_color_replace_color";
+    set_material            :: method(material: Material, transfer_ownership: bool) #foreign "spine_animator_set_material";
+    set_state_machine       :: method(new_state_machine: State_Machine, transfer_ownership: bool) #foreign "spine_animator_set_state_machine";
+    get_bone_local_position :: method(bone_name: string) -> v2 #foreign "spine_animator_get_bone_position";
+    set_bone_local_position :: method(bone_name: string, position: v2) #foreign "spine_animator_set_bone_position";
+    set_skeleton            :: method(asset: Spine_Asset) #foreign "spine_animator_set_skeleton";
+    get_skeleton            :: method() -> Spine_Asset #foreign "spine_animator_get_skeleton";
+    set_animation           :: method(animation: string, loop: bool, track: s64, speed: float = 1) #foreign "spine_animator_set_animation";
+    set_skin                :: method(skin: string) #foreign "spine_animator_set_skin";
+    enable_skin             :: method(skin: string) #foreign "spine_animator_enable_skin";
+    disable_skin            :: method(skin: string) #foreign "spine_animator_disable_skin";
+    disable_all_skins       :: method() #foreign "spine_animator_disable_all_skins";
+    refresh_skins           :: method() #foreign "spine_animator_refresh_skins";
+    set_to_setup_pose       :: method() #foreign "spine_animator_set_to_setup_pose";
+    get_skins               :: method() -> []string #foreign "spine_animator_get_skins";
 } #foreign_struct "Spine_Animator" #size 304
 
 LOS_Caster :: class : Component {
@@ -184,15 +203,17 @@ Light :: class : Component {
     intensity: float #offset 112;
 } #foreign_struct "Light" #size 144
 
-Spine_Instance_Base :: class {
-    set_color_replace_color :: method(color: Color_Replace_Color) #foreign "spine_instance_set_color_replace_color";
-    set_material            :: method(material: Material, transfer_ownership: bool) #foreign "spine_instance_set_material";
-    self:             Spine_Instance #read_only #offset 152;
+Spine_Instance_Fields :: class {
     state_machine:    State_Machine  #read_only #offset 48;
     color_multiplier: v4                        #offset 72;
     scale:            v2                        #offset 32;
     speed_multiplier: float                     #offset 104;
     color_replace_color: Color_Replace_Color #read_only #offset 144;
+} #gc_root #foreign_struct "Spine_Instance" #size 208
+
+Spine_Instance_Base :: class : Spine_Instance_Fields {
+    set_color_replace_color :: method(color: Color_Replace_Color) #foreign "spine_instance_set_color_replace_color";
+    set_material            :: method(material: Material, transfer_ownership: bool) #foreign "spine_instance_set_material";
 } #gc_root #foreign_struct "Spine_Instance" #size 208
 
 Camera :: struct {
@@ -570,4 +591,3 @@ Draw_Hotbar_Result :: struct {
     inventory_open:      bool          #offset 40;
     inventory_open_t:    float         #offset 44;
 } #foreign_struct "Inventory_Manager::Draw_Hotbar_Result" #size 48
-

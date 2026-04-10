@@ -25,7 +25,7 @@ Looping_VFX :: class : Component {
         if !outro_triggered && outro_time > 0 && elapsed >= (lifetime - outro_time) {
             spine := entity.get_component(Spine_Animator);
             if spine != null {
-                spine.instance.state_machine.set_trigger("outro");
+                spine.state_machine.set_trigger("outro");
             }
             outro_triggered = true;
         }
@@ -44,15 +44,15 @@ spawn_simple_vfx :: proc(spine_path: string, skin: string, pos: v2, scale: v2, a
 
     spine := vfx_entity.add_component(Spine_Animator);
     spine.awaken();
-    spine.instance.set_skeleton(get_asset(Spine_Asset, spine_path));
-    spine.instance.enable_skin(skin);
-    spine.instance.refresh_skins();
+    spine.set_skeleton(get_asset(Spine_Asset, spine_path));
+    spine.enable_skin(skin);
+    spine.refresh_skins();
 
     sm := State_Machine.create();
     layer := sm.create_layer("main", 0);
     state := layer.create_state(anim_name, false);
     layer.set_initial_state(state);
-    spine.instance.set_state_machine(sm, true);
+    spine.set_state_machine(sm, true);
 
     vfx := vfx_entity.add_component(Simple_VFX);
     vfx.lifetime = lifetime;
@@ -68,9 +68,9 @@ spawn_looping_vfx :: proc(spine_path: string, skin: string, pos: v2, scale: v2, 
 
     spine := vfx_entity.add_component(Spine_Animator);
     spine.awaken();
-    spine.instance.set_skeleton(get_asset(Spine_Asset, spine_path));
-    spine.instance.enable_skin(skin);
-    spine.instance.refresh_skins();
+    spine.set_skeleton(get_asset(Spine_Asset, spine_path));
+    spine.enable_skin(skin);
+    spine.refresh_skins();
 
     sm := State_Machine.create();
     outro_var := sm.create_variable("outro", .TRIGGER);
@@ -82,7 +82,7 @@ spawn_looping_vfx :: proc(spine_path: string, skin: string, pos: v2, scale: v2, 
     layer.create_transition(intro_state, loop_state, true);
     trans := layer.create_transition(loop_state, outro_state, false);
     trans.create_trigger_condition(outro_var);
-    spine.instance.set_state_machine(sm, true);
+    spine.set_state_machine(sm, true);
 
     vfx := vfx_entity.add_component(Looping_VFX);
     vfx.lifetime = lifetime;

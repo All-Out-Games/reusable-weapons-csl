@@ -145,13 +145,13 @@ Beam_Ability :: class : Ability_Base {
         // Animation-based beams: position BEAM_TARGET bone each frame for beam aiming
         if self.was_shooting && (wt == .FIRE_RAY || wt == .ICE_LAUNCHER || wt == .GLACIATOR) {
             dir := p.last_aim_direction;
-            bone_local := p.animator.instance.get_bone_local_position("PROJECTILE");
+            bone_local := p.animator.get_bone_local_position("PROJECTILE");
             barrel_dist := length(bone_local);
             beam_start := v2{p.animator.entity.world_position.x + dir.x * barrel_dist, p.animator.entity.world_position.y + dir.y * barrel_dist};
             beam_end := v2{beam_start.x + dir.x * config.beam_range, beam_start.y + dir.y * config.beam_range};
             anim_scale := p.animator.entity.local_scale;
             beam_end_local := v2{(beam_end.x - p.animator.entity.world_position.x) / anim_scale.x, (beam_end.y - p.animator.entity.world_position.y) / anim_scale.x};
-            p.animator.instance.set_bone_local_position("BEAM_TARGET", beam_end_local);
+            p.animator.set_bone_local_position("BEAM_TARGET", beam_end_local);
         }
 
         // Stop beam

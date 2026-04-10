@@ -315,16 +315,12 @@ component_iterator :: proc($T: typeid, include_disabled := false) -> Component_I
     return (&component_iterator_raw(T, include_disabled)).(*Component_Iterator(T)).*;
 }
 
-next :: proc(it: ref Component_Iterator($T)) -> bool {
-    return (&it).(*Component_Iterator(Component)).*.component_iterator_next_raw();
-}
-
-// #deprecate_soft "Use [..]T."
 List :: struct($T: typeid) {
     elements: []T;
     capacity: s64;
 }
 
+#deprecate_hard "Use [..]T."
 append :: proc(list: ref List($T), element: T) {
     if list.elements.count >= list.capacity {
         list.reserve(max(next_power_of_two(list.elements.count+1), 8));
@@ -2801,6 +2797,16 @@ UIK :: struct {
         return desc;
     }
 
+    layout_centered :: proc(width: Size, height: Size) -> Panel_Desc {
+        desc := layout_column();
+        desc.width = width;
+        desc.height = height;
+        desc.cross_align = .CENTER;
+        desc.main_align = .CENTER;
+        desc.show_background = false;
+        return desc;
+    }
+
     /// Vertical flex-fill column with a background style.
     panel_styled :: proc(bg: Panel_Background_Kind) -> Panel_Desc {
         desc := layout_column();
@@ -3257,11 +3263,49 @@ UIK :: struct {
         col := layout_column();
         col.width = flex(1);
         col.height = fit();
+        col.gap = 15;
         panel_begin(col);
     }
 
     list_end :: proc() {
         panel_end();
         panel_end();
+    }
+
+
+    rect_window :: proc() -> Rect {
+        return UI.get_safe_screen_rect().center_rect().grow(440, 650, 440, 650);
+    }
+
+    rect_window_large :: proc() -> Rect {
+        return UI.get_safe_screen_rect().inset(100, 200, 100, 200);
+    }
+
+    rect_window_small :: proc() -> Rect {
+        return UI.get_safe_screen_rect().center_rect().grow(240, 325, 240, 325);
+    }
+
+    rect_sidebar_left :: proc() -> Rect {
+        return UI.get_safe_screen_rect().left_rect().grow_right(300).inset(300, 0, 250, 0).offset(15, 0);
+    }
+
+    rect_sidebar_right :: proc() -> Rect {
+        return UI.get_safe_screen_rect().right_rect().grow_left(300).inset(300, 0, 250, 0).offset(-15, 0);
+    }
+
+    rect_topbar :: proc() -> Rect {
+        return UI.get_safe_screen_rect().top_rect().grow_bottom(150).inset(0, 400, 0, 400).offset(0, -15);
+    }
+
+    rect_hotbar :: proc() -> Rect {
+        return UI.get_safe_screen_rect().bottom_rect().grow_top(150).inset(0, 500, 0, 500).offset(0, 15);
+    }
+
+    rect_stats :: proc() -> Rect {
+        return UI.get_safe_screen_rect().bottom_left_rect().grow(450, 400, 0, 0).offset(15, 15);
+    }
+
+    rect_dialog :: proc() -> Rect {
+        return UI.get_safe_screen_rect().top_rect().grow_bottom(275).inset(0, 800, 0, 800).offset(0, 165);
     }
 }

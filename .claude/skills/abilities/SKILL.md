@@ -34,7 +34,7 @@ Draw in the player's `ao_late_update` inside `is_local_or_server()`. Do not make
 ```csl
 Player :: class : Player_Base {
     ao_late_update :: method(dt: float) {
-        if this->is_local_or_server() && !health.is_dead {
+        if this.is_local_or_server() && !health.is_dead {
             draw_ability_button(this, Shoot_Ability, 0);
             draw_ability_button(this, Dodge_Roll, 1);
             draw_ability_button(this, Sprint_Ability, 4);
@@ -135,7 +135,7 @@ Dodge_Roll :: class : Ability_Base {
             current_cooldown = 1.5;
             effect := new(Roll_Effect);
             effect.direction = activation.direction;
-            player.entity->set_active_effect(effect);  // See effects skill
+            player.entity.set_active_effect(effect);  // See effects skill
         }
     }
 }
@@ -182,7 +182,7 @@ Default keybinds by button index: 0=Q, 1=Z, 2=X, 3=C, 4=R, 5=F.
 
 ```csl
 ao_late_update :: method(dt: float) {
-    if this->is_local_or_server() && !health.is_dead {
+    if this.is_local_or_server() && !health.is_dead {
         if is_carrying_item {
             draw_ability_button(this, Drop_Item_Ability, 0);
         } else {
@@ -227,7 +227,7 @@ My_Ability :: class : Ability_Base {
         ts.size = 24;
         ts.halign = .RIGHT;
         ts.valign = .BOTTOM;
-        UI.text(rect->inset(5), ts, "%", {ammo});
+        UI.text(rect.inset(5), ts, "%", {ammo});
     }
 }
 ```

@@ -87,7 +87,7 @@ Save_Game_Int    :: struct { key: string; value: s64; }
 ```
 
 ```csl
-Save.set_game_string("world_record_holder", player->get_username());
+Save.set_game_string("world_record_holder", player.get_username());
 difficulty := Save.get_game_string("server_difficulty", "normal");
 
 // Atomically increment — safe for concurrent updates from multiple players

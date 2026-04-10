@@ -1,6 +1,6 @@
 ---
 name: inventory
-description: "Inventory system documentation. Reference this only when working with items and inventories."
+description: Any item or inventory system in your game MUST use the API described in this skill. Do not create custom inventory/item systems. 
 ---
 # CSL Inventory System
 
@@ -44,7 +44,7 @@ ao_before_scene_load :: proc() {
     );
     sword_defn.damage = 10;
     sword_defn.description = "A sturdy iron sword.";
-    all_weapon_definitions->append(sword_defn);
+    all_weapon_definitions.append(sword_defn);
 
     // stack_size = -1 for infinite stacking
     bullet_icon := get_asset(Texture_Asset, "icons/bullet.png");
@@ -116,10 +116,10 @@ Items.destroy_item_instance(item, 5);    // Destroy only 5 from stack
 
 ```csl
 for i: 0..player.default_inventory.capacity-1 {
-    item := player.default_inventory->get_item(i);
+    item := player.default_inventory.get_item(i);
     if item == null continue;
 
-    defn := item->get_definition();
+    defn := item.get_definition();
     weapon_defn := defn.(Weapon_Definition);
     if weapon_defn != null {
         log_info("Found weapon with % damage", {weapon_defn.damage});
@@ -167,21 +167,24 @@ Items :: struct {
 ### Item_Definition Methods
 
 ```csl
-defn->get_name() -> string;
-defn->get_id() -> string;
-defn->get_icon() -> Texture_Asset;
+defn.get_name() -> string;
+defn.get_id() -> string;
+defn.get_icon() -> Texture_Asset;
 ```
 
-### Item_Instance Methods
+### Item_Instance Fields & Methods
 
 ```csl
-item->get_definition() -> Item_Definition;
+item.quantity    // s64, read-only — stack count
+item.slot_index  // s64, read-only — slot in parent inventory
+item.inventory   // Inventory, read-only — parent inventory (null if not in one)
+item.get_definition() -> Item_Definition;
 ```
 
 ### Inventory Methods
 
 ```csl
-inventory->get_item(index: s64) -> Item_Instance;  // May return null
+inventory.get_item(index: s64) -> Item_Instance;  // May return null
 inventory.capacity                                  // Read-only
 ```
 
@@ -190,7 +193,7 @@ inventory.capacity                                  // Read-only
 Use `#type` and cast to distinguish custom types:
 
 ```csl
-defn := item->get_definition();
+defn := item.get_definition();
 if defn.#type == Weapon_Definition {
     weapon_defn := defn.(Weapon_Definition);
 }
@@ -207,7 +210,7 @@ Draw in `ao_late_update` inside `is_local_or_server()`.
 
 ```csl
 ao_late_update :: method(dt: float) {
-    if this->is_local_or_server() {
+    if this.is_local_or_server() {
         options := Inventory_Draw_Options.default();
         options.hotbar_item_count = 5;
         options.enable_use_from_hotbar = true;
@@ -229,7 +232,7 @@ ao_late_update :: method(dt: float) {
 ### Full Inventory Grid
 
 ```csl
-inventory_rect := UI.get_safe_screen_rect()->inset(100);
+inventory_rect := UI.get_safe_screen_rect().inset(100);
 options := Inventory_Draw_Options.default();
 options.title = "Inventory";
 options.show_exit_button = true;
@@ -258,7 +261,6 @@ Inventory_Draw_Options :: struct {
     hide_bag_button: bool;
     enable_selection: bool;
     scroll_item_selection: bool;
-    keyboard_item_selection: bool;
     enable_use_from_hotbar: bool;
 
     default :: proc() -> Inventory_Draw_Options;

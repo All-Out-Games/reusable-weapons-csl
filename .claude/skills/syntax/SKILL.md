@@ -13,7 +13,7 @@ my_variable: int;        // Zero-initialized
 
 Integer literals coerce to float, but not the reverse.
 
-> **Struct/class fields cannot have inline defaults.** `health: int = 100;` inside a class is a compile error. Initialize fields in `ao_start` instead.
+> **Struct fields cannot have inline defaults.**
 
 ### Constants
 
@@ -81,7 +81,7 @@ add :: proc(a: int, b: int) -> int {
 
 ### Methods
 
-Use `method()` instead of `proc()` inside a struct or class. Methods have implicit `this`; Call methods with `->`.
+Use `method()` instead of `proc()` inside a struct or class.
 
 ```csl
 Dog :: class {
@@ -93,7 +93,7 @@ Dog :: class {
 }
 
 dog := new(Dog);
-dog->bark();
+dog.bark();
 ```
 
 ### Arrays
@@ -105,7 +105,8 @@ dog->bark();
 ```csl
 fixed: [4]int = {1, 2, 3, 4};
 spawn_points: [3]v2 = {{0, 0}, {5, 0}, {0, 5}};
-view: []int = fixed;
+dyn: [..]int;
+view: []int = dyn;
 
 hit := Damage_Desc{amount=10, knockback={2, 1}};  // named fields use = (NOT :)
 ```
@@ -114,16 +115,16 @@ hit := Damage_Desc{amount=10, knockback={2, 1}};  // named fields use = (NOT :)
 
 ```csl
 numbers: [..]int;
-numbers->append(10);
-numbers->pop();
-numbers->clear();
-numbers->reserve(64);
+numbers.append(10);
+numbers.pop();
+numbers.clear();
+numbers.reserve(64);
 
 // Remove -- optional mode: .ONE (default) or .ALL
-numbers->unordered_remove_by_value(10);
-numbers->ordered_remove_by_value(999, .ALL);
-numbers->unordered_remove_by_index(0);
-numbers->ordered_remove_by_index(0);
+numbers.unordered_remove_by_value(10);
+numbers.ordered_remove_by_value(999, .ALL);
+numbers.unordered_remove_by_index(0);
+numbers.ordered_remove_by_index(0);
 ```
 
 ## Control Flow
@@ -167,7 +168,9 @@ Do not write C-style fallthrough logic in CSL switch cases.
 
 `..` ranges are **inclusive**: `for i: 0..9 { }` iterates 0 through 9.
 
-`foreach` for custom iterators: `foreach player: component_iterator(My_Player) { }`
+`for` also handles custom iterators: `for player: component_iterator(My_Player) { }`
+
+Custom iterator-based `for` loops require a `next :: method() -> bool` and a `current` field.
 
 ### Enums, `defer`, and `#alive`
 
@@ -183,7 +186,7 @@ UI.push_screen_draw_context();
 defer UI.pop_draw_context();
 ```
 
-`#alive(expr)` checks whether a class reference is still valid.
+`#alive(expr)` checks whether a class reference is still valid and MUST be used before accessing to prevent crashes. 
 `defer` runs a statement when the current scope exits and is commonly used for UI push/pop cleanup.
 
 ## Type Casting
@@ -192,12 +195,10 @@ Use `expr.(T)` syntax: `b := 123.4.(int);`
 
 ## Member Access and Method Calls
 
-`.` for field access, `->` for method calls. Any procedure whose first parameter matches the type can be called as a method (UFCS):
-
 ```csl
 increment :: proc(f: *Foo) { f.a += 1; }
 f: Foo;
-f->increment();
+f.increment();
 ```
 
 ## Parameter Passing: ref
