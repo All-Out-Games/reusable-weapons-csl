@@ -30,7 +30,7 @@ Player :: class : Player_Base {
     boomwheel_cannon: Boomwheel_Cannon; // only needed if using Boomwheel
 
     ao_start :: method() {
-        wt := entity->add_component(Weapon_Target);
+        wt := entity.add_component(Weapon_Target);
         wt.health = 100.0;
         wt.max_health = 100.0;
         wt.owner_entity_id = entity.id;
@@ -174,17 +174,17 @@ Add a `Weapon_Target` component to any entity you want weapons to hit:
 ```csl
 My_Mob :: class : Component {
     ao_start :: method() {
-        target := entity->add_component(Weapon_Target);
+        target := entity.add_component(Weapon_Target);
         target.health = 50.0;
         target.max_health = 50.0;
         // That's it — all weapons now hit this entity
     }
 
     ao_update :: method(dt: float) {
-        target := entity->get_component(Weapon_Target);
+        target := entity.get_component(Weapon_Target);
         if target.health <= 0 {
             // Handle death
-            entity->destroy();
+            entity.destroy();
         }
     }
 }
@@ -197,7 +197,7 @@ Set the `on_damaged` callback to run custom logic when hit (death animations, lo
 ```csl
 My_Mob :: class : Component {
     ao_start :: method() {
-        target := entity->add_component(Weapon_Target);
+        target := entity.add_component(Weapon_Target);
         target.health = 50.0;
         target.max_health = 50.0;
         target.on_damaged_userdata = this;
@@ -205,7 +205,7 @@ My_Mob :: class : Component {
             mob := userdata.(My_Mob);
             if target.health <= 0 {
                 // Spawn loot, play death animation, etc.
-                target.entity->destroy();
+                target.entity.destroy();
             }
         };
     }
@@ -217,7 +217,7 @@ My_Mob :: class : Component {
 The `owner_entity_id` field prevents weapons from hitting their own source entity. For the player this is set automatically. For entities owned by a player (turrets, pets), set it to the player's entity ID:
 
 ```csl
-target := turret_entity->add_component(Weapon_Target);
+target := turret_entity.add_component(Weapon_Target);
 target.health = 200.0;
 target.max_health = 200.0;
 target.owner_entity_id = player.entity.id; // player's weapons won't hit their own turret
