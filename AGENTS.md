@@ -1,70 +1,39 @@
 You will be developing a multiplayer game in a custom scripting language (.csl)
 
 ## Networking
-> **NEVER wrap gameplay logic in `Game.is_server()`.** The engine uses client-side prediction with automatic server reconciliation. Gameplay code **must** run on both client and server for smooth behavior.
+> **NEVER USE`Game.is_server()`.** The engine uses client-side prediction with automatic server reconciliation. Gameplay code **must** run on both client and server for smooth behavior.
 
 - All gameplay state is automatically synced. You do not need to write RPCs or manually replicate state.
-- The client runs the same gameplay code as the server. The server's authoritative result is reconciled automatically — you get correctness **and** responsiveness for free, but **only if the code runs on both sides**.
+- The client runs the same gameplay code as the server. The server's authoritative result pushed to the client every 4 frames — you get correctness **and** responsiveness for free.
 - Do not forget that **multiple players will be connecting**. Avoid global state that will break with multiple players. Store these as fields on the player.
 
-### is_local_or_server() vs is_local()
-
-Both are **methods on Player_Base** — they are NOT standalone global functions and will produce a compile error if called that way from a non-Player class.
-
-- Inside a `Player_Base` subclass method: call as bare `is_local_or_server()` (implicit `this`)
-- From any other component that has a player reference: call `player_ref.is_local_or_server()`
-
+There are two player methods that control where code runs:
 ```csl
-// ✅ Correct — inside a Player_Base subclass
-Player :: class : Player_Base {
-    ao_late_update :: method(dt: float) {
-        if is_local_or_server() {
-            draw_ability_button(this, Shoot_Ability, 0);
-            UI.text(..., "Waiting for host to start the game...");
-        }
-        if is_local() {
-            // Local only SFX
-        }
-    }
+player.is_local_or_server() {
+    // ONLY/MUST used for UI, and all UI must be drawn in player late_update
 }
 
-// ✅ Correct — from a non-Player component with a player reference
-My_Component :: class : Component {
-    player: Player;
-
-    ao_update :: method(dt: float) {
-        if player == null return;
-        if player.is_local_or_server() {
-            // gameplay logic
-        }
-    }
-}
-
-// ❌ Wrong — is_local_or_server() is not a global free function
-My_Component :: class : Component {
-    ao_update :: method(dt: float) {
-        if is_local_or_server() { } // ERROR: Unresolved identifier
-    }
+player.is_local() {
+    // ONLY used for player specific cosmetic effects like controlling visibility for player specific items. You cannot store any persistent state here, it will be wiped every time the server updates.  
 }
 ```
 
+These are NOT standalone global functions, they must be called from within or on your player class. 
+
 ## Imports
-All imports go in main.csl (in the /scripts folder) only. You only need to import folders, not individual scripts.
+All imports go in main.csl (in the /scripts folder) only. You only import folders, not individual scripts.
 ```csl
 // main.csl
 import "core:ao"
 import "ui" // add folder imports here if needed
 ```
 
-## Assets/Resources
-Find assets with the MCP: 
-asset_local_search (query: "tree")
+Find assets with the MCP asset_local_search (query: "tree")
+When referencing assets use <path>.<ext>, omit /res from the path. 
 
-- When referencing assets use <path>.<ext>, omit /res from the path. 
-- Engine assets are available with the $AO prefix.
-- Check that assets actually exist before using. 
+Do not use $AO/ui/kit/Icons/sparks/spark_small.png
 
-### Available Asset Types
+### Asset Types
 ```csl
 texture := get_asset(Texture_Asset, "ui/button.png");
 sound := get_asset(SFX_Asset, "sfx/click.wav");
@@ -72,9 +41,7 @@ spine := get_asset(Spine_Asset, "anims/dog/dog.spine");
 ```
 
 ## Entities
-Most entities should be placed in the scene using the mcp tools. 
-
-Use scripts to add entities that must be dynamically spawned (like towers or waves of enemies in a tower defense game)
+Runtime spawned entities:
 ```csl
 e := Scene.create_entity();
 e.set_local_position({10, 20});
@@ -89,7 +56,6 @@ e.destroy();
 ```
 
 ### Iterating Entities
-
 ```csl
 for entity: entity_iterator() {
 }
@@ -97,45 +63,42 @@ for entity: entity_iterator() {
 
 ### Iterating Children
 visit :: proc(entity: Entity) {
-    // <do something>
+    // logic
 
-    current := entity.first_child;
+    current := entity.get_first_child();
     while current != null {
         visit(current);
-        current = current.next_sibling;
+        current = current.get_next_sibling();
     }
 }
 
 ## Components
-
-### Out-of-the-box components
 #### Sprite_Renderer
 ```csl
 sprite := entity.get_component(Sprite_Renderer);
 sprite.set_texture(texture);
 sprite.color = {1, 1, 1, 1}; // RGBA
-sprite.depth_offset = 0.5;
-sprite.layer = 10;
+sprite.layer = -5;
 ```
 
 #### Prefab_Asset
 ```csl
-prefab_asset := get_asset(Prefab_Asset, "MyPrefab.prefab");
-entity := instantiate(prefab_asset);
+p := get_asset(Prefab_Asset, "MyPrefab.prefab");
+entity := instantiate(p);
 ```
 
 #### Spine_Animator
-Reference the spine skill. If you are asked to make an NPC, shop vendor, or other character, you must use the $AO/streamed_character rig as it has a ton of skins and animations! If adding through code, note that all streamed_characters will need at least the base/crewchsia skin added. 
+Reference the Spine skill. If you are asked to make an NPC, shop vendor, or other character, you must use the $AO/streamed_character rig which has useful skins and animations! All streamed_characters need the base/crewchsia skin. 
 
 ### Creating Custom Components
-> Make new components in dedicated files. You do not need to import them unless they're in a separate folder. 
+> One file per component. You do not need to import them unless they're in a separate folder. 
 
-Can override these lifecycle methods:
+Lifecycle methods
+ao_start
+ao_update
+ao_late_update
+ao_end - when destroyed
 
-- ao_start
-- ao_update
-- ao_late_update - After all updates
-- ao_end - When component is destroyed
 ```csl
 // orbiter.csl
 Orbiter :: class : Component {
@@ -170,14 +133,12 @@ Orbiter :: class : Component {
 > You can add components you've made to entities in the scene using the modify_scene tool. 
 
 #### Iterating Components
-
 ```csl
 for player: component_iterator(My_Player) {
 }
 ```
 
 #### Finding components close to the player
-> csl does not have collision callbacks instead get components near them and check distance
 ```csl
 nearby: [..]Enemy;
 Scene.get_all_components_in_range(player_pos, 5.0, ref nearby);
@@ -187,11 +148,9 @@ closest, found := Scene.get_closest_component_in_range(player_pos, 2.0, Pickup);
 
 ## Random
 ```csl
-rng: u64 = rng_seed(entity.id);
-// or
 rng: u64 = rng_root_seed();
 
-// Pass seed using ref. Range values are inclusive.
+// Range values are inclusive.
 random_float := rng_range_float(ref rng, 0, 1);
 random_int := rng_range_int(ref rng, 1, 10);
 ```
@@ -205,15 +164,13 @@ hp := 67;
 // %0 as alias for % when you want either multiple args next to eachother ("%0%") or an arg then a percent literal ("%0%%")
 format_string("health: %0%%", {hp}); // health: 67%
 
-// Use Format_Float wrapper struct for decimal rounding
-value := 3.14159;
-format_string("pi: %", {format_float(value, decimals=2)}); // "pi: 3.14"
+// Decimal rounding
+format_string("pi: %", {format_float(PI, decimals=2)}); // "pi: 3.14"
 ```
 
 my_str.count gets length 
 
 ## Time
-
 ```csl
 current_time := get_time(); // Float seconds since game start
 frame := get_frame_number(); // u64
@@ -228,7 +185,7 @@ desc.delay = 0; // For lining up with animations
 desc.loop = false;
 desc.volume = 0.4;
 desc.speed_perturb = 0.1;
-// For sounds only one player should hear (UI clicks, etc...), wrap play calls with is_local
+desc.specific_to_player = player; // For sounds only one player should hear (UI clicks, coin earning, etc):
 sound_id := SFX.play(sound_asset, desc);
 
 SFX.stop(sound_id);
@@ -248,20 +205,23 @@ if Economy.can_withdraw_currency(player, "Coins", COST) {
     Economy.withdraw_currency(player, "Coins", COST);
 }
 ```
+Any time players receive item or currencies you MUST play a sick animation of the item/coins going up or lerping over and have tactile sfx. 
+
+Round based games should reset economy in player ao_start with Economy.delete_save_data(this)
 
 ## UI
-- Reference the `UIK` skill if the user's request requires game UI. Do not mix UIK and UI APIs. 
+- Reference the `UIK` skill for any game UI. Do not mix UIK and UI APIs. 
 
 ## Inventory & Items
 - When players acquire items (e.g. from a shop or interacting with the world), you MUST use the All Out inventory system documented in the `inventory` skill.
-- For placing items in the world use the `inventory-droppable-items` skill. 
+- For placing items in the world use the `inventory-placeable-items` skill. 
 
 ## Math Functions
 `sin`, `cos`, `pow`, `sqrt`, `lerp`, `clamp`, `abs`, `min`, `max`, `length`, `length_squared`, `normalize` there are no other math functions. 
 
 ### Player_Base Reference
-- p.is_local_or_server() -> bool  // true on the local client and on the server; must be used for UI. 
-- p.is_local() -> bool            // true only on the local client; use for purely cosmetic effects
+- p.is_local_or_server() -> bool // true on the local client and on the server; must only be used for UI. 
+- p.is_local() -> bool // true only on the local client; use for purely cosmetic effects (not UI); do not set any persisted state here or it will be wiped. 
 - p.get_username()
 - p.get_user_id() -> string
 - p.avatar_color -> Color_Replace_Color 
@@ -270,16 +230,25 @@ if Economy.can_withdraw_currency(player, "Coins", COST) {
 - p.add_invisibility_reason(reason: string)
 
 ## Best Practices
-- CSL does not have closures, instead use `userdata: Object` passed to callbacks. Class instances can be stored in an `Object` variable and cast back to its original type.
-- Do not write your own input. Movement is handled by default. If you need to consume it, use player.agent.inputs_this_frame and ability buttons. 
-- Generally avoid custom player animations
-- When unsure about an API signature, find the appropriate skill. If no results are found, you may grep core.csl or generated.csl, but NEVER read them directly as they will ruin your context. 
+- Do not write your own input. Movement is handled by default (speed = 300). If you need to consume it use player.agent.inputs_this_frame and ability buttons.
+- When unsure about an API signature find the appropriate skill. If no results are found you may grep api_references/core/ao/core.csl_engine.
+- You MUST fundamentally design your games to account for multiple players. No global tycoons, everything must either be plot based (tycoons) or round based (shooters)
+- Brainrots refer to a special class of character you can find by using the get_remote_assets_that_work_well_with tool with catalogId 05604152b758f509 (these are usually collection based games where brainrots obtained in a user defined way generate money over time you can collect by walking up to them when placed in your base)
+- All games with plots must have a UIK button to teleport to their own plot.
+- Only use the Notifyer API for critical messages there is no other way to convey. Skip notifications if there's a more natural way to convey something.  
+- For new-player onboarding use world-space objective arrows insetad of tutorial text. Reference the `world-space-ui` skill and use `Tutorial_Arrow.default_options()` + `Tutorial_Arrow.draw(player, target_position, options)`.
+- Any games involving weapons MUST clone https://github.com/All-Out-Games/reusable-weapons-csl.git repo with curl and follow its README. 
+- When the prompt requires building a game world do so using the allout MCP scene editing tools instead of scripts. 
 
-After you make script changes, run the All Out MCP compile tool.
-When the prompt requires building a game world, do so using the allout MCP scene editing tools instead of scripts. 
+### Guidelines for text / copy
+- Don't use text in UI if a texture icon would suffice. Players won't spend time reading huge blobs of text.
+- If you use text in UI make CERTAIN it fits within its container. UIK does not wrap automatically and you have a tendancy to overflow container bounds. Meticulously check that everything fits with screenshot tests. 
+- Don't explain the game with UI/text. Put effort into making the game clear via INTUITIVE GAMEPLAY. 
 
-To add weapons to your game clone the https://github.com/All-Out-Games/reusable-weapons-csl.git repo with curl and follow the README. 
+### Guidelines for maps
+- Follow all directions carefully from the world building skill
+- Every map must be a large comprehensive game **world**, not a demo. There should be no blue editor backing showing behind anything and the players must have space to explore. 
+- Layer 0 is best for most items like towers, world props, trees, etc... since it naturally layers with the player. 
 
-Keep your changes scoped to exactly what the user asked for and nothing more. 
-
-When entering a new project for the first time, start with the scene_summary tool. 
+After you make script changes run the All Out MCP compile tool.
+Do exactly what the users asks for and nothing more.

@@ -20,7 +20,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/lightning_beam/lighting_beam.spine",
+    "skeleton_data_asset": "anims/lightning_beam/lighting_beam.spine",
     "ordered_skins": [
       "blue"
     ]

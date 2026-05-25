@@ -19,7 +19,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/bomb_shooter/bomb_shooter.spine",
+    "skeleton_data_asset": "anims/bomb_shooter/bomb_shooter.spine",
     "ordered_skins": [
       "A_standard"
     ],

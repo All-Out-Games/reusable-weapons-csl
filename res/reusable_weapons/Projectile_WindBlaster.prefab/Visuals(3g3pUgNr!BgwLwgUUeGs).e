@@ -20,7 +20,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/Tornado/Export/tornado.spine",
+    "skeleton_data_asset": "anims/Tornado/Export/tornado.spine",
     "ordered_skins": [
       "default"
     ],

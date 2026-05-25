@@ -19,7 +19,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/GOLD109_mushroom_cloud/GOLD109_mushroom_cloud.spine",
+    "skeleton_data_asset": "anims/GOLD109_mushroom_cloud/GOLD109_mushroom_cloud.spine",
     "ordered_skins": [
       "default"
     ]

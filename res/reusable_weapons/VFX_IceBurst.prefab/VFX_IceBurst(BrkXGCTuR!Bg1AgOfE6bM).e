@@ -19,7 +19,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/ice_block/ice_block.spine",
+    "skeleton_data_asset": "anims/ice_block/ice_block.spine",
     "ordered_skins": [
       "default"
     ]

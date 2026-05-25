@@ -56,7 +56,7 @@ spawn_poison_cloud :: proc(pos: v2, owner_id: u64) {
     // Spine visual: virus cloud with Appear -> Idle -> Disappear
     spine := cloud_entity.add_component(Spine_Animator);
     spine.awaken();
-    spine.set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/Virus_Cloud/004RAND_virus_cloud.spine"));
+    spine.set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/Virus_Cloud/004RAND_virus_cloud.spine"));
     spine.color_multiplier = {1, 1, 1, 0.5};
 
     sm := State_Machine.create();
@@ -151,7 +151,7 @@ Cluster_Bomb :: class : Component {
             SFX.play(sfx, desc);
 
             // Spawn explosion VFX
-            spawn_simple_vfx("reusable_weapons/anims/reusable-weapons/fireball/BAT003_fireball.spine", "default", target_pos, {2, 2}, "explode", 1.5);
+            spawn_simple_vfx("reusable_weapons/anims/fireball/BAT003_fireball.spine", "default", target_pos, {2, 2}, "explode", 1.5);
             entity.destroy();
         }
     }
@@ -247,7 +247,7 @@ spawn_tornado_entity :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     // Spine visual: tornado with spin_intro -> spin_loop -> spin_outro
     spine := tornado_entity.add_component(Spine_Animator);
     spine.awaken();
-    spine.set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/Tornado/Export/tornado.spine"));
+    spine.set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/Tornado/Export/tornado.spine"));
 
     sm := State_Machine.create();
     disappear_var := sm.create_variable("disappear", .TRIGGER);
@@ -347,7 +347,7 @@ spawn_storms_eye_tornado :: proc(player: Player) {
     // Spine visual: wind rings with intro -> loop -> outro
     spine := tornado_entity.add_component(Spine_Animator);
     spine.awaken();
-    spine.set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/wind_rings/wind_rings.spine"));
+    spine.set_skeleton(get_asset(Spine_Asset, "reusable_weapons/anims/wind_rings/wind_rings.spine"));
 
     sm := State_Machine.create();
     outro_var := sm.create_variable("outro_trigger", .TRIGGER);

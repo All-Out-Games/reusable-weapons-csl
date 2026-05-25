@@ -6,6 +6,8 @@ description: Only read if you need to display player specific world state
 
 The `ao_on_state_sync` component method is called on the client immediately after a component's state has been synchronized from the server. Use it to apply client-local modifications (hiding entities, disabling components per-player).
 
+Values set here will be wiped after each server sync so you cannot persist long lived fields across these calls. It's purely for every frame "side effects" like hiding stuff for specific players. 
+
 ```csl
 // Only called on clients, never on the server.
 ao_on_state_sync :: method()

@@ -20,7 +20,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/projectiles/013RED_projectile.spine",
+    "skeleton_data_asset": "anims/projectiles/013RED_projectile.spine",
     "ordered_skins": [
       "megablade"
     ],

@@ -8,6 +8,8 @@ Player :: class : Player_Base {
     equipped_item_def: Item_Definition;
     last_selected_index: s64;
     boomwheel_cannon: Boomwheel_Cannon;
+    weapon_rig: Spine_Instance;
+    weapon_attachment_id: u64;
 
     ao_start :: method() {
         wt := entity.add_component(Weapon_Target);

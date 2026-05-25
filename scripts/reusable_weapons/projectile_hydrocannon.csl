@@ -45,7 +45,7 @@ Hydro_Cannon_Projectile :: class : Component {
 
                 spine := geyser_entity.add_component(Spine_Animator);
                 spine.awaken();
-                geyser_asset := get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/projectiles/013RED_projectile.spine");
+                geyser_asset := get_asset(Spine_Asset, "reusable_weapons/anims/projectiles/013RED_projectile.spine");
                 spine.set_skeleton(geyser_asset);
                 spine.enable_skin("hydro_cannon");
                 spine.refresh_skins();
@@ -116,10 +116,8 @@ Hydro_Cannon_Geyser :: class : Component {
 spawn_hydrocannon_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     config := get_weapon_config(wt);
 
-    bone_local := player.animator.get_bone_local_position("PROJECTILE");
-    barrel_dist := length(bone_local);
     dir := normalize(direction);
-    spawn_pos := v2{player.animator.entity.world_position.x + dir.x * barrel_dist, player.animator.entity.world_position.y + dir.y * barrel_dist};
+    spawn_pos := get_projectile_spawn_pos(player, direction);
 
     proj_entity := Scene.create_entity();
     proj_entity.set_local_position(spawn_pos);

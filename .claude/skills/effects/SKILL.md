@@ -1,13 +1,12 @@
 ---
 name: effects
-description: "Reference this when implementing effects for abilities, animations, and state-based behaviors."
+description: Reference this when implementing effects for abilities, animations, and state-based behaviors.
 ---
 # CSL Effect System
 
 Effects temporarily take control of an entity to execute complex behaviors (dashes, attacks, death sequences). Works with Players, NPCs, or any entity.
 
 ## Creating an Effect
-
 ```csl
 My_Effect :: class : Effect_Base {
     target_position: v2;
@@ -21,7 +20,7 @@ My_Effect :: class : Effect_Base {
         entity.lerp_local_position(target_position, 20 * dt);
         if get_elapsed_time() > 1.0 {
             remove_effect(false);
-            return;  // Effect is invalid after removal -- must return immediately
+            return; // Effect is invalid after removal -- must return immediately
         }
     }
 
@@ -47,55 +46,41 @@ entity.set_active_effect(effect);
 ```csl
 slow_effect := new(Slow_Effect);
 slow_effect.speed_multiplier = 0.5;
-slow_effect.set_duration(4);  // Auto-remove after 4 seconds
+slow_effect.set_duration(4); // Auto-remove after 4 seconds
 entity.add_passive_effect(slow_effect);
 ```
 
 ## Effect_Base Fields
-
 ```csl
 Effect_Base :: class {
-    entity: Entity;        // The entity this effect is attached to
-    player: Player;        // Populated only for Player entities, null for NPCs
+    entity: Entity;
+    player: Player; (null for NPCs)
 
     player_specific: struct {
-        freeze_player: bool;           // Lock position entirely (use for eat/interact)
+        freeze_player: bool; // Lock position entirely (use for eat/interact)
         disable_movement_inputs: bool; // Ignore input but code can still move (use for dash/roll)
     };
 
     start_time: float;
-    next_effect: Effect_Base;  // Linked list traversal
+    next_effect: Effect_Base;
     prev_effect: Effect_Base;
 }
 ```
-
-## Key Methods
-
-- `get_elapsed_time()` -- Time since effect started.
-- `set_duration(seconds)` -- Auto-remove after time. Call when creating or in `effect_start`.
-- `remove_effect(interrupt: bool)` -- End the effect. Pass `false` for natural completion, `true` for forced. **Effect is invalid after this call -- return immediately.**
-
-## Callbacks
-
-All optional. Implement only what you need.
-
+## Callbacks (each optional)
 - `effect_start` -- Set freeze/movement flags, trigger animations, store initial state, call `set_duration`.
-- `effect_update(dt: float)` -- Per-frame logic: move entity, check completion.
+- `effect_update(dt: float)`
 - `effect_late_update(dt: float)` -- Post-update: draw UI, camera effects. Use `player.is_local()` to gate local-only visuals.
 - `effect_end(interrupt: bool)` -- Restore saved state, reset animations with `player.animator.state_machine.set_trigger("RESET")`.
 
 ## Checking Effects
-
 ```csl
 if has_effect(entity, Slow_Effect) {
     agent.movement_speed *= 0.5;
 }
 ```
 
-## Common Patterns
-
+## Examples
 ### Movement Effect (Dash/Roll)
-
 ```csl
 Roll_Effect :: class : Effect_Base {
     direction: v2;
@@ -121,7 +106,6 @@ Roll_Effect :: class : Effect_Base {
 ```
 
 ### Attack Effect (Hit Detection)
-
 Same structure as Roll_Effect, but add an `already_hit_list` to avoid hitting the same target twice:
 
 ```csl
@@ -132,7 +116,7 @@ effect_update :: method(dt: float) {
         if other.team == player.team continue;
         if !in_range(other.entity.world_position - player.entity.world_position, 0.75) continue;
         if already_hit_list.contains(other) continue;
-        other.take_damage(1); // user-defined damage proc/method
+        other.take_damage(1); // user-defined damage method
         already_hit_list.append(other);
     }
     player.agent.velocity = direction * 10;
@@ -144,7 +128,6 @@ effect_update :: method(dt: float) {
 ```
 
 ### Death/Respawn Effect
-
 ```csl
 Death_Effect :: class : Effect_Base {
     effect_start :: method() {
@@ -177,7 +160,6 @@ Death_Effect :: class : Effect_Base {
 ```
 
 ### NPC Effects
-
 For NPCs, `player` is null. Store a reference to the NPC component and use `entity` for transforms.
 
 ```csl
@@ -208,12 +190,11 @@ ao_update :: method(dt: float) {
 ```
 
 ## Checking Effects
-
 ```csl
 effect := entity.get_active_effect();
 if effect != null && effect.#type == Eating_Effect {
     effect.(Eating_Effect).chomp();
 }
 
-remove_all_effects(entity);  // Remove all active and passive effects
+remove_all_effects(entity);
 ```

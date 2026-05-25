@@ -19,7 +19,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/electric_burst/014ANT_Electric_Shockwave.spine",
+    "skeleton_data_asset": "anims/electric_burst/014ANT_Electric_Shockwave.spine",
     "ordered_skins": [
       "default"
     ]

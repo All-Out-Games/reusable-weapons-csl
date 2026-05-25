@@ -96,11 +96,8 @@ Beam_Visual :: class : Component {
             return;
         }
 
-        // Beam start from PROJECTILE bone
-        bone_local := source.animator.get_bone_local_position("PROJECTILE");
-        barrel_dist := length(bone_local);
         aim_dir := source.last_aim_direction;
-        start_pos := v2{source.animator.entity.world_position.x + aim_dir.x * barrel_dist, source.animator.entity.world_position.y + aim_dir.y * barrel_dist};
+        start_pos := get_projectile_spawn_pos(source, aim_dir);
 
         end_pos: v2;
         if target_id != 0 {
@@ -134,7 +131,7 @@ spawn_beam_entity :: proc(owner_id: u64, target_id: u64, skin_name: string, anim
 
     spine := beam_entity.add_component(Spine_Animator);
     spine.awaken();
-    beam_asset := get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/lightning_beam/lighting_beam.spine");
+    beam_asset := get_asset(Spine_Asset, "reusable_weapons/anims/lightning_beam/lighting_beam.spine");
     spine.set_skeleton(beam_asset);
     spine.enable_skin(skin_name);
     spine.refresh_skins();

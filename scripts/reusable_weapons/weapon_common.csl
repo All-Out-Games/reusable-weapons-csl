@@ -1,3 +1,30 @@
+WEAPON_RIG_ASSET_PATH :: "reusable_weapons/anims/weapons_rig/Weapons.spine";
+WEAPON_RIG_ATTACHMENT_SLOT :: "weapon_held_R";
+WEAPON_RIG_PROJECTILE_BONE :: "PROJECTILE_SPAWN";
+
+clear_equipped_weapon_rig :: proc(player: Player) {
+    if player.weapon_attachment_id != 0 {
+        player.animator.instance.clear_attachment_rig(player.weapon_attachment_id);
+        player.weapon_attachment_id = 0;
+    }
+    player.weapon_rig = null;
+}
+
+attach_weapon_rig :: proc(player: Player, skin_name: string) {
+    clear_equipped_weapon_rig(player);
+    if skin_name == "" return;
+
+    rig := Spine_Instance.create();
+    rig.set_skeleton(get_asset(Spine_Asset, WEAPON_RIG_ASSET_PATH));
+    rig.enable_skin(skin_name);
+    rig.refresh_skins();
+
+    desc := Attachment_Desc.default();
+    desc.draw_mode = .IN_FRONT;
+    player.weapon_attachment_id = player.animator.instance.add_attachment_rig(WEAPON_RIG_ATTACHMENT_SLOT, rig, desc, true);
+    player.weapon_rig = rig;
+}
+
 give_weapon :: proc(wt: Weapon_Type, inventory: Inventory) {
     weapon_def := get_weapon_item_def(wt);
     if weapon_def == null return;
@@ -8,11 +35,7 @@ give_weapon :: proc(wt: Weapon_Type, inventory: Inventory) {
 weapon_equip :: proc(player: Player, wt: Weapon_Type) {
     config := get_weapon_config(wt);
 
-    // Enable weapon skin (skip if empty, e.g. Boomwheel)
-    if config.weapon_skin != "" {
-        player.animator.enable_skin(config.weapon_skin);
-        player.animator.refresh_skins();
-    }
+    attach_weapon_rig(player, config.weapon_skin);
 
     // Set IK variable
     if config.use_ik_var != "" {
@@ -28,7 +51,7 @@ weapon_equip :: proc(player: Player, wt: Weapon_Type) {
 
         spine := cannon_entity.add_component(Spine_Animator);
         spine.awaken();
-        cannon_asset := get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/bomb_shooter/bomb_shooter.spine");
+        cannon_asset := get_asset(Spine_Asset, "reusable_weapons/anims/bomb_shooter/bomb_shooter.spine");
         spine.set_skeleton(cannon_asset);
         spine.enable_skin("A_standard");
         spine.refresh_skins();
@@ -76,6 +99,7 @@ weapon_equip :: proc(player: Player, wt: Weapon_Type) {
 
 weapon_unequip :: proc(player: Player, wt: Weapon_Type) {
     config := get_weapon_config(wt);
+    clear_equipped_weapon_rig(player);
 
     // Boomwheel: stop cannon roll sound and destroy cannon entity
     if wt == .BOOMWHEEL {
@@ -93,12 +117,6 @@ weapon_unequip :: proc(player: Player, wt: Weapon_Type) {
     // Disable IK variable
     if config.use_ik_var != "" {
         player.animator.state_machine.set_bool(config.use_ik_var, false);
-    }
-
-    // Disable weapon skin
-    if config.weapon_skin != "" {
-        player.animator.disable_skin(config.weapon_skin);
-        player.animator.refresh_skins();
     }
 
     // Destroy any active beam visuals for this player
@@ -209,10 +227,7 @@ weapon_consume_ammo :: proc(player: Player, wt: Weapon_Type, amount: s64) {
 weapon_spawn_standard_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     config := get_weapon_config(wt);
 
-    bone_local := player.animator.get_bone_local_position("PROJECTILE");
-    barrel_dist := length(bone_local);
-    dir := normalize(direction);
-    spawn_pos := v2{player.animator.entity.world_position.x + dir.x * barrel_dist, player.animator.entity.world_position.y + dir.y * barrel_dist};
+    spawn_pos := get_projectile_spawn_pos(player, direction);
 
     proj_entity := Scene.create_entity();
     proj_entity.set_local_position(spawn_pos);
@@ -235,15 +250,18 @@ weapon_spawn_standard_projectile :: proc(player: Player, direction: v2, wt: Weap
 }
 
 // Spine-animated projectile constants
-PROJ_SPINE_ASSET_PATH :: "reusable_weapons/anims/reusable-weapons/projectiles/013RED_projectile.spine";
+PROJ_SPINE_ASSET_PATH :: "reusable_weapons/anims/projectiles/013RED_projectile.spine";
 TRAVEL_LOOP :: "013RED/Travel_Loop";
 TRAVEL_LOOP_SPINNING :: "013RED/Travel_Loop_Spinning";
 
-// Helper: compute projectile spawn position from PROJECTILE bone
+// Helper: compute projectile spawn position from the attached weapon rig muzzle.
 get_projectile_spawn_pos :: proc(player: Player, direction: v2) -> v2 {
-    bone_local := player.animator.get_bone_local_position("PROJECTILE");
-    barrel_dist := length(bone_local);
     dir := normalize(direction);
+    barrel_dist := 1.5;
+    if player.weapon_rig != null && #alive(player.weapon_rig) {
+        bone_local := player.weapon_rig.get_bone_local_position(WEAPON_RIG_PROJECTILE_BONE);
+        barrel_dist = length(bone_local);
+    }
     return v2{player.animator.entity.world_position.x + dir.x * barrel_dist, player.animator.entity.world_position.y + dir.y * barrel_dist};
 }
 

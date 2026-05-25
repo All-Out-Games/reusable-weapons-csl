@@ -95,23 +95,6 @@ Items.move_item_to_inventory(ammo, player.default_inventory);
 
 See `weapon_items.csl` for all ammo type indices (0-9).
 
-### 6. Set the default_player_rig to your merged rig
-
-For agents, call 
-mcp_tool_set_default_player_rig
-```json                                                                                                                                                                                                            
-{                                                                                                                                                                                                                  
-  "default_player_rig": "reusable_weapons/anims/reusable-weapons/player/player.merged_spine_rig#output"                                                                                                            
-}
-```
-
-For humans, edit scene.config
-```json
-{
-  "default_player_rig": "reusable_weapons/anims/reusable-weapons/player/player.merged_spine_rig#output"
-}
-```
-
 ## Key files you can change
 
 | File | What's in it | Why you'd change it |

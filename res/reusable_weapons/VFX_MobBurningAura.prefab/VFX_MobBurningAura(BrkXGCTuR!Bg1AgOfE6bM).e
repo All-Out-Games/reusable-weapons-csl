@@ -20,7 +20,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/Player_VFX_Particles/012MIM_Player_VFX_particles.spine",
+    "skeleton_data_asset": "anims/Player_VFX_Particles/012MIM_Player_VFX_particles.spine",
     "ordered_skins": [
       "default"
     ]

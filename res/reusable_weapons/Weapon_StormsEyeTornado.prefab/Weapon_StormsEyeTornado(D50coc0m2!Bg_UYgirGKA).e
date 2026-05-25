@@ -42,7 +42,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/wind_rings/wind_rings.spine",
+    "skeleton_data_asset": "anims/wind_rings/wind_rings.spine",
     "ordered_skins": [
 
     ],

@@ -19,7 +19,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/aoe_heal_circle/BAT003_heal_regeneration.spine",
+    "skeleton_data_asset": "anims/aoe_heal_circle/BAT003_heal_regeneration.spine",
     "ordered_skins": [
       "default"
     ],

@@ -15,7 +15,7 @@ JSON :: struct {
 }
 ```
 
-For persistence, prefer `Save.set_json` / `Save.try_get_json` (see the save skill) — avoids intermediate string allocation.
+For persistence, prefer `Save.set_json` / `Save.try_get_json` (see the save skill)
 
 ## Basic Usage
 
@@ -24,7 +24,7 @@ Player_Stats :: class {
     name: string @ao_serialize;
     level: int @ao_serialize;
     health: float @ao_serialize;
-    internal_id: int;  // Not serialized (no @ao_serialize)
+    internal_id: int; // Not serialized (no @ao_serialize)
 }
 
 stats := new(Player_Stats);
@@ -72,7 +72,7 @@ JSON works with primitive types directly:
 
 ```csl
 pos := v2{10.5, 20.0};
-json := JSON.serialize(ref pos);  // {"x": 10.5, "y": 20.0}
+json := JSON.serialize(ref pos); // {"x": 10.5, "y": 20.0}
 
 loaded_pos: v2;
 JSON.try_deserialize(json, ref loaded_pos);

@@ -20,7 +20,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/fireball/BAT003_fireball.spine",
+    "skeleton_data_asset": "anims/fireball/BAT003_fireball.spine",
     "ordered_skins": [
       "default"
     ]

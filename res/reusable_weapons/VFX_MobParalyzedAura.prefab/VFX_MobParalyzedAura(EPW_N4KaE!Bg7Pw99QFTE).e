@@ -20,7 +20,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/Electrocuted/014ANT_Electrocuted_State_VFX.spine",
+    "skeleton_data_asset": "anims/Electrocuted/014ANT_Electrocuted_State_VFX.spine",
     "ordered_skins": [
       "default"
     ]

@@ -20,7 +20,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/Virus_Cloud/004RAND_virus_cloud.spine",
+    "skeleton_data_asset": "anims/Virus_Cloud/004RAND_virus_cloud.spine",
     "ordered_skins": [
       "default"
     ]

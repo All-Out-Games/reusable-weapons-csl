@@ -20,7 +20,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/Heal_Effect/heal_effect.spine",
+    "skeleton_data_asset": "anims/Heal_Effect/heal_effect.spine",
     "ordered_skins": [
       "default"
     ]

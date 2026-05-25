@@ -18,10 +18,6 @@ Melee_Ability :: class : Ability_Base {
             // Trigger melee animation
             p.animator.state_machine.set_trigger("melee_AL");
 
-            // Enable katana skin briefly
-            p.animator.enable_skin("weapons/katana");
-            p.animator.refresh_skins();
-
             // Play katana sound
             sfx_desc := SFX.default_sfx_desc();
             sfx_desc.set_position(p.entity.world_position);

@@ -19,7 +19,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/nuke_crater/MWSD116_smash_crater.spine",
+    "skeleton_data_asset": "anims/nuke_crater/MWSD116_smash_crater.spine",
     "ordered_skins": [
       "default"
     ],

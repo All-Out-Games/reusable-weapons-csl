@@ -21,7 +21,7 @@ My_Ability :: class : Ability_Base {
     on_update :: method(params: ref Ability_Update_Params) {
         if params.clicked && params.can_use {
             do_ability_effect(player);
-            current_cooldown = 2.0;  // Must set cooldown after activating
+            current_cooldown = 2.0; // Must set cooldown after activating
         }
     }
 }
@@ -59,14 +59,14 @@ Player :: class : Player_Base {
 
 ```csl
 on_update :: method(params: ref Ability_Update_Params) {
-    params.hovering;        // Mouse over button
+    params.hovering; // Mouse over button
     params.just_pressed;
-    params.active;          // Being held
+    params.active; // Being held
     params.released;
-    params.clicked;         // Pressed and released
-    params.can_use;         // Passed can_use check and not on cooldown
-    params.drag_offset;     // Normalized drag vector (0-1) for aimed abilities
-    params.drag_direction;  // Unit direction of drag
+    params.clicked; // Pressed and released
+    params.can_use; // Passed can_use check and not on cooldown
+    params.drag_offset; // Normalized drag vector (0-1) for aimed abilities
+    params.drag_direction; // Unit direction of drag
 }
 ```
 
@@ -79,7 +79,7 @@ Sprint_Ability :: class : Ability_Base {
     on_init :: method() {
         name = "Sprint";
         keybind_override = keybind_sprint;
-        draw_but_dont_use_keybind = true;  // Show keybind but handle input via update_holding_ability
+        draw_but_dont_use_keybind = true; // Show keybind but handle input via update_holding_ability
     }
 
     can_use :: method() -> bool {
@@ -135,7 +135,7 @@ Dodge_Roll :: class : Ability_Base {
             current_cooldown = 1.5;
             effect := new(Roll_Effect);
             effect.direction = activation.direction;
-            player.entity.set_active_effect(effect);  // See effects skill
+            player.entity.set_active_effect(effect); // See effects skill
         }
     }
 }
@@ -153,14 +153,14 @@ Ability_Base :: class {
     player: Player;
     name: string;
     icon: Texture_Asset;
-    current_cooldown: float;           // Remaining cooldown (0 = ready)
+    current_cooldown: float; // Remaining cooldown (0 = ready)
     type: typeid;
-    is_aimed_ability: bool;            // Show aim indicator on button
+    is_aimed_ability: bool; // Show aim indicator on button
     mouse_position_on_press: v2;
 
-    keybind_override: Keybind;         // Custom keybind (0 = use default)
-    disable_keybind: bool;             // Don't show or use any keybind
-    draw_but_dont_use_keybind: bool;   // Show keybind but handle input manually
+    keybind_override: Keybind; // Custom keybind (0 = use default)
+    disable_keybind: bool; // Don't show or use any keybind
+    draw_but_dont_use_keybind: bool; // Show keybind but handle input manually
 }
 ```
 
@@ -215,8 +215,7 @@ Player :: class : Player_Base {
 ```
 
 ## Custom Button Drawing
-
-Implement `on_draw_button` on your ability class to draw custom content on the ability button (e.g., ammo count, charge indicator):
+Implement `on_draw_button` on your ability class to draw custom content on the ability button like ammo count charge indicators:
 
 ```csl
 My_Ability :: class : Ability_Base {

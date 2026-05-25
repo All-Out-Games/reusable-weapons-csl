@@ -1,6 +1,6 @@
-13
+14
 1
-118046795777011 1770425054476505800
+2773689099
 {
   "name": "New Entity",
   "local_enabled": true,
@@ -16,7 +16,7 @@
 },
 {
   "cid": 1,
-  "aoid": "118061174034752:1770425057826672200",
+  "aoid": 1312867943,
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {

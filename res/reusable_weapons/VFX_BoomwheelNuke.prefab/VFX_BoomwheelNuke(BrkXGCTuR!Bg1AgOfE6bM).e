@@ -20,7 +20,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Spine_Animator",
   "data": {
-    "skeleton_data_asset": "anims/reusable-weapons/nuke_vfx/ExplosionNuke.spine",
+    "skeleton_data_asset": "anims/nuke_vfx/ExplosionNuke.spine",
     "ordered_skins": [
       "default"
     ]
