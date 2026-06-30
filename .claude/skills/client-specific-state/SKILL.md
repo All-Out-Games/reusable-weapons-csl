@@ -17,13 +17,13 @@ ao_on_state_sync :: method()
 
 ```csl
 Dropped_Item :: class : Component {
-    exclusive_to_player: Player;
+    exclusive_to_player: string; // player user id
 
     ao_on_state_sync :: method() {
         visible := true;
-        if exclusive_to_player != null {
+        if exclusive_to_player.count > 0 {
             if local_player, ok := Game.get_local_player(); ok {
-                if exclusive_to_player != local_player {
+                if exclusive_to_player != local_player.get_user_id() {
                     visible = false;
                 }
             }
@@ -35,12 +35,13 @@ Dropped_Item :: class : Component {
 
 ### Client-Server Desync Warning
 
-When you hide/disable something via `ao_on_state_sync`, the server still has the original state. If an entity has an `Interactable`, the server will still detect interactions even though the client can't see it. Always add a corresponding server-side check:
+When you hide/disable something via `ao_on_state_sync`, the server still has the original state. `entity.set_local_enabled(false)` also hides/disables child visuals and components on that client. If an entity has an `Interactable`, the server will still detect interactions even though the client can't see it. Always add a corresponding server-side check:
 
 ```csl
 can_use :: method(player: Player) -> bool {
-    if exclusive_to_player != null && player != exclusive_to_player {
+    if exclusive_to_player.count > 0 && player.get_user_id() != exclusive_to_player {
         return false;
     }
+    return true;
 }
 ```

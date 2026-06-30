@@ -14,8 +14,9 @@ For runtime-spawned non-player entities:
 entity := Scene.create_entity();
 animator := entity.add_component(Spine_Animator);
 animator.awaken();  // REQUIRED before calling animation methods
-animator.set_skeleton(get_asset(Spine_Asset, "anims/rig.spine"));
-animator.set_skin("call spine_rig_info to know what skin you MUST use"); // REQUIRED or spine will be invisible
+animator.set_skeleton(get_asset(Spine_Asset, "$AO/streamed_character"));
+animator.disable_all_skins();
+animator.enable_skin("base/crewchsia"); // Use spine_rig_info for the exact skins required by other rigs.
 animator.refresh_skins(); // REQUIRED after any skin change
 animator.set_animation("Idle", true, 0); // name, loop, track, speed = 1
 animator.scale = v2{0.9, 0.9}; // reference the worldSize returned by the spine_rig_info tool and compute the best value here given the world/player/use case.
@@ -74,6 +75,9 @@ Enemy_NPC :: class : Component {
         // States -- name must match the Spine animation name EXACTLY.
         // create_state(name, loop, duration) -- duration pulled from spine rig if duration parameter is 0
         // if setting duration, make sure to update this if / when needed.
+        // Lowercase names here are placeholders for a custom rig. `$AO/streamed_character`
+        // uses exact case-sensitive names like `Idle`, `Run`/`Run_Fast`,
+        // `Attack_Melee_1`, and `Death_No_HP`.
 
         // Clearing a track: pass "__CLEAR_TRACK__" as the state name.
         idle_state := layer.create_state("idle", true);
@@ -213,6 +217,9 @@ player_ui_instance.set_color_replace_color(player.avatar_color);
 // Every frame:
 player_ui_instance.update(dt);
 UI.spine(UI.get_screen_rect().center(), player_ui_instance, {100, 100});
+
+// When the UI closes:
+player_ui_instance.destroy();
 ```
 
 ```csl

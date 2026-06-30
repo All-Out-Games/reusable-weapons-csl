@@ -31,7 +31,7 @@ This will be a production-grade, polished game. It will not be done in one shot.
 - Economy, resources, progression
 - Polish (tactile sfx for every action, animated particles, damage flashes, juicy effects when earning currency or harvesting plants)
 
-### 3. Write `game_plan.json`
+### 2. Write `game_plan.json`
 ```json
 {
   "game": "Game Title",
@@ -67,8 +67,8 @@ This will be a production-grade, polished game. It will not be done in one shot.
 
 ---
 
-2a. Build the scene
-2b. After completing a scene epic, **launch a verification subagent**. This subagent's job is to genuinely critique the work — not rubber-stamp it. **Don't write test.csl files for scene verification.**
+### 3. Build the Scene
+After completing a scene epic, **launch a verification subagent**. This subagent's job is to genuinely critique the work — not rubber-stamp it. **Don't write test.csl files for scene verification.**
 
 Example verification subagent prompt:
 ```
@@ -157,7 +157,7 @@ After all epics are done:
         { "name": "Place a backdrop and scenery to match the theme", "done": false },
         { "name": "Lay out the lane path with ground tiles from spawn to base", "done": false },
         { "name": "If using a pre-baked map, figure out the EXACT points the enemies will path between to get to the base using red markers pixel-pushed to perfection.", "done": false },
-        { "name": "Add decorative environment props (trees, rocks, grass) to fill empty space", "done": false },
+        { "name": "Add decorative environment props (trees, rocks, grass) to fill empty space", "done": false }
       ],
       "verified": false
     },
@@ -167,7 +167,7 @@ After all epics are done:
       "tasks": [
         { "name": "Find unique and beautiful animated tower, enemy, and base assets", "done": false },
         { "name": "Place the base entity at the lane endpoint", "done": false },
-        { "name": "Place 6 tower pads in strategic places off of the lane", "done": false },
+        { "name": "Place 6 tower pads in strategic places off of the lane", "done": false }
       ],
       "verified": false
     }

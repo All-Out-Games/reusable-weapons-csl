@@ -245,7 +245,7 @@ Inventory_Draw_Options :: struct {
 ### Draw_Hotbar_Result
 
 > **Important:** `selected_item` and `dropped_item` may be non-null yet reference
-> items that were destroyed during the same frame like consumed on use or merged
+> items that were destroyed during the same frame (like consumed on use or merged
 > into a stack). A `!= null` check alone is **not** sufficient — always guard with
 > `#alive()` before calling methods on them.
 

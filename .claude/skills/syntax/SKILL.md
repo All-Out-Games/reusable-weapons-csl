@@ -16,7 +16,9 @@ Integer literals coerce to float, but not the reverse.
 > **Struct fields cannot have inline defaults.**
 
 ### Constants
-Define const with `::` Must be compile-time constant. Global vars must be constant use `ao_start` or `ao_before_scene_load` for runtime init.
+Define const with `::` Must be compile-time constant.
+
+Global variable initializers must be compile-time constants. Zero-initialized file-scope vars are allowed for game-wide handles/registries, then assign them in `ao_start` or `ao_before_scene_load` for runtime init. Do not use globals for per-player state; store that on the player/component.
 
 `PI` is already defined as a global.
 
@@ -66,8 +68,6 @@ add :: proc(a: int, b: int) -> int {
 ```
 
 ### Methods
-Use `method()` instead of `proc()` inside a struct or class.
-
 ```csl
 Dog :: class {
     name: string;
@@ -82,7 +82,7 @@ dog.bark();
 ```
 
 ### Arrays
-- **Fixed**: `[N]T` compile-time size, initialized with `{...}`
+- **Fixed**: `[N]T` initialized with `{...}`
 - **Slice**: `[]T` a view into array data (common for parameters)
 - **Dynamic**: `[..]T` resizable list (`.count`, `.capacity`); implicitly converts to `[]T`
 
@@ -92,11 +92,10 @@ spawn_points: [3]v2 = {{0, 0}, {5, 0}, {0, 5}};
 dyn: [..]int;
 view: []int = dyn;
 
-hit := Damage_Desc{amount=10, knockback={2, 1}}; // named fields use = (NOT :)
+hit := Damage_Desc{amount=10, knockback={2, 1}}; // named fields use = not :
 ```
 
 ### Dynamic Arrays
-
 ```csl
 numbers: [..]int;
 numbers.append(10);
@@ -104,7 +103,6 @@ numbers.pop();
 numbers.clear();
 numbers.reserve(64);
 
-// Optional mode: .ONE (default) or .ALL
 numbers.unordered_remove_by_value(10);
 numbers.ordered_remove_by_value(999, .ALL); 
 numbers.unordered_remove_by_index(0);
@@ -133,7 +131,7 @@ switch level {
 }
 ```
 
-Multi-statement bodies must use braces:
+Multi-statement bodies use braces
 ```csl
 switch tier {
     case .COMMON, .UNCOMMON: {
@@ -147,7 +145,7 @@ switch tier {
 }
 ```
 
-Do not write C-style fallthrough logic in CSL switch cases.
+Do not write C-style fallthrough logic
 
 `for` also handles custom iterators: `for player: component_iterator(My_Player) { }`
 

@@ -1,5 +1,5 @@
 WEAPON_RIG_ASSET_PATH :: "reusable_weapons/anims/weapons_rig/Weapons.spine";
-WEAPON_RIG_ATTACHMENT_SLOT :: "weapon_held_R";
+WEAPON_RIG_ATTACHMENT_SLOT :: "weapon_held_R_infront_hand";
 WEAPON_RIG_PROJECTILE_BONE :: "PROJECTILE_SPAWN";
 
 clear_equipped_weapon_rig :: proc(player: Player) {
@@ -16,8 +16,10 @@ attach_weapon_rig :: proc(player: Player, skin_name: string) {
 
     rig := Spine_Instance.create();
     rig.set_skeleton(get_asset(Spine_Asset, WEAPON_RIG_ASSET_PATH));
+    rig.disable_all_skins();
     rig.enable_skin(skin_name);
     rig.refresh_skins();
+    rig.set_to_setup_pose();
 
     desc := Attachment_Desc.default();
     desc.draw_mode = .IN_FRONT;

@@ -1,10 +1,10 @@
 {
-    csl: true,
-    projects:
-    [
-        {
-            name: "Reusable Weapons CSL"
-            id: "69656dbdda5626277f25de72"
-        }
-    ]
+  "manual_mip_divisor": 16,
+  "csl": true,
+  "projects": [
+    {
+      "name": "Reusable Weapons CSL",
+      "id": "69656dbdda5626277f25de72"
+    }
+  ]
 }
