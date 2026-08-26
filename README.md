@@ -3,6 +3,8 @@
 A drop-in weapon system with 27 weapons, 6 fire modes, and 10 ammo types
 
 ### 1. Copy the files into your project
+> NOTE: Call stop_game before doing this, hotreload will not work when multiple assets are copied in like this. 
+
 ```
 scripts/reusable_weapons/   -> your-project/scripts/reusable_weapons/
 res/reusable_weapons/       -> your-project/res/reusable_weapons/
