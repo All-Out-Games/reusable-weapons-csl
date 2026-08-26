@@ -2,7 +2,7 @@ Growing_Projectile :: class : Component {
     damage: float;
     lifetime: float;
     direction: v2;
-    owner_id: u64;
+    owner_user_id: string;
     speed: float;
     max_lifetime: float;
     hit_count: s64;
@@ -35,7 +35,7 @@ Growing_Projectile :: class : Component {
         Scene.get_all_components_in_range(pos, radius, ref nearby);
 
         for hit_target: nearby {
-            if hit_target.entity.id == owner_id continue;
+            if hit_target.owner_user_id == owner_user_id continue;
 
             // Check if already hit
             already_hit := false;
@@ -54,7 +54,7 @@ Growing_Projectile :: class : Component {
                 hit_id_count += 1;
             }
 
-            weapon_target_apply_damage(hit_target, damage, owner_id);
+            weapon_target_apply_damage(hit_target, damage, owner_user_id);
 
             // Grow on hit
             hit_count += 1;
@@ -73,10 +73,8 @@ Growing_Projectile :: class : Component {
 
 spawn_growing_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     config := get_weapon_config(wt);
-    bone_local := player.animator.get_bone_local_position("PROJECTILE");
-    barrel_dist := length(bone_local);
+    spawn_pos := get_projectile_spawn_pos(player, direction);
     dir := normalize(direction);
-    spawn_pos := v2{player.animator.entity.world_position.x + dir.x * barrel_dist, player.animator.entity.world_position.y + dir.y * barrel_dist};
 
     proj_entity := Scene.create_entity();
     proj_entity.set_local_position(spawn_pos);
@@ -94,7 +92,7 @@ spawn_growing_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type)
     proj := proj_entity.add_component(Growing_Projectile);
     proj.damage = config.base_damage;
     proj.direction = normalize(direction);
-    proj.owner_id = player.entity.id;
+    proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_lifetime = 5.0;
     proj.max_hits = 10;

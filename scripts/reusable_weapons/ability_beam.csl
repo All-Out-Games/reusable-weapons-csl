@@ -35,7 +35,9 @@ Beam_Ability :: class : Ability_Base {
             p.last_aim_direction = aiming.aim_direction;
             p.set_mouse_ik_enabled(true);
             p.set_aim_target(p.entity.world_position + aiming.aim_direction * 5.0);
-            draw_thin_aiming_line(p.entity.world_position, aiming.aim_direction, 1.0);
+            if p.device_kind == .PC && !aiming.activate {
+                draw_thin_aiming_line(p.entity.world_position, aiming.aim_direction, 1.0);
+            }
         } else {
             p.set_mouse_ik_enabled(false);
         }
@@ -50,7 +52,6 @@ Beam_Ability :: class : Ability_Base {
         if should_fire && params.can_use && ability.current_cooldown <= 0 {
             // Start beam animation on first fire
             if !self.was_shooting {
-                weapon_start_shoot_anim(p, wt);
                 weapon_play_fire_sound(p, wt);
 
                 // Octo Siphoner: play start sound, then loop sound
@@ -83,17 +84,21 @@ Beam_Ability :: class : Ability_Base {
                 self.was_shooting = true;
             }
 
+            // Pulse both the player recoil and the attached weapon rig at the
+            // beam's configured damage cadence.
+            weapon_start_shoot_anim(p, wt);
+
             // Consume ammo per tick
             if config.ammo_per_shot > 0 {
                 weapon_consume_ammo(p, wt, config.ammo_per_shot);
             }
 
             // Damage detection and beam entity management
-            origin := p.entity.world_position;
+            origin := get_projectile_spawn_pos(p, aiming.aim_direction);
 
             if wt == .OCTO_SIPHONER {
                 // Radius-based damage, heal scales with targets hit
-                destroy_player_beams(p.entity.id);
+                destroy_player_beams(p.get_user_id());
                 hit_count := beam_radius_damage(p, origin, config.beam_range, config.base_damage);
 
                 // Spawn beam entities for each target in range
@@ -101,10 +106,10 @@ Beam_Ability :: class : Ability_Base {
                 Scene.get_all_components_in_range(origin, config.beam_range, ref nearby_targets);
                 beam_count := 0;
                 for target: nearby_targets {
-                    if target.entity.id == p.entity.id continue;
+                    if target.owner_user_id == p.get_user_id() continue;
                     if target.health <= 0 continue;
                     if beam_count >= 5 break;
-                    spawn_beam_entity(p.entity.id, target.entity.id, "pink", "pink_beam_loop_AL_mIK", config.beam_range);
+                    spawn_beam_entity(p.get_user_id(), target.entity.id, "pink", "pink_beam_loop_AL_mIK", config.beam_range);
                     beam_count += 1;
                 }
 
@@ -121,12 +126,11 @@ Beam_Ability :: class : Ability_Base {
                 beam_line_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_width, config.base_damage);
 
                 if !self.beams_spawned {
-                    spawn_beam_entity(p.entity.id, 0, "blue", "lightning_beam_loop_AL_mIK", config.beam_range);
+                    spawn_beam_entity(p.get_user_id(), 0, "blue", "lightning_beam_loop_AL_mIK", config.beam_range);
                     self.beams_spawned = true;
                 }
             } else {
                 // Fire Ray, Ice Launcher, Glaciator, Solar Siphoner
-                // Beam visual is part of weapon animation (animation-based beams)
                 if config.beam_cone_angle > 0 {
                     beam_cone_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_cone_angle, config.base_damage);
                 } else {
@@ -137,21 +141,27 @@ Beam_Ability :: class : Ability_Base {
                     p.weapon_target.health += config.heal_amount;
                     if p.weapon_target.health > p.weapon_target.max_health { p.weapon_target.health = p.weapon_target.max_health; }
                 }
+
+                if !self.beams_spawned {
+                    if wt == .SOLAR_SIPHONER {
+                        half_cone := config.beam_cone_angle * 0.5;
+                        spawn_beam_entity(p.get_user_id(), 0, "pink", "pink_beam_loop_AL_mIK", config.beam_range, -half_cone);
+                        spawn_beam_entity(p.get_user_id(), 0, "pink", "pink_beam_loop_AL_mIK", config.beam_range);
+                        spawn_beam_entity(p.get_user_id(), 0, "pink", "pink_beam_loop_AL_mIK", config.beam_range, half_cone);
+                    } else {
+                        beam_skin := "blue";
+                        beam_anim := "lightning_beam_loop_AL_mIK";
+                        if wt == .FIRE_RAY {
+                            beam_skin = "pink";
+                            beam_anim = "pink_beam_loop_AL_mIK";
+                        }
+                        spawn_beam_entity(p.get_user_id(), 0, beam_skin, beam_anim, config.beam_range);
+                    }
+                    self.beams_spawned = true;
+                }
             }
 
             ability.current_cooldown = config.fire_rate;
-        }
-
-        // Animation-based beams: position BEAM_TARGET bone each frame for beam aiming
-        if self.was_shooting && (wt == .FIRE_RAY || wt == .ICE_LAUNCHER || wt == .GLACIATOR) {
-            dir := p.last_aim_direction;
-            bone_local := p.animator.get_bone_local_position("PROJECTILE");
-            barrel_dist := length(bone_local);
-            beam_start := v2{p.animator.entity.world_position.x + dir.x * barrel_dist, p.animator.entity.world_position.y + dir.y * barrel_dist};
-            beam_end := v2{beam_start.x + dir.x * config.beam_range, beam_start.y + dir.y * config.beam_range};
-            anim_scale := p.animator.entity.local_scale;
-            beam_end_local := v2{(beam_end.x - p.animator.entity.world_position.x) / anim_scale.x, (beam_end.y - p.animator.entity.world_position.y) / anim_scale.x};
-            p.animator.set_bone_local_position("BEAM_TARGET", beam_end_local);
         }
 
         // Stop beam
@@ -190,7 +200,7 @@ Beam_Ability :: class : Ability_Base {
 
             self.was_shooting = false;
             self.beams_spawned = false;
-            destroy_player_beams(p.entity.id);
+            destroy_player_beams(p.get_user_id());
         }
 
         // Out of ammo
@@ -233,7 +243,7 @@ Beam_Ability :: class : Ability_Base {
 
                 self.was_shooting = false;
                 self.beams_spawned = false;
-                destroy_player_beams(p.entity.id);
+                destroy_player_beams(p.get_user_id());
             }
         }
     }

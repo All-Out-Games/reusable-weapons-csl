@@ -1,3 +1,103 @@
+WEAPON_ATTACHMENT_RIG_PATH :: "reusable_weapons/anims/reusable-weapons/weapon_attachments/Weapons.spine";
+WEAPON_ATTACHMENT_SLOT_RIGHT :: "Hand_R";
+WEAPON_ATTACHMENT_SLOT_LEFT :: "Hand_L";
+WEAPON_KATANA_SKIN :: "weapons/sword/katana";
+
+weapon_rig_has_skin :: proc(rig: Spine_Instance, skin: string) -> bool {
+    if !#alive(rig) return false;
+    skins := rig.get_skins();
+    return skins.count == 1 && skins[0] == skin;
+}
+
+create_held_weapon_rig :: proc(skin: string) -> Spine_Instance {
+    rig := Spine_Instance.create();
+    rig.set_skeleton(get_asset(Spine_Asset, WEAPON_ATTACHMENT_RIG_PATH));
+    rig.disable_all_skins();
+    rig.enable_skin(skin);
+    rig.refresh_skins();
+
+    sm := State_Machine.create();
+    shoot_trigger := sm.create_variable("shoot", .TRIGGER);
+    layer := sm.create_layer("weapon", 0);
+    idle_state := layer.create_state("Idle", true);
+    shoot_state := layer.create_state("Shoot", false);
+    layer.set_initial_state(idle_state);
+    layer.create_global_transition(shoot_state, true).create_trigger_condition(shoot_trigger);
+    layer.create_transition(shoot_state, idle_state, true);
+    rig.set_state_machine(sm, true);
+    return rig;
+}
+
+weapon_clear_primary_attachment :: proc(player: Player) {
+    if player.weapon_attachment_id != 0 {
+        player.animator.instance.clear_attachment_rig(player.weapon_attachment_id);
+        player.weapon_attachment_id = 0;
+    }
+    player.weapon_attachment_rig = null;
+}
+
+weapon_clear_offhand_attachment :: proc(player: Player) {
+    if player.weapon_offhand_attachment_id != 0 {
+        player.animator.instance.clear_attachment_rig(player.weapon_offhand_attachment_id);
+        player.weapon_offhand_attachment_id = 0;
+    }
+    player.weapon_offhand_rig = null;
+}
+
+weapon_set_primary_attachment :: proc(player: Player, skin: string, slot_name: string = WEAPON_ATTACHMENT_SLOT_RIGHT) {
+    if player.weapon_attachment_id != 0 && weapon_rig_has_skin(player.weapon_attachment_rig, skin) return;
+    weapon_clear_primary_attachment(player);
+
+    rig := create_held_weapon_rig(skin);
+    desc := Attachment_Desc.default();
+    desc.draw_mode = .IN_FRONT;
+
+    player.weapon_attachment_rig = rig;
+    player.weapon_attachment_id = player.animator.instance.add_attachment_rig(slot_name, rig, desc, true);
+}
+
+weapon_set_offhand_attachment :: proc(player: Player, skin: string) {
+    if player.weapon_offhand_attachment_id != 0 && weapon_rig_has_skin(player.weapon_offhand_rig, skin) return;
+    weapon_clear_offhand_attachment(player);
+
+    rig := create_held_weapon_rig(skin);
+    desc := Attachment_Desc.default();
+    desc.draw_mode = .IN_FRONT;
+    player.weapon_offhand_rig = rig;
+    player.weapon_offhand_attachment_id = player.animator.instance.add_attachment_rig(WEAPON_ATTACHMENT_SLOT_LEFT, rig, desc, true);
+}
+
+weapon_set_equipped_attachment :: proc(player: Player, wt: Weapon_Type) {
+    if wt == .NONE || wt == .BOOMWHEEL {
+        weapon_clear_primary_attachment(player);
+        weapon_clear_offhand_attachment(player);
+        return;
+    }
+
+    config := get_weapon_config(wt);
+    weapon_set_primary_attachment(player, config.weapon_skin);
+
+    if wt == .AKIMBO_PISTOLS {
+        weapon_set_offhand_attachment(player, "weapons/gun/revolver");
+    } else {
+        weapon_clear_offhand_attachment(player);
+    }
+}
+
+weapon_show_melee_attachment :: proc(player: Player) {
+    weapon_set_primary_attachment(player, WEAPON_KATANA_SKIN);
+    weapon_clear_offhand_attachment(player);
+}
+
+weapon_refresh_presentation :: proc(player: Player) {
+    weapon_apply_player_pose(player, player.equipped_weapon_type);
+    if has_effect(player.entity, Melee_Weapon_Effect) {
+        weapon_show_melee_attachment(player);
+    } else {
+        weapon_set_equipped_attachment(player, player.equipped_weapon_type);
+    }
+}
+
 give_weapon :: proc(wt: Weapon_Type, inventory: Inventory) {
     weapon_def := get_weapon_item_def(wt);
     if weapon_def == null return;
@@ -7,17 +107,8 @@ give_weapon :: proc(wt: Weapon_Type, inventory: Inventory) {
 
 weapon_equip :: proc(player: Player, wt: Weapon_Type) {
     config := get_weapon_config(wt);
-
-    // Enable weapon skin (skip if empty, e.g. Boomwheel)
-    if config.weapon_skin != "" {
-        player.animator.enable_skin(config.weapon_skin);
-        player.animator.refresh_skins();
-    }
-
-    // Set IK variable
-    if config.use_ik_var != "" {
-        player.animator.state_machine.set_bool(config.use_ik_var, true);
-    }
+    weapon_set_equipped_attachment(player, wt);
+    weapon_apply_player_pose(player, wt);
 
     // Boomwheel: create cannon entity from scratch (not from prefab)
     if wt == .BOOMWHEEL {
@@ -27,7 +118,6 @@ weapon_equip :: proc(player: Player, wt: Weapon_Type) {
         cannon_entity.set_local_scale({1.5, 1.5});
 
         spine := cannon_entity.add_component(Spine_Animator);
-        spine.awaken();
         cannon_asset := get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/bomb_shooter/bomb_shooter.spine");
         spine.set_skeleton(cannon_asset);
         spine.enable_skin("A_standard");
@@ -53,25 +143,23 @@ weapon_equip :: proc(player: Player, wt: Weapon_Type) {
         spine.set_state_machine(sm, true);
 
         cannon := cannon_entity.add_component(Boomwheel_Cannon);
-        cannon.owner_id = player.entity.id;
+        cannon.owner_user_id = player.get_user_id();
         cannon.cannon_animator = spine;
         cannon.state_machine = sm;
         cannon.last_pos = player.entity.world_position;
         cannon.initialized = true;
         player.boomwheel_cannon = cannon;
 
-        player.animator.state_machine.set_trigger("hands_out_start");
     }
 
     // Play equip sound
-    if player.is_local() {
-        desc := SFX.default_sfx_desc();
-        desc.entity_to_follow = player.entity.id;
-        desc.volume = 0.6;
-        desc.volume_perturb = 0.1;
-        desc.speed_perturb = 0.1;
-        SFX.play(g_weapon_equip_sound, desc);
-    }
+    desc := SFX.default_sfx_desc();
+    desc.entity_to_follow = player.entity.id;
+    desc.specific_to_player = player;
+    desc.volume = 0.6;
+    desc.volume_perturb = 0.1;
+    desc.speed_perturb = 0.1;
+    SFX.play(g_weapon_equip_sound, desc);
 }
 
 weapon_unequip :: proc(player: Player, wt: Weapon_Type) {
@@ -87,23 +175,15 @@ weapon_unequip :: proc(player: Player, wt: Weapon_Type) {
             player.boomwheel_cannon.entity.destroy();
             player.boomwheel_cannon = null;
         }
-        player.animator.state_machine.set_trigger("hands_out_end");
     }
 
-    // Disable IK variable
-    if config.use_ik_var != "" {
-        player.animator.state_machine.set_bool(config.use_ik_var, false);
-    }
-
-    // Disable weapon skin
-    if config.weapon_skin != "" {
-        player.animator.disable_skin(config.weapon_skin);
-        player.animator.refresh_skins();
-    }
+    weapon_clear_primary_attachment(player);
+    weapon_clear_offhand_attachment(player);
+    weapon_apply_player_pose(player, .NONE);
 
     // Destroy any active beam visuals for this player
     if config.fire_mode == .BEAM {
-        destroy_player_beams(player.entity.id);
+        destroy_player_beams(player.get_user_id());
     }
 }
 
@@ -128,18 +208,25 @@ weapon_play_fire_sound :: proc(player: Player, wt: Weapon_Type) {
 }
 
 weapon_start_shoot_anim :: proc(player: Player, wt: Weapon_Type) {
-    config := get_weapon_config(wt);
-    if config.shoot_start_trigger != "" {
-        player.animator.state_machine.set_trigger(config.shoot_start_trigger);
-    } else if config.shoot_trigger != "" {
-        player.animator.state_machine.set_trigger(config.shoot_trigger);
+    weapon_trigger_player_shoot_animation(player, wt);
+    if wt != .POISON_GRENADE && #alive(player.weapon_attachment_rig) {
+        sm := player.weapon_attachment_rig.state_machine;
+        if sm != null {
+            sm.set_trigger("shoot");
+        }
     }
 }
 
 weapon_stop_shoot_anim :: proc(player: Player, wt: Weapon_Type) {
-    config := get_weapon_config(wt);
-    if config.shoot_end_trigger != "" {
-        player.animator.state_machine.set_trigger(config.shoot_end_trigger);
+    weapon_clear_player_shoot_animation(player);
+}
+
+weapon_play_offhand_shoot_anim :: proc(player: Player) {
+    if #alive(player.weapon_offhand_rig) {
+        sm := player.weapon_offhand_rig.state_machine;
+        if sm != null {
+            sm.set_trigger("shoot");
+        }
     }
 }
 
@@ -206,18 +293,15 @@ weapon_consume_ammo :: proc(player: Player, wt: Weapon_Type, amount: s64) {
     }
 }
 
-weapon_spawn_standard_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
+weapon_spawn_standard_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type, use_offhand: bool = false) {
     config := get_weapon_config(wt);
-
-    bone_local := player.animator.get_bone_local_position("PROJECTILE");
-    barrel_dist := length(bone_local);
     dir := normalize(direction);
-    spawn_pos := v2{player.animator.entity.world_position.x + dir.x * barrel_dist, player.animator.entity.world_position.y + dir.y * barrel_dist};
+    spawn_pos := get_projectile_spawn_pos(player, direction, use_offhand);
 
     proj_entity := Scene.create_entity();
     proj_entity.set_local_position(spawn_pos);
 
-    angle := atan2(direction.y, direction.x);
+    angle := atan2(dir.y, dir.x);
     angle_deg := to_degrees(angle);
     proj_entity.set_local_rotation(angle_deg);
 
@@ -226,10 +310,19 @@ weapon_spawn_standard_projectile :: proc(player: Player, direction: v2, wt: Weap
     sprite.set_texture(bullet_texture);
     proj_entity.set_local_scale({2, 2});
 
+    // The bullet art is a long, center-pivoted streak. Move its center forward
+    // so the rear edge begins at the muzzle instead of stacking over the player.
+    pixels_per_unit := bullet_texture.get_pixels_per_unit();
+    if pixels_per_unit > 0 {
+        visual_length := bullet_texture.get_width().(float) / pixels_per_unit * 2.0;
+        proj_entity.add_local_position(dir * visual_length * 0.5);
+    }
+    proj_entity.mark_teleported();
+
     proj := proj_entity.add_component(Standard_Projectile);
     proj.damage = config.base_damage;
-    proj.direction = normalize(direction);
-    proj.owner_id = player.entity.id;
+    proj.direction = dir;
+    proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_lifetime = config.projectile_lifetime;
 }
@@ -239,19 +332,44 @@ PROJ_SPINE_ASSET_PATH :: "reusable_weapons/anims/reusable-weapons/projectiles/01
 TRAVEL_LOOP :: "013RED/Travel_Loop";
 TRAVEL_LOOP_SPINNING :: "013RED/Travel_Loop_Spinning";
 
-// Helper: compute projectile spawn position from PROJECTILE bone
-get_projectile_spawn_pos :: proc(player: Player, direction: v2) -> v2 {
-    bone_local := player.animator.get_bone_local_position("PROJECTILE");
-    barrel_dist := length(bone_local);
+// Compute a projectile origin from the animated hand plus the attached rig's
+// skin-specific PROJECTILE_SPAWN bone.
+get_projectile_spawn_pos :: proc(player: Player, direction: v2, use_offhand: bool = false) -> v2 {
     dir := normalize(direction);
-    return v2{player.animator.entity.world_position.x + dir.x * barrel_dist, player.animator.entity.world_position.y + dir.y * barrel_dist};
+    hand_bone := "Hand_R";
+    rig := player.weapon_attachment_rig;
+    if use_offhand {
+        hand_bone = "Hand_L";
+        rig = player.weapon_offhand_rig;
+    }
+
+    if player.equipped_weapon_type == .BOOMWHEEL && #alive(player.boomwheel_cannon) {
+        cannon_pos := player.boomwheel_cannon.entity.world_position;
+        return v2{cannon_pos.x + dir.x * 0.45, cannon_pos.y + dir.y * 0.45};
+    }
+
+    hand_local := player.animator.get_bone_local_position(hand_bone);
+    barrel_dist := 0.25;
+    if player.equipped_weapon_type != .POISON_GRENADE && #alive(rig) {
+        muzzle_local := rig.get_bone_local_position("PROJECTILE_SPAWN");
+        measured_dist := length(muzzle_local);
+        if measured_dist > 0.05 {
+            barrel_dist = measured_dist;
+        }
+    }
+
+    player_pos := player.animator.entity.world_position;
+    return v2{
+        player_pos.x + hand_local.x + dir.x * barrel_dist,
+        player_pos.y + hand_local.y + dir.y * barrel_dist,
+    };
 }
 
 // Helper: set up spine visual on a projectile entity
 setup_projectile_spine :: proc(proj_entity: Entity, skin_name: string, travel_anim: string) {
     spine := proj_entity.add_component(Spine_Animator);
-    spine.awaken();
     spine.set_skeleton(get_asset(Spine_Asset, PROJ_SPINE_ASSET_PATH));
+    spine.disable_all_skins();
     spine.enable_skin(skin_name);
     spine.refresh_skins();
     spine.set_animation(travel_anim, true, 0);
@@ -272,7 +390,7 @@ spawn_blunderbuss_projectile :: proc(player: Player, direction: v2, wt: Weapon_T
     proj := proj_entity.add_component(Standard_Projectile);
     proj.damage = config.base_damage;
     proj.direction = normalize(direction);
-    proj.owner_id = player.entity.id;
+    proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_lifetime = config.projectile_lifetime;
 }
@@ -292,7 +410,7 @@ spawn_ray_gun_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type)
     proj := proj_entity.add_component(Standard_Projectile);
     proj.damage = config.base_damage;
     proj.direction = normalize(direction);
-    proj.owner_id = player.entity.id;
+    proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_lifetime = config.projectile_lifetime;
 }
@@ -312,7 +430,7 @@ spawn_beam_machine_projectile :: proc(player: Player, direction: v2, wt: Weapon_
     proj := proj_entity.add_component(Piercing_Projectile);
     proj.damage = config.base_damage;
     proj.direction = normalize(direction);
-    proj.owner_id = player.entity.id;
+    proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_lifetime = config.projectile_lifetime;
     proj.mute_hit_sound = true;
@@ -333,7 +451,7 @@ spawn_water_gun_projectile :: proc(player: Player, direction: v2, wt: Weapon_Typ
     proj := proj_entity.add_component(Standard_Projectile);
     proj.damage = config.base_damage;
     proj.direction = normalize(direction);
-    proj.owner_id = player.entity.id;
+    proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_lifetime = config.projectile_lifetime;
 }

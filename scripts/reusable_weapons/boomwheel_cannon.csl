@@ -1,5 +1,5 @@
 Boomwheel_Cannon :: class : Component {
-    owner_id: u64;
+    owner_user_id: string;
     cannon_animator: Spine_Animator;
     state_machine: State_Machine;
     roll_sound_id: u64;

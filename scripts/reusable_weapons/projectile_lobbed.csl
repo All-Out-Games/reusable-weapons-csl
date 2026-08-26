@@ -3,7 +3,7 @@ LOBBED_ARC_HEIGHT :: 2.0;
 Lobbed_Projectile :: class : Component {
     damage: float;
     direction: v2;
-    owner_id: u64;
+    owner_user_id: string;
     speed: float;
     travel_distance: float;
     max_distance: float;
@@ -39,16 +39,16 @@ Lobbed_Projectile :: class : Component {
         // Landed
         if travel_distance >= max_distance {
             land_pos := v2{start_pos.x + direction.x * max_distance, start_pos.y + direction.y * max_distance};
-            on_lobbed_land(land_pos, owner_id, aoe_radius, aoe_damage, weapon_type);
+            on_lobbed_land(land_pos, owner_user_id, aoe_radius, aoe_damage, weapon_type);
             entity.destroy();
             return;
         }
     }
 }
 
-on_lobbed_land :: proc(pos: v2, owner_id: u64, radius: float, damage: float, wt: Weapon_Type) {
+on_lobbed_land :: proc(pos: v2, owner_user_id: string, radius: float, damage: float, wt: Weapon_Type) {
     // AOE damage at landing position
-    apply_aoe_damage(pos, owner_id, radius, damage);
+    apply_aoe_damage(pos, owner_user_id, radius, damage);
 
     // Play explosion sound
     switch wt {
@@ -85,7 +85,7 @@ on_lobbed_land :: proc(pos: v2, owner_id: u64, radius: float, damage: float, wt:
             desc.range_multiplier = 3.0;
             SFX.play(sfx, desc);
             // Spawn poison cloud entity
-            spawn_poison_cloud(pos, owner_id);
+            spawn_poison_cloud(pos, owner_user_id);
         }
         case .BOOMWHEEL: {
             sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/cannon_explode.wav");
@@ -101,17 +101,15 @@ on_lobbed_land :: proc(pos: v2, owner_id: u64, radius: float, damage: float, wt:
             spawn_looping_vfx("reusable_weapons/anims/reusable-weapons/nuke_crater/MWSD116_smash_crater.spine", "default", pos, {2, 2}, "MWSD116/spawn", "MWSD116/idle", "MWSD116/despawn", 15.0, 0.7);
 
             // Spawn 10 small bombs in a circle
-            spawn_cluster_bombs(pos, owner_id);
+            spawn_cluster_bombs(pos, owner_user_id);
         }
     }
 }
 
 spawn_lobbed_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     config := get_weapon_config(wt);
-    bone_local := player.animator.get_bone_local_position("PROJECTILE");
-    barrel_dist := length(bone_local);
+    spawn_pos := get_projectile_spawn_pos(player, direction);
     dir := normalize(direction);
-    spawn_pos := v2{player.animator.entity.world_position.x + dir.x * barrel_dist, player.animator.entity.world_position.y + dir.y * barrel_dist};
 
     proj_entity := Scene.create_entity();
     proj_entity.set_local_position(spawn_pos);
@@ -136,7 +134,7 @@ spawn_lobbed_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) 
     proj := proj_entity.add_component(Lobbed_Projectile);
     proj.damage = config.base_damage;
     proj.direction = normalize(direction);
-    proj.owner_id = player.entity.id;
+    proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_distance = 8.0;
     proj.aoe_radius = config.aoe_radius;

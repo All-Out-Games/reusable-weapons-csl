@@ -1,44 +1,49 @@
+Melee_Weapon_Effect :: class : Effect_Base {
+    effect_start :: method() {
+        weapon_show_melee_attachment(player);
+        weapon_trigger_melee_animation(player);
+
+        sfx_desc := SFX.default_sfx_desc();
+        sfx_desc.set_position(player.entity.world_position);
+        sfx_desc.range_multiplier = 2.0;
+        SFX.play(get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/katana_slash.wav"), sfx_desc);
+
+        nearby: [..]Weapon_Target;
+        pos := player.entity.world_position;
+        Scene.get_all_components_in_range(pos, 1.5, ref nearby);
+        for hit: nearby {
+            if hit != null && hit.owner_user_id != player.get_user_id() {
+                weapon_target_apply_damage(hit, 25.0, player.get_user_id());
+            }
+        }
+    }
+
+    effect_end :: method(interrupt: bool) {
+        if #alive(player) {
+            weapon_set_equipped_attachment(player, player.equipped_weapon_type);
+        }
+    }
+}
+
 // Melee ability - universal, always available at slot 1
 Melee_Ability :: class : Ability_Base {
     on_init :: proc(ability: Ability_Base) {
         ability.name = "Melee";
         ability.icon = get_asset(Texture_Asset, "reusable_weapons/sprites/reusable-weapons/katana.png");
-        ability.disable_keybind = true;
         ability.is_aimed_ability = false;
     }
 
     can_use :: proc(ability: Ability_Base) -> bool {
-        return true;
+        return ability.player.entity.get_active_effect() == null;
     }
 
     on_update :: proc(ability: Ability_Base, params: ref Ability_Update_Params) {
         p := ability.player.(Player);
 
         if params.pressed && params.can_use && ability.current_cooldown <= 0 {
-            // Trigger melee animation
-            p.animator.state_machine.set_trigger("melee_AL");
-
-            // Enable katana skin briefly
-            p.animator.enable_skin("weapons/katana");
-            p.animator.refresh_skins();
-
-            // Play katana sound
-            sfx_desc := SFX.default_sfx_desc();
-            sfx_desc.set_position(p.entity.world_position);
-            sfx_desc.range_multiplier = 2.0;
-            SFX.play(get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/katana_slash.wav"), sfx_desc);
-
-            // Damage nearby targets
-            nearby: [..]Weapon_Target;
-            pos := p.entity.world_position;
-            Scene.get_all_components_in_range(pos, 1.5, ref nearby);
-            for hit: nearby {
-                if hit != null {
-                    if hit.entity.id != p.entity.id {
-                        weapon_target_apply_damage(hit, 25.0, p.entity.id);
-                    }
-                }
-            }
+            effect := new(Melee_Weapon_Effect);
+            effect.set_duration(0.42);
+            p.entity.set_active_effect(effect);
 
             ability.current_cooldown = 1.0;
         }
@@ -95,7 +100,8 @@ Special_Ability :: class : Ability_Base {
 
         // Akimbo Pistols: fire staggered second shot
         if self.akimbo_pending_shot && get_time() >= self.akimbo_shot_time {
-            weapon_spawn_standard_projectile(p, self.akimbo_shot_direction, .AKIMBO_PISTOLS);
+            weapon_spawn_standard_projectile(p, self.akimbo_shot_direction, .AKIMBO_PISTOLS, true);
+            weapon_play_offhand_shoot_anim(p);
             weapon_play_fire_sound(p, .AKIMBO_PISTOLS);
             self.akimbo_pending_shot = false;
         }

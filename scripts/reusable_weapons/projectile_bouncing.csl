@@ -2,7 +2,7 @@ Bouncing_Projectile :: class : Component {
     damage: float;
     lifetime: float;
     direction: v2;
-    owner_id: u64;
+    owner_user_id: string;
     speed: float;
     max_lifetime: float;
     max_bounces: s64;
@@ -28,8 +28,8 @@ Bouncing_Projectile :: class : Component {
         pos := entity.world_position + v2{0, -0.5};
         hit_target, found := Scene.get_closest_component_in_range(pos, 0.8, Weapon_Target);
         if found && hit_target != null {
-            if hit_target.entity.id != owner_id && hit_target.entity.id != last_hit_id {
-                weapon_target_apply_damage(hit_target, damage, owner_id);
+            if hit_target.owner_user_id != owner_user_id && hit_target.entity.id != last_hit_id {
+                weapon_target_apply_damage(hit_target, damage, owner_user_id);
 
                 hit_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/buzzshot_projectile_ricochet.wav");
                 sfx_desc := SFX.default_sfx_desc();
@@ -57,7 +57,7 @@ Bouncing_Projectile :: class : Component {
                 }
 
                 // Find next target
-                next_target := find_bounce_target(pos, owner_id, last_hit_id, bounce_target_radius);
+                next_target := find_bounce_target(pos, owner_user_id, last_hit_id, bounce_target_radius);
                 if next_target != null {
                     to_target := v2{next_target.entity.world_position.x - pos.x, next_target.entity.world_position.y - pos.y};
                     direction = normalize(to_target);
@@ -69,7 +69,7 @@ Bouncing_Projectile :: class : Component {
     }
 }
 
-find_bounce_target :: proc(pos: v2, owner_id: u64, last_hit_id: u64, radius: float) -> Weapon_Target {
+find_bounce_target :: proc(pos: v2, owner_user_id: string, last_hit_id: u64, radius: float) -> Weapon_Target {
     nearby: [..]Weapon_Target;
     Scene.get_all_components_in_range(pos, radius, ref nearby);
 
@@ -77,7 +77,7 @@ find_bounce_target :: proc(pos: v2, owner_id: u64, last_hit_id: u64, radius: flo
     closest_dist: float = 99999.0;
 
     for t: nearby {
-        if t.entity.id == owner_id continue;
+        if t.owner_user_id == owner_user_id continue;
         if t.entity.id == last_hit_id continue;
         if t.health <= 0 continue;
 
@@ -95,10 +95,8 @@ find_bounce_target :: proc(pos: v2, owner_id: u64, last_hit_id: u64, radius: flo
 
 spawn_bouncing_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     config := get_weapon_config(wt);
-    bone_local := player.animator.get_bone_local_position("PROJECTILE");
-    barrel_dist := length(bone_local);
+    spawn_pos := get_projectile_spawn_pos(player, direction);
     dir := normalize(direction);
-    spawn_pos := v2{player.animator.entity.world_position.x + dir.x * barrel_dist, player.animator.entity.world_position.y + dir.y * barrel_dist};
 
     proj_entity := Scene.create_entity();
     proj_entity.set_local_position(spawn_pos);
@@ -122,7 +120,7 @@ spawn_bouncing_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type
     proj := proj_entity.add_component(Bouncing_Projectile);
     proj.damage = config.base_damage;
     proj.direction = normalize(direction);
-    proj.owner_id = player.entity.id;
+    proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_lifetime = 5.0;
     proj.max_bounces = config.max_bounces;

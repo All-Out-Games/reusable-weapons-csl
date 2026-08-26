@@ -112,6 +112,10 @@ Orbiter :: class : Component {
         radius = 2.0;
         speed = 1.0;
         angle = 0.0;
+
+        if #alive(follow_entity) {
+            entity.set_local_position(v2{follow_entity.local_position.x + radius, follow_entity.local_position.y});
+        }
     }
     
     ao_update :: method(dt: float) {
@@ -127,6 +131,18 @@ Orbiter :: class : Component {
         new_pos := v2{center.x + offset_x, center.y + offset_y};
         entity.set_local_position(new_pos);
     }
+}
+
+// on_before_start initializes fields before Orbiter.ao_start() reads them.
+add_orbiter :: proc(entity: Entity, follow_entity: Entity) -> Orbiter {
+    return entity.add_component(
+        Orbiter,
+        userdata=follow_entity,
+        on_before_start=proc(component: Component, userdata: Object) {
+            orbiter := component.(Orbiter);
+            orbiter.follow_entity = userdata.(Entity);
+        },
+    );
 }
 ```
 You can add components to entities in the scene using the modify_scene tool
@@ -212,8 +228,8 @@ When players receive items or currencies you MUST play a sick animation of the i
 - Reference the `world-space-ui` skill for world-space overlays, tutorial arrows, and immediate-mode helper drawing. Use interpolation for moving/following visuals.
 
 ## Interpolation
-
-- Litmus test: if a visual is drawn from an entity/component's current transform, or inside an anchored component callback, you do not need manual interpolation.
+EVERY piece of world space text must adhere to the render-interpolation skill.
+- If a visual is drawn from an entity/component's current transform, or inside an anchored component callback, you do not need manual interpolation.
 - You must use interpolation for custom immediate-mode/world-space drawing that follows a moving entity outside an anchored callback, or for non-entity positions that you update yourself.
 
 Example: drawing a world-space prompt that follows an entity from player UI code:
@@ -225,7 +241,7 @@ UI.text(rect, ts, "+1 Gold");
 ```
 
 HP MUST be overlayed above players in world space, never screen space UI text. Use the minimal amount of UI to convey what is needed, which is sometimes none at all.
-Never abbreviate words, instead just use CONCISE words. Prefer using icons where you can.
+Prefer concise words over abbreviation. Prefer using icons where you can.
 
 ## Inventory & Items
 - When players acquire items (e.g. from a shop or interacting with the world), you MUST use the All Out inventory system documented in the `inventory` skill.
@@ -267,6 +283,3 @@ Set `leaderboard_id` on the component, call `Global_Leaderboard.increment_score(
 ### Maps
 - Every map must be cohesive, focused, and built to support gameplay with clear paths, uniform consistent plots if required, pixel perfect layouts, and no randomly scattered objects.
 - Layer 0 is best for most items like towers, world props, trees, since it naturally layers with the player. 
-
-After you make script changes run the All Out MCP compile tool.
-Do exactly what the users asks for and nothing more.

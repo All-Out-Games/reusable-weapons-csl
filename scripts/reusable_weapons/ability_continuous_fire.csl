@@ -31,7 +31,12 @@ Continuous_Fire_Ability :: class : Ability_Base {
             p.last_aim_direction = aiming.aim_direction;
             p.set_mouse_ik_enabled(true);
             p.set_aim_target(p.entity.world_position + aiming.aim_direction * 5.0);
-            draw_thin_aiming_line(p.entity.world_position, aiming.aim_direction, 1.0);
+            // On PC the held-fire cursor already communicates the active aim.
+            // Hiding the guide during the burst keeps it from reading as a
+            // giant, direction-snapping projectile between the actual rounds.
+            if p.device_kind != .PC || !aiming.activate {
+                draw_thin_aiming_line(p.entity.world_position, aiming.aim_direction, 1.0);
+            }
         } else {
             p.set_mouse_ik_enabled(false);
         }

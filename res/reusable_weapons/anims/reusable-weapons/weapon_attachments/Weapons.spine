@@ -1,5 +1,5 @@
 {
-"skeleton": { "hash": "K+c13NAA1tY", "spine": "4.0.64", "x": -25.47, "y": -149.63, "width": 320.13, "height": 170.15 },
+"skeleton": { "hash": "ih1BLLb5trQ", "spine": "4.0.64", "x": -49.98, "y": -97.13, "width": 337.53, "height": 203.51 },
 "bones": [
 	{ "name": "root" },
 	{ "name": "Weapon", "parent": "root", "transform": "noScale" },
@@ -14,7 +14,40 @@
 	{ "name": "Void Splitter/void spitter_dark", "parent": "Weapon", "x": 83.43, "y": 58.9, "skin": true },
 	{ "name": "Weapons/minigun", "parent": "Weapon", "x": 739.83, "y": -116.93, "skin": true },
 	{ "name": "Weapons/minigun/minigunbarrel", "parent": "Weapons/minigun", "x": -591.8, "y": 96.7, "skin": true },
-	{ "name": "Wind Blaster/Wind Blaster handle", "parent": "Weapon", "x": 96.18, "y": -17.91, "skin": true }
+	{ "name": "Wind Blaster/Wind Blaster handle", "parent": "Weapon", "x": 96.18, "y": -17.91, "skin": true },
+	{ "name": "PROJECTILE_SPAWN", "parent": "root", "y": 147.9 },
+	{ "name": "Assault_Muzzle", "parent": "Weapon", "x": 211.14, "y": 36, "skin": true },
+	{ "name": "Bazooka_Muzzle", "parent": "Weapon", "x": 102.16, "y": 61.3, "skin": true },
+	{ "name": "Blunderbuss_Muzzle", "parent": "Weapon", "x": 271.47, "y": 22.38, "skin": true },
+	{ "name": "Buzzsaw_Muzzle", "parent": "Weapon", "x": 216.01, "y": 42.81, "skin": true },
+	{ "name": "Fart_Muzzle", "parent": "Weapon", "x": 114.81, "y": 32.11, "skin": true },
+	{ "name": "Flamethrower_Muzzle", "parent": "Weapon", "x": 189.73, "y": 32.11, "skin": true },
+	{ "name": "FreezeRay_Muzzle", "parent": "Weapon", "x": 158.6, "y": 27.24, "skin": true },
+	{ "name": "Glaciator_Muzzle", "parent": "Weapon", "x": 369.74, "y": -3.89, "skin": true },
+	{ "name": "HandGun_Muzzle", "parent": "Weapon", "x": 76.87, "y": 7.78, "skin": true },
+	{ "name": "Ice_Bazooka_Muzzle", "parent": "Weapon", "x": 213.09, "y": 72, "skin": true },
+	{ "name": "LightningGun_Muzzle", "parent": "Weapon", "skin": true },
+	{ "name": "MegaBlade_Muzzle", "parent": "Weapon", "x": 244.22, "y": 96.33, "skin": true },
+	{ "name": "MiniGun_Muzzle", "parent": "Weapon", "x": 190.71, "y": -10.7, "skin": true },
+	{ "name": "Missile_Barrage_Muzzle", "parent": "Weapon", "x": 328.87, "y": 62.27, "skin": true },
+	{ "name": "Nuclear_Rocket_Muzzle", "parent": "Weapon", "x": 181.95, "y": 92.43, "skin": true },
+	{ "name": "OctoSiphoner_Muzzle", "parent": "Weapon", "x": 241.3, "y": 41.84, "skin": true },
+	{ "name": "Pistol_Muzzle", "parent": "Weapon", "x": 123.57, "y": 42.81, "skin": true },
+	{ "name": "PlasmaRifle_Muzzle", "parent": "Weapon", "x": 208.22, "y": 59.35, "skin": true },
+	{ "name": "RailGun_Muzzle", "parent": "Weapon", "x": 207.25, "y": 42.81, "skin": true },
+	{ "name": "Revolver_Muzzle", "parent": "Weapon", "x": 173.19, "y": 37.95, "skin": true },
+	{ "name": "RPG_Muzzle", "parent": "Weapon", "x": 194.6, "y": 49.62, "skin": true },
+	{ "name": "Shotgun_Muzzle", "parent": "Weapon", "x": 196.55, "y": 38.92, "skin": true },
+	{ "name": "ShrinkRay_Muzzle", "parent": "Weapon", "x": 223.79, "y": -101.19, "skin": true },
+	{ "name": "SMG_Muzzle", "parent": "Weapon", "x": 223.79, "y": 34.06, "skin": true },
+	{ "name": "SolarSiphon_Muzzle", "parent": "Weapon", "x": 245.2, "y": -67.14, "skin": true },
+	{ "name": "StormsEye_Muzzle", "parent": "Weapon", "x": 192.65, "y": 43.78, "skin": true },
+	{ "name": "Sunnyside_Muzzle", "parent": "Weapon", "x": 216.98, "y": 52.54, "skin": true },
+	{ "name": "TestGun_Muzzle", "parent": "Weapon", "x": 150.81, "y": 72.97, "skin": true },
+	{ "name": "VoidSpitter_Muzzle", "parent": "Weapon", "x": 237.41, "y": 56.43, "skin": true },
+	{ "name": "WaterBlaster_Muzzle", "parent": "Weapon", "x": 208.22, "y": 65.19, "skin": true },
+	{ "name": "WaterFun_Muzzle", "parent": "Weapon", "x": 167.36, "y": 38.92, "skin": true },
+	{ "name": "WindBlaster_Muzzle", "parent": "Weapon", "skin": true }
 ],
 "slots": [
 	{ "name": "weapon_held_R", "bone": "Weapon", "attachment": "weapon_held" },
@@ -37,9 +70,340 @@
 	{ "name": "Wind Blaster/Wind Blaster not inflated", "bone": "Wind Blaster/Wind Blaster handle", "attachment": "Weapons/Wind Blaster/Wind Blaster not inflated" },
 	{ "name": "Wind Blaster/Wind Blaster front", "bone": "Wind Blaster/Wind Blaster handle", "attachment": "Weapons/Wind Blaster/Wind Blaster front" }
 ],
+"transform": [
+	{
+		"name": "Assault_Muzzle",
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Assault_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "Bazooka_Muzzle",
+		"order": 31,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Bazooka_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "Blunderbuss_Muzzle",
+		"order": 30,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Blunderbuss_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "Buzzsaw_Muzzle",
+		"order": 29,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Buzzsaw_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "Fart_Muzzle",
+		"order": 28,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Fart_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "Flamethrower_Muzzle",
+		"order": 27,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Flamethrower_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "FreezeRay_Muzzle",
+		"order": 26,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "FreezeRay_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "Glaciator_Muzzle",
+		"order": 25,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Glaciator_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "HandGun_Muzzle",
+		"order": 24,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "HandGun_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "Ice_Bazooka_Muzzle",
+		"order": 23,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Ice_Bazooka_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "LightningGun_Muzzle",
+		"order": 22,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "LightningGun_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "MegaBlade_Muzzle",
+		"order": 21,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "MegaBlade_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "MiniGun_Muzzle",
+		"order": 20,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "MiniGun_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "Missile_Barrage_Muzzle",
+		"order": 19,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Missile_Barrage_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "Nuclear_Rocket_Muzzle",
+		"order": 18,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Nuclear_Rocket_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "OctoSiphoner_Muzzle",
+		"order": 17,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "OctoSiphoner_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "Pistol_Muzzle",
+		"order": 16,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Pistol_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "PlasmaRifle_Muzzle",
+		"order": 15,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "PlasmaRifle_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "RailGun_Muzzle",
+		"order": 14,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "RailGun_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "Revolver_Muzzle",
+		"order": 13,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Revolver_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "RPG_Muzzle",
+		"order": 12,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "RPG_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "Shotgun_Muzzle",
+		"order": 11,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Shotgun_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "ShrinkRay_Muzzle",
+		"order": 10,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "ShrinkRay_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "SMG_Muzzle",
+		"order": 9,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "SMG_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "SolarSiphon_Muzzle",
+		"order": 8,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "SolarSiphon_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "StormsEye_Muzzle",
+		"order": 7,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "StormsEye_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "Sunnyside_Muzzle",
+		"order": 6,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "Sunnyside_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "TestGun_Muzzle",
+		"order": 5,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "TestGun_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "VoidSpitter_Muzzle",
+		"order": 4,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "VoidSpitter_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "WaterBlaster_Muzzle",
+		"order": 3,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "WaterBlaster_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "WaterFun_Muzzle",
+		"order": 2,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "WaterFun_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	},
+	{
+		"name": "WindBlaster_Muzzle",
+		"order": 1,
+		"skin": true,
+		"bones": [ "PROJECTILE_SPAWN" ],
+		"target": "WindBlaster_Muzzle",
+		"mixRotate": 0,
+		"mixScaleX": 0,
+		"mixShearY": 0
+	}
+],
 "skins": [
 	{
+		"name": "weapons/grenade",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "held_grenade", "y": -24, "width": 89, "height": 94 }
+			}
+		}
+	},
+	{
 		"name": "weapons/gun/assault_rifle",
+		"bones": [ "Assault_Muzzle" ],
+		"transform": [ "Assault_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/assault_rifle", "x": 91.71, "y": 20.87, "width": 272, "height": 115 }
@@ -48,6 +412,8 @@
 	},
 	{
 		"name": "weapons/gun/bazooka",
+		"bones": [ "Bazooka_Muzzle" ],
+		"transform": [ "Bazooka_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/G.Bazooka", "x": -38.15, "y": 35.93, "width": 325, "height": 157 }
@@ -56,6 +422,8 @@
 	},
 	{
 		"name": "weapons/gun/blunderbuss",
+		"bones": [ "Blunderbuss_Muzzle" ],
+		"transform": [ "Blunderbuss_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/Blunderbuss/blunderbuss combined", "x": 107.14, "y": 13.8, "width": 362, "height": 118 }
@@ -64,7 +432,8 @@
 	},
 	{
 		"name": "weapons/gun/buzzsaw_gun",
-		"bones": [ "Buzzsaw gun/Buzzsaw", "Buzzsaw gun/Buzzsawfront" ],
+		"bones": [ "Buzzsaw gun/Buzzsaw", "Buzzsaw gun/Buzzsawfront", "Buzzsaw_Muzzle" ],
+		"transform": [ "Buzzsaw_Muzzle" ],
 		"attachments": {
 			"Buzzsaw gun/Buzzsaw": {
 				"Weapons/Buzzsaw gun/Buzzsaw": { "x": 0.5, "width": 127, "height": 126 }
@@ -79,6 +448,8 @@
 	},
 	{
 		"name": "weapons/gun/fart_gun",
+		"bones": [ "Fart_Muzzle" ],
+		"transform": [ "Fart_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/fart_gun", "x": 66.22, "y": 22.99, "width": 140, "height": 150 }
@@ -87,6 +458,8 @@
 	},
 	{
 		"name": "weapons/gun/flamethrower",
+		"bones": [ "Flamethrower_Muzzle" ],
+		"transform": [ "Flamethrower_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/flamethrower", "x": 103.71, "y": 10.16, "width": 200, "height": 93 }
@@ -95,7 +468,8 @@
 	},
 	{
 		"name": "weapons/gun/freeze_ray",
-		"bones": [ "freeze gun/barrel" ],
+		"bones": [ "freeze gun/barrel", "FreezeRay_Muzzle" ],
+		"transform": [ "FreezeRay_Muzzle" ],
 		"attachments": {
 			"freeze gun/barrel": {
 				"barrel": { "name": "Weapons/freeze gun/barrel", "width": 58, "height": 58 }
@@ -107,6 +481,8 @@
 	},
 	{
 		"name": "weapons/gun/glaciator",
+		"bones": [ "Glaciator_Muzzle" ],
+		"transform": [ "Glaciator_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/glaciator", "x": 182.31, "y": 10.86, "width": 439, "height": 228 }
@@ -115,6 +491,8 @@
 	},
 	{
 		"name": "weapons/gun/ice_bazooka",
+		"bones": [ "Ice_Bazooka_Muzzle" ],
+		"transform": [ "Ice_Bazooka_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/ice_bazooka", "x": 93.45, "y": 32.89, "width": 287, "height": 212 }
@@ -131,6 +509,8 @@
 	},
 	{
 		"name": "weapons/gun/lightning_gun",
+		"bones": [ "LightningGun_Muzzle" ],
+		"transform": [ "LightningGun_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/lightning_gun", "x": 80.62, "y": 19.92, "width": 164, "height": 115 }
@@ -139,7 +519,8 @@
 	},
 	{
 		"name": "weapons/gun/mega_blade",
-		"bones": [ "Mega Blade/buzzsaw", "Mega Blade/mega blade_Glow" ],
+		"bones": [ "Mega Blade/buzzsaw", "Mega Blade/mega blade_Glow", "MegaBlade_Muzzle" ],
+		"transform": [ "MegaBlade_Muzzle" ],
 		"attachments": {
 			"Mega Blade/buzzsaw": {
 				"buzzsaw": { "name": "Weapons/Mega Blade/buzzsaw", "x": 0.52, "y": 4.18, "width": 257, "height": 259 }
@@ -157,7 +538,8 @@
 	},
 	{
 		"name": "weapons/gun/minigun",
-		"bones": [ "Weapons/minigun", "Weapons/minigun/minigunbarrel" ],
+		"bones": [ "MiniGun_Muzzle", "Weapons/minigun", "Weapons/minigun/minigunbarrel" ],
+		"transform": [ "MiniGun_Muzzle" ],
 		"attachments": {
 			"minigun/miniguntrigger": {
 				"miniguntrigger": { "name": "Weapons/minigun/miniguntrigger", "x": -734.9, "y": 113.7, "width": 54, "height": 65 }
@@ -174,7 +556,8 @@
 	},
 	{
 		"name": "weapons/gun/missile_barrage",
-		"bones": [ "Weapons/Missile Barrage/missile barrage_Glow" ],
+		"bones": [ "Missile_Barrage_Muzzle", "Weapons/Missile Barrage/missile barrage_Glow" ],
+		"transform": [ "Missile_Barrage_Muzzle" ],
 		"attachments": {
 			"Weapons/Missile Barrage/missile barrage_Glow": {
 				"missile barrage": { "name": "Weapons/Missile Barrage/missile barrage", "x": 4.95, "y": 0.23, "width": 472, "height": 213 }
@@ -186,15 +569,18 @@
 	},
 	{
 		"name": "weapons/gun/nuclear_rocket",
+		"bones": [ "Nuclear_Rocket_Muzzle" ],
+		"transform": [ "Nuclear_Rocket_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
-				"weapon_held": { "name": "Weapons/rocketlauncher", "x": -23.64, "y": 86.48, "rotation": -4.27, "width": 442, "height": 271 }
+				"weapon_held": { "name": "Weapons/rocketlauncher", "x": -23.64, "y": 86.48, "width": 442, "height": 271 }
 			}
 		}
 	},
 	{
 		"name": "weapons/gun/octo_siphoner",
-		"bones": [ "Octo Siphoner/octo siphoner_dark" ],
+		"bones": [ "Octo Siphoner/octo siphoner_dark", "OctoSiphoner_Muzzle" ],
+		"transform": [ "OctoSiphoner_Muzzle" ],
 		"attachments": {
 			"Octo Siphoner/octo siphoner_dark": {
 				"octo siphoner": { "name": "Weapons/Octo Siphoner/octo siphoner", "width": 346, "height": 176 }
@@ -206,6 +592,8 @@
 	},
 	{
 		"name": "weapons/gun/pistol",
+		"bones": [ "Pistol_Muzzle" ],
+		"transform": [ "Pistol_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/pistol", "x": 59.07, "y": 11.44, "width": 148, "height": 123 }
@@ -214,6 +602,8 @@
 	},
 	{
 		"name": "weapons/gun/plasma_rifle",
+		"bones": [ "PlasmaRifle_Muzzle" ],
+		"transform": [ "PlasmaRifle_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/plasma-rifle", "x": 48.16, "y": 31.27, "width": 338, "height": 164 }
@@ -222,6 +612,8 @@
 	},
 	{
 		"name": "weapons/gun/rail_gun",
+		"bones": [ "RailGun_Muzzle" ],
+		"transform": [ "RailGun_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/rail_gun", "x": 84.43, "y": 36.39, "width": 265, "height": 154 }
@@ -230,6 +622,8 @@
 	},
 	{
 		"name": "weapons/gun/revolver",
+		"bones": [ "Revolver_Muzzle" ],
+		"transform": [ "Revolver_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/Mythic Revolver", "x": 85.83, "y": 13.12, "width": 187, "height": 109 }
@@ -238,6 +632,8 @@
 	},
 	{
 		"name": "weapons/gun/rpg",
+		"bones": [ "RPG_Muzzle" ],
+		"transform": [ "RPG_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/rocket_laucher/rocket_laucher", "x": 48.45, "y": 36.6, "width": 292, "height": 173 }
@@ -246,6 +642,8 @@
 	},
 	{
 		"name": "weapons/gun/shotgun",
+		"bones": [ "Shotgun_Muzzle" ],
+		"transform": [ "Shotgun_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/shotgun2", "x": 75.91, "y": 10.45, "width": 238, "height": 118 }
@@ -254,6 +652,8 @@
 	},
 	{
 		"name": "weapons/gun/shrink_ray",
+		"bones": [ "ShrinkRay_Muzzle" ],
+		"transform": [ "ShrinkRay_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/shrink ray/base back", "x": 73.26, "y": -69.64, "width": 333, "height": 224 }
@@ -262,6 +662,8 @@
 	},
 	{
 		"name": "weapons/gun/smg",
+		"bones": [ "SMG_Muzzle" ],
+		"transform": [ "SMG_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/smg", "x": 92.68, "y": 13.62, "width": 254, "height": 149 }
@@ -270,7 +672,8 @@
 	},
 	{
 		"name": "weapons/gun/solar_siphoner",
-		"bones": [ "Solar Siphoner/Solar Siphoner glow" ],
+		"bones": [ "Solar Siphoner/Solar Siphoner glow", "SolarSiphon_Muzzle" ],
+		"transform": [ "SolarSiphon_Muzzle" ],
 		"attachments": {
 			"Solar Siphoner/Solar Siphoner glow": {
 				"Solar Siphoner glow": { "name": "Weapons/Solar Siphoner/Solar Siphoner glow", "width": 320, "height": 170 }
@@ -282,6 +685,8 @@
 	},
 	{
 		"name": "weapons/gun/storms_eye",
+		"bones": [ "StormsEye_Muzzle" ],
+		"transform": [ "StormsEye_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": {
@@ -298,6 +703,8 @@
 	},
 	{
 		"name": "weapons/gun/sunnyside_shotty",
+		"bones": [ "Sunnyside_Muzzle" ],
+		"transform": [ "Sunnyside_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/sunny_side_shotty", "x": 94.82, "y": 34.14, "width": 333, "height": 164 }
@@ -306,7 +713,8 @@
 	},
 	{
 		"name": "weapons/gun/void_spitter",
-		"bones": [ "Void Splitter/void spitter_dark" ],
+		"bones": [ "VoidSpitter_Muzzle", "Void Splitter/void spitter_dark" ],
+		"transform": [ "VoidSpitter_Muzzle" ],
 		"attachments": {
 			"Void Splitter/void spitter_dark": {
 				"void spitter": { "name": "Weapons/Void Splitter/void spitter", "width": 291, "height": 208 }
@@ -318,6 +726,8 @@
 	},
 	{
 		"name": "weapons/gun/water_blaster",
+		"bones": [ "WaterBlaster_Muzzle" ],
+		"transform": [ "WaterBlaster_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/WaterBlaster", "x": 54.6, "y": 72.83, "width": 356, "height": 226 }
@@ -326,6 +736,8 @@
 	},
 	{
 		"name": "weapons/gun/water_gun",
+		"bones": [ "WaterFun_Muzzle" ],
+		"transform": [ "WaterFun_Muzzle" ],
 		"attachments": {
 			"weapon_held_R": {
 				"weapon_held": { "name": "Weapons/water_gun", "x": 74.63, "y": 32.37, "width": 181, "height": 147 }
@@ -334,7 +746,8 @@
 	},
 	{
 		"name": "weapons/gun/wind_blaster",
-		"bones": [ "Wind Blaster/Wind Blaster handle" ],
+		"bones": [ "Wind Blaster/Wind Blaster handle", "WindBlaster_Muzzle" ],
+		"transform": [ "WindBlaster_Muzzle" ],
 		"attachments": {
 			"Wind Blaster/Wind BlasterBack": {
 				"Weapons/Wind Blaster/Wind Blaster front": { "x": -11.54, "y": 47.19, "width": 87, "height": 150 }

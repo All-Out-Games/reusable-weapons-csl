@@ -118,3 +118,9 @@ Weapons/sunny_side_shotty
 	offsets: 0, 1, 167, 82
 Weapons/water_gun
 	bounds: 3160, 4, 91, 74
+
+Weapons_2.png
+	size: 89, 94
+	filter: Linear, Linear
+held_grenade
+	bounds: 0, 0, 89, 94

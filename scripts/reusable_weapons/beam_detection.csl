@@ -6,7 +6,7 @@ beam_line_damage :: proc(player: Player, origin: v2, direction: v2, range: float
     dir := normalize(direction);
 
     for target: nearby {
-        if target.entity.id == player.entity.id continue;
+        if target.owner_user_id == player.get_user_id() continue;
         if target.health <= 0 continue;
 
         target_pos := target.entity.world_position;
@@ -22,7 +22,7 @@ beam_line_damage :: proc(player: Player, origin: v2, direction: v2, range: float
         perp_dist := length(perp);
 
         if perp_dist <= width {
-            weapon_target_apply_damage(target, damage, player.entity.id);
+            weapon_target_apply_damage(target, damage, player.get_user_id());
         }
     }
 }
@@ -36,7 +36,7 @@ beam_cone_damage :: proc(player: Player, origin: v2, direction: v2, range: float
     half_angle := cone_angle_deg * 0.5 * 3.14159 / 180.0;
 
     for target: nearby {
-        if target.entity.id == player.entity.id continue;
+        if target.owner_user_id == player.get_user_id() continue;
         if target.health <= 0 continue;
 
         target_pos := target.entity.world_position;
@@ -53,7 +53,7 @@ beam_cone_damage :: proc(player: Player, origin: v2, direction: v2, range: float
         cos_half := cos(half_angle);
 
         if dot >= cos_half {
-            weapon_target_apply_damage(target, damage, player.entity.id);
+            weapon_target_apply_damage(target, damage, player.get_user_id());
         }
     }
 }
@@ -64,9 +64,9 @@ beam_radius_damage :: proc(player: Player, origin: v2, range: float, damage: flo
     Scene.get_all_components_in_range(origin, range, ref nearby);
     hit_count: s64 = 0;
     for target: nearby {
-        if target.entity.id == player.entity.id continue;
+        if target.owner_user_id == player.get_user_id() continue;
         if target.health <= 0 continue;
-        weapon_target_apply_damage(target, damage, player.entity.id);
+        weapon_target_apply_damage(target, damage, player.get_user_id());
         hit_count += 1;
     }
     return hit_count;
@@ -74,19 +74,19 @@ beam_radius_damage :: proc(player: Player, origin: v2, range: float, damage: flo
 
 // Beam visual entity - positions spine beam between source and target each frame
 Beam_Visual :: class : Component {
-    owner_id: u64;
+    owner_user_id: string;
     target_id: u64;
     beam_range: float;
+    direction_offset_degrees: float;
 
     ao_update :: method(dt: float) {
         spine_anim := entity.get_component(Spine_Animator);
         if spine_anim == null return;
-        spine_anim.awaken();
 
         // Find source player
         source: Player;
         for p: component_iterator(Player) {
-            if p.entity.id == owner_id {
+            if p.get_user_id() == owner_user_id {
                 source = p;
                 break;
             }
@@ -96,11 +96,8 @@ Beam_Visual :: class : Component {
             return;
         }
 
-        // Beam start from PROJECTILE bone
-        bone_local := source.animator.get_bone_local_position("PROJECTILE");
-        barrel_dist := length(bone_local);
         aim_dir := source.last_aim_direction;
-        start_pos := v2{source.animator.entity.world_position.x + aim_dir.x * barrel_dist, source.animator.entity.world_position.y + aim_dir.y * barrel_dist};
+        start_pos := get_projectile_spawn_pos(source, aim_dir);
 
         end_pos: v2;
         if target_id != 0 {
@@ -118,8 +115,14 @@ Beam_Visual :: class : Component {
             }
             end_pos = target.entity.world_position;
         } else {
-            // Directional beam (Void Splitter) - aim in player's direction
-            dir := source.last_aim_direction;
+            // Directional beam follows the player's aim. Solar Siphoner uses
+            // offset copies to show the edges of its damage cone.
+            aim_dir := source.last_aim_direction;
+            angle := direction_offset_degrees * 3.14159 / 180.0;
+            dir := v2{
+                aim_dir.x * cos(angle) - aim_dir.y * sin(angle),
+                aim_dir.x * sin(angle) + aim_dir.y * cos(angle),
+            };
             end_pos = v2{start_pos.x + dir.x * beam_range, start_pos.y + dir.y * beam_range};
         }
 
@@ -129,26 +132,27 @@ Beam_Visual :: class : Component {
     }
 }
 
-spawn_beam_entity :: proc(owner_id: u64, target_id: u64, skin_name: string, anim_name: string, beam_range: float) {
+spawn_beam_entity :: proc(owner_user_id: string, target_id: u64, skin_name: string, anim_name: string, beam_range: float, direction_offset_degrees: float = 0.0) {
     beam_entity := Scene.create_entity();
 
     spine := beam_entity.add_component(Spine_Animator);
-    spine.awaken();
     beam_asset := get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/lightning_beam/lighting_beam.spine");
     spine.set_skeleton(beam_asset);
+    spine.disable_all_skins();
     spine.enable_skin(skin_name);
     spine.refresh_skins();
     spine.set_animation(anim_name, true, 0);
 
     beam := beam_entity.add_component(Beam_Visual);
-    beam.owner_id = owner_id;
+    beam.owner_user_id = owner_user_id;
     beam.target_id = target_id;
     beam.beam_range = beam_range;
+    beam.direction_offset_degrees = direction_offset_degrees;
 }
 
-destroy_player_beams :: proc(owner_id: u64) {
+destroy_player_beams :: proc(owner_user_id: string) {
     for beam: component_iterator(Beam_Visual) {
-        if beam.owner_id == owner_id {
+        if beam.owner_user_id == owner_user_id {
             beam.entity.destroy();
         }
     }

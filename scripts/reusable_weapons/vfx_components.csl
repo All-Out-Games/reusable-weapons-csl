@@ -43,7 +43,6 @@ spawn_simple_vfx :: proc(spine_path: string, skin: string, pos: v2, scale: v2, a
     vfx_entity.set_local_scale(scale);
 
     spine := vfx_entity.add_component(Spine_Animator);
-    spine.awaken();
     spine.set_skeleton(get_asset(Spine_Asset, spine_path));
     spine.enable_skin(skin);
     spine.refresh_skins();
@@ -67,7 +66,6 @@ spawn_looping_vfx :: proc(spine_path: string, skin: string, pos: v2, scale: v2, 
     vfx_entity.set_local_scale(scale);
 
     spine := vfx_entity.add_component(Spine_Animator);
-    spine.awaken();
     spine.set_skeleton(get_asset(Spine_Asset, spine_path));
     spine.enable_skin(skin);
     spine.refresh_skins();

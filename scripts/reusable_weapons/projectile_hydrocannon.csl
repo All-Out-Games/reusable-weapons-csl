@@ -6,7 +6,7 @@ GEYSER_HIT_RADIUS :: 2.0;
 
 Hydro_Cannon_Projectile :: class : Component {
     direction: v2;
-    owner_id: u64;
+    owner_user_id: string;
     speed: float;
     lifetime: float;
     max_lifetime: float;
@@ -44,7 +44,6 @@ Hydro_Cannon_Projectile :: class : Component {
                 geyser_entity.set_local_scale({3, 3});
 
                 spine := geyser_entity.add_component(Spine_Animator);
-                spine.awaken();
                 geyser_asset := get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/projectiles/013RED_projectile.spine");
                 spine.set_skeleton(geyser_asset);
                 spine.enable_skin("hydro_cannon");
@@ -52,7 +51,7 @@ Hydro_Cannon_Projectile :: class : Component {
                 spine.set_animation("013RED/Splash", false, 0);
 
                 geyser := geyser_entity.add_component(Hydro_Cannon_Geyser);
-                geyser.owner_id = owner_id;
+                geyser.owner_user_id = owner_user_id;
 
                 // Play random splash sound
                 rng: u64 = rng_root_seed();
@@ -70,7 +69,7 @@ Hydro_Cannon_Projectile :: class : Component {
 }
 
 Hydro_Cannon_Geyser :: class : Component {
-    owner_id: u64;
+    owner_user_id: string;
     lifetime: float;
     hit_ids: [32]u64;
     hit_count: s64;
@@ -88,7 +87,7 @@ Hydro_Cannon_Geyser :: class : Component {
         Scene.get_all_components_in_range(pos, GEYSER_HIT_RADIUS, ref nearby);
 
         for target: nearby {
-            if target.entity.id == owner_id continue;
+            if target.owner_user_id == owner_user_id continue;
             if target.health <= 0 continue;
 
             // Check if already hit by this geyser
@@ -108,7 +107,7 @@ Hydro_Cannon_Geyser :: class : Component {
                 hit_count += 1;
             }
 
-            weapon_target_apply_damage(target, GEYSER_DAMAGE, owner_id);
+            weapon_target_apply_damage(target, GEYSER_DAMAGE, owner_user_id);
         }
     }
 }
@@ -116,10 +115,8 @@ Hydro_Cannon_Geyser :: class : Component {
 spawn_hydrocannon_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     config := get_weapon_config(wt);
 
-    bone_local := player.animator.get_bone_local_position("PROJECTILE");
-    barrel_dist := length(bone_local);
+    spawn_pos := get_projectile_spawn_pos(player, direction);
     dir := normalize(direction);
-    spawn_pos := v2{player.animator.entity.world_position.x + dir.x * barrel_dist, player.animator.entity.world_position.y + dir.y * barrel_dist};
 
     proj_entity := Scene.create_entity();
     proj_entity.set_local_position(spawn_pos);
@@ -130,7 +127,7 @@ spawn_hydrocannon_projectile :: proc(player: Player, direction: v2, wt: Weapon_T
 
     proj := proj_entity.add_component(Hydro_Cannon_Projectile);
     proj.direction = dir;
-    proj.owner_id = player.entity.id;
+    proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_lifetime = config.projectile_lifetime;
 }

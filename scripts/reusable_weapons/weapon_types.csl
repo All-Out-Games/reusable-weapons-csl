@@ -37,10 +37,3 @@ Fire_Mode :: enum {
     BEAM;
     SPECIAL;
 }
-
-Hand_Type :: enum {
-    TWO_HAND;
-    ONE_HAND;
-    CUSTOM;
-    NONE;
-}

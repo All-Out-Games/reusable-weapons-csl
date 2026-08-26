@@ -8,12 +8,16 @@ Player :: class : Player_Base {
     equipped_item_def: Item_Definition;
     last_selected_index: s64;
     boomwheel_cannon: Boomwheel_Cannon;
+    weapon_attachment_rig: Spine_Instance;
+    weapon_attachment_id: u64;
+    weapon_offhand_rig: Spine_Instance;
+    weapon_offhand_attachment_id: u64;
 
     ao_start :: method() {
         wt := entity.add_component(Weapon_Target);
         wt.health = 100.0;
         wt.max_health = 100.0;
-        wt.owner_entity_id = entity.id;
+        wt.owner_user_id = get_user_id();
         weapon_target = wt;
 
         last_selected_index = -1;
@@ -115,6 +119,10 @@ Player :: class : Player_Base {
         if is_local() {
             draw_health_bar(this);
         }
+    }
+
+    ao_on_state_sync :: method() {
+        weapon_refresh_presentation(this);
     }
 
     handle_equipped_item_changing :: method(selected_index: s64) {
