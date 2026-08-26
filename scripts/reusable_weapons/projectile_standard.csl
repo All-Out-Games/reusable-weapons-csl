@@ -5,6 +5,7 @@ Standard_Projectile :: class : Component {
     owner_user_id: string;
     speed: float;
     max_lifetime: float;
+    weapon_type: Weapon_Type;
 
     ao_update :: method(dt: float) {
         lifetime += dt;
@@ -31,6 +32,7 @@ Standard_Projectile :: class : Component {
                 sfx_desc.range_multiplier = 2.0;
                 SFX.play(hit_sfx, sfx_desc);
 
+                weapon_spawn_impact_particles(pos, weapon_type, direction);
                 entity.destroy();
                 return;
             }

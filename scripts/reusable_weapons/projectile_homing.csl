@@ -7,6 +7,7 @@ Homing_Projectile :: class : Component {
     max_lifetime: float;
     homing_radius: float;
     homing_strength: float;
+    weapon_type: Weapon_Type;
 
     ao_update :: method(dt: float) {
         lifetime += dt;
@@ -53,6 +54,7 @@ Homing_Projectile :: class : Component {
                 sfx_desc.range_multiplier = 2.0;
                 SFX.play(hit_sfx, sfx_desc);
 
+                weapon_spawn_impact_particles(pos, weapon_type, direction);
                 entity.destroy();
                 return;
             }
@@ -84,4 +86,7 @@ spawn_homing_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) 
     proj.max_lifetime = config.projectile_lifetime;
     proj.homing_radius = config.homing_find_radius;
     proj.homing_strength = config.homing_strength;
+    proj.weapon_type = wt;
+
+    weapon_attach_projectile_particles(proj_entity, wt, direction);
 }

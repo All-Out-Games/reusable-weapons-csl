@@ -49,6 +49,7 @@ Lobbed_Projectile :: class : Component {
 on_lobbed_land :: proc(pos: v2, owner_user_id: string, radius: float, damage: float, wt: Weapon_Type) {
     // AOE damage at landing position
     apply_aoe_damage(pos, owner_user_id, radius, damage);
+    weapon_spawn_impact_particles(pos, wt, {0, -1});
 
     // Play explosion sound
     switch wt {
@@ -140,4 +141,6 @@ spawn_lobbed_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) 
     proj.aoe_radius = config.aoe_radius;
     proj.aoe_damage = config.aoe_damage;
     proj.weapon_type = wt;
+
+    weapon_attach_projectile_particles(proj_entity, wt, direction);
 }

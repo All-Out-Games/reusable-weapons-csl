@@ -1,5 +1,5 @@
 // Line beam: damage targets along a line from origin in direction
-beam_line_damage :: proc(player: Player, origin: v2, direction: v2, range: float, width: float, damage: float) {
+beam_line_damage :: proc(player: Player, origin: v2, direction: v2, range: float, width: float, damage: float, wt: Weapon_Type) {
     nearby: [..]Weapon_Target;
     Scene.get_all_components_in_range(origin, range, ref nearby);
 
@@ -23,12 +23,13 @@ beam_line_damage :: proc(player: Player, origin: v2, direction: v2, range: float
 
         if perp_dist <= width {
             weapon_target_apply_damage(target, damage, player.get_user_id());
+            weapon_spawn_impact_particles(target.entity.world_position, wt, direction);
         }
     }
 }
 
 // Cone beam: damage targets within a cone from origin
-beam_cone_damage :: proc(player: Player, origin: v2, direction: v2, range: float, cone_angle_deg: float, damage: float) {
+beam_cone_damage :: proc(player: Player, origin: v2, direction: v2, range: float, cone_angle_deg: float, damage: float, wt: Weapon_Type) {
     nearby: [..]Weapon_Target;
     Scene.get_all_components_in_range(origin, range, ref nearby);
 
@@ -54,12 +55,13 @@ beam_cone_damage :: proc(player: Player, origin: v2, direction: v2, range: float
 
         if dot >= cos_half {
             weapon_target_apply_damage(target, damage, player.get_user_id());
+            weapon_spawn_impact_particles(target.entity.world_position, wt, direction);
         }
     }
 }
 
 // Radius-based damage: damages all targets within range (Octo Siphoner)
-beam_radius_damage :: proc(player: Player, origin: v2, range: float, damage: float) -> s64 {
+beam_radius_damage :: proc(player: Player, origin: v2, range: float, damage: float, wt: Weapon_Type) -> s64 {
     nearby: [..]Weapon_Target;
     Scene.get_all_components_in_range(origin, range, ref nearby);
     hit_count: s64 = 0;
@@ -67,6 +69,8 @@ beam_radius_damage :: proc(player: Player, origin: v2, range: float, damage: flo
         if target.owner_user_id == player.get_user_id() continue;
         if target.health <= 0 continue;
         weapon_target_apply_damage(target, damage, player.get_user_id());
+        hit_direction := target.entity.world_position - origin;
+        weapon_spawn_impact_particles(target.entity.world_position, wt, hit_direction);
         hit_count += 1;
     }
     return hit_count;
@@ -126,14 +130,18 @@ Beam_Visual :: class : Component {
             end_pos = v2{start_pos.x + dir.x * beam_range, start_pos.y + dir.y * beam_range};
         }
 
-        // Position beam bones (beam entity is at origin with unit scale, so world == local)
-        spine_anim.set_bone_local_position("beam_base", start_pos);
-        spine_anim.set_bone_local_position("AIM", end_pos);
+        // Anchor the entity at the muzzle so its continuous particles follow
+        // the weapon. Beam bones then use offsets in that local space.
+        entity.set_local_position(start_pos);
+        spine_anim.set_bone_local_position("beam_base", {});
+        spine_anim.set_bone_local_position("AIM", end_pos - start_pos);
     }
 }
 
-spawn_beam_entity :: proc(owner_user_id: string, target_id: u64, skin_name: string, anim_name: string, beam_range: float, direction_offset_degrees: float = 0.0) {
+spawn_beam_entity :: proc(player: Player, target_id: u64, skin_name: string, anim_name: string, beam_range: float, wt: Weapon_Type, direction_offset_degrees: float = 0.0, with_particles: bool = true) {
     beam_entity := Scene.create_entity();
+    initial_direction := weapon_particle_direction(player.last_aim_direction);
+    beam_entity.set_local_position(get_projectile_spawn_pos(player, initial_direction));
 
     spine := beam_entity.add_component(Spine_Animator);
     beam_asset := get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/lightning_beam/lighting_beam.spine");
@@ -144,10 +152,14 @@ spawn_beam_entity :: proc(owner_user_id: string, target_id: u64, skin_name: stri
     spine.set_animation(anim_name, true, 0);
 
     beam := beam_entity.add_component(Beam_Visual);
-    beam.owner_user_id = owner_user_id;
+    beam.owner_user_id = player.get_user_id();
     beam.target_id = target_id;
     beam.beam_range = beam_range;
     beam.direction_offset_degrees = direction_offset_degrees;
+
+    if with_particles {
+        weapon_attach_beam_particles(beam_entity, wt);
+    }
 }
 
 destroy_player_beams :: proc(owner_user_id: string) {

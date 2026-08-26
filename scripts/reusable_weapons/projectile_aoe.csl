@@ -19,6 +19,7 @@ AOE_Projectile :: class : Component {
     max_lifetime: float;
     aoe_radius: float;
     aoe_damage: float;
+    weapon_type: Weapon_Type;
 
     ao_update :: method(dt: float) {
         lifetime += dt;
@@ -51,6 +52,7 @@ AOE_Projectile :: class : Component {
                 sfx_desc.range_multiplier = 3.0;
                 SFX.play(sfx, sfx_desc);
 
+                weapon_spawn_impact_particles(pos, weapon_type, direction);
                 entity.destroy();
                 return;
             }
@@ -83,4 +85,7 @@ spawn_aoe_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     proj.max_lifetime = config.projectile_lifetime;
     proj.aoe_radius = config.aoe_radius;
     proj.aoe_damage = config.aoe_damage;
+    proj.weapon_type = wt;
+
+    weapon_attach_projectile_particles(proj_entity, wt, direction);
 }

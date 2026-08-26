@@ -67,6 +67,7 @@ Growing_Projectile :: class : Component {
             sfx_desc.set_position(pos);
             sfx_desc.range_multiplier = 2.0;
             SFX.play(sfx, sfx_desc);
+            weapon_spawn_impact_particles(pos, .PLASMA_BURST, direction);
         }
     }
 }
@@ -96,4 +97,6 @@ spawn_growing_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type)
     proj.speed = config.projectile_speed;
     proj.max_lifetime = 5.0;
     proj.max_hits = 10;
+
+    weapon_attach_projectile_particles(proj_entity, wt, direction);
 }

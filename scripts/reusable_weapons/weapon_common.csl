@@ -233,6 +233,7 @@ weapon_play_offhand_shoot_anim :: proc(player: Player) {
 weapon_shoot :: proc(player: Player, wt: Weapon_Type) {
     weapon_start_shoot_anim(player, wt);
     weapon_play_fire_sound(player, wt);
+    weapon_spawn_muzzle_particles(player, wt, player.last_aim_direction);
     config := get_weapon_config(wt);
     if config.ammo_per_shot > 0 {
         weapon_consume_ammo(player, wt, config.ammo_per_shot);
@@ -325,6 +326,9 @@ weapon_spawn_standard_projectile :: proc(player: Player, direction: v2, wt: Weap
     proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_lifetime = config.projectile_lifetime;
+    proj.weapon_type = wt;
+
+    weapon_attach_projectile_particles(proj_entity, wt, dir);
 }
 
 // Spine-animated projectile constants
@@ -393,6 +397,9 @@ spawn_blunderbuss_projectile :: proc(player: Player, direction: v2, wt: Weapon_T
     proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_lifetime = config.projectile_lifetime;
+    proj.weapon_type = wt;
+
+    weapon_attach_projectile_particles(proj_entity, wt, direction);
 }
 
 // Ray Gun: ray_gun projectile with normal animation
@@ -413,6 +420,9 @@ spawn_ray_gun_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type)
     proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_lifetime = config.projectile_lifetime;
+    proj.weapon_type = wt;
+
+    weapon_attach_projectile_particles(proj_entity, wt, direction);
 }
 
 // Beam Machine: laser_bolt piercing projectile, no hit sound
@@ -434,6 +444,9 @@ spawn_beam_machine_projectile :: proc(player: Player, direction: v2, wt: Weapon_
     proj.speed = config.projectile_speed;
     proj.max_lifetime = config.projectile_lifetime;
     proj.mute_hit_sound = true;
+    proj.weapon_type = wt;
+
+    weapon_attach_projectile_particles(proj_entity, wt, direction);
 }
 
 // Water Gun: water_gun skin projectile
@@ -454,4 +467,7 @@ spawn_water_gun_projectile :: proc(player: Player, direction: v2, wt: Weapon_Typ
     proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_lifetime = config.projectile_lifetime;
+    proj.weapon_type = wt;
+
+    weapon_attach_projectile_particles(proj_entity, wt, direction);
 }

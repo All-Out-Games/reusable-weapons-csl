@@ -87,6 +87,7 @@ Beam_Ability :: class : Ability_Base {
             // Pulse both the player recoil and the attached weapon rig at the
             // beam's configured damage cadence.
             weapon_start_shoot_anim(p, wt);
+            weapon_spawn_muzzle_particles(p, wt, aiming.aim_direction);
 
             // Consume ammo per tick
             if config.ammo_per_shot > 0 {
@@ -99,7 +100,7 @@ Beam_Ability :: class : Ability_Base {
             if wt == .OCTO_SIPHONER {
                 // Radius-based damage, heal scales with targets hit
                 destroy_player_beams(p.get_user_id());
-                hit_count := beam_radius_damage(p, origin, config.beam_range, config.base_damage);
+                hit_count := beam_radius_damage(p, origin, config.beam_range, config.base_damage, wt);
 
                 // Spawn beam entities for each target in range
                 nearby_targets: [..]Weapon_Target;
@@ -109,7 +110,7 @@ Beam_Ability :: class : Ability_Base {
                     if target.owner_user_id == p.get_user_id() continue;
                     if target.health <= 0 continue;
                     if beam_count >= 5 break;
-                    spawn_beam_entity(p.get_user_id(), target.entity.id, "pink", "pink_beam_loop_AL_mIK", config.beam_range);
+                    spawn_beam_entity(p, target.entity.id, "pink", "pink_beam_loop_AL_mIK", config.beam_range, wt, 0.0, beam_count == 0);
                     beam_count += 1;
                 }
 
@@ -123,18 +124,18 @@ Beam_Ability :: class : Ability_Base {
                 }
             } else if wt == .VOID_SPLITTER {
                 // Line beam damage + single directional beam entity
-                beam_line_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_width, config.base_damage);
+                beam_line_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_width, config.base_damage, wt);
 
                 if !self.beams_spawned {
-                    spawn_beam_entity(p.get_user_id(), 0, "blue", "lightning_beam_loop_AL_mIK", config.beam_range);
+                    spawn_beam_entity(p, 0, "blue", "lightning_beam_loop_AL_mIK", config.beam_range, wt);
                     self.beams_spawned = true;
                 }
             } else {
                 // Fire Ray, Ice Launcher, Glaciator, Solar Siphoner
                 if config.beam_cone_angle > 0 {
-                    beam_cone_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_cone_angle, config.base_damage);
+                    beam_cone_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_cone_angle, config.base_damage, wt);
                 } else {
-                    beam_line_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_width, config.base_damage);
+                    beam_line_damage(p, origin, aiming.aim_direction, config.beam_range, config.beam_width, config.base_damage, wt);
                 }
 
                 if config.heals_self {
@@ -145,9 +146,9 @@ Beam_Ability :: class : Ability_Base {
                 if !self.beams_spawned {
                     if wt == .SOLAR_SIPHONER {
                         half_cone := config.beam_cone_angle * 0.5;
-                        spawn_beam_entity(p.get_user_id(), 0, "pink", "pink_beam_loop_AL_mIK", config.beam_range, -half_cone);
-                        spawn_beam_entity(p.get_user_id(), 0, "pink", "pink_beam_loop_AL_mIK", config.beam_range);
-                        spawn_beam_entity(p.get_user_id(), 0, "pink", "pink_beam_loop_AL_mIK", config.beam_range, half_cone);
+                        spawn_beam_entity(p, 0, "pink", "pink_beam_loop_AL_mIK", config.beam_range, wt, -half_cone, false);
+                        spawn_beam_entity(p, 0, "pink", "pink_beam_loop_AL_mIK", config.beam_range, wt);
+                        spawn_beam_entity(p, 0, "pink", "pink_beam_loop_AL_mIK", config.beam_range, wt, half_cone, false);
                     } else {
                         beam_skin := "blue";
                         beam_anim := "lightning_beam_loop_AL_mIK";
@@ -155,7 +156,7 @@ Beam_Ability :: class : Ability_Base {
                             beam_skin = "pink";
                             beam_anim = "pink_beam_loop_AL_mIK";
                         }
-                        spawn_beam_entity(p.get_user_id(), 0, beam_skin, beam_anim, config.beam_range);
+                        spawn_beam_entity(p, 0, beam_skin, beam_anim, config.beam_range, wt);
                     }
                     self.beams_spawned = true;
                 }

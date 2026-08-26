@@ -8,6 +8,7 @@ Piercing_Projectile :: class : Component {
     hit_ids: [32]u64;
     hit_count: s64;
     mute_hit_sound: bool;
+    weapon_type: Weapon_Type;
 
     ao_update :: method(dt: float) {
         lifetime += dt;
@@ -55,6 +56,7 @@ Piercing_Projectile :: class : Component {
                 sfx_desc.range_multiplier = 2.0;
                 SFX.play(hit_sfx, sfx_desc);
             }
+            weapon_spawn_impact_particles(pos, weapon_type, direction);
         }
     }
 }

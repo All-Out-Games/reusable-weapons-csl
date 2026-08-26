@@ -11,6 +11,7 @@ Bouncing_Projectile :: class : Component {
     last_hit_id: u64;
     damage_scale_per_bounce: float;
     grow_per_bounce: bool;
+    weapon_type: Weapon_Type;
 
     ao_update :: method(dt: float) {
         lifetime += dt;
@@ -36,6 +37,7 @@ Bouncing_Projectile :: class : Component {
                 sfx_desc.set_position(pos);
                 sfx_desc.range_multiplier = 2.0;
                 SFX.play(hit_sfx, sfx_desc);
+                weapon_spawn_impact_particles(pos, weapon_type, direction);
 
                 bounce_count += 1;
                 last_hit_id = hit_target.entity.id;
@@ -126,7 +128,10 @@ spawn_bouncing_projectile :: proc(player: Player, direction: v2, wt: Weapon_Type
     proj.max_bounces = config.max_bounces;
     proj.bounce_target_radius = config.bounce_target_radius;
     proj.damage_scale_per_bounce = 1.25;
+    proj.weapon_type = wt;
     if wt == .MEGA_BLADE {
         proj.grow_per_bounce = true;
     }
+
+    weapon_attach_projectile_particles(proj_entity, wt, direction);
 }

@@ -42,6 +42,7 @@ Hydro_Cannon_Projectile :: class : Component {
                 geyser_entity := Scene.create_entity();
                 geyser_entity.set_local_position(entity.world_position);
                 geyser_entity.set_local_scale({3, 3});
+                weapon_spawn_geyser_particles(entity.world_position);
 
                 spine := geyser_entity.add_component(Spine_Animator);
                 geyser_asset := get_asset(Spine_Asset, "reusable_weapons/anims/reusable-weapons/projectiles/013RED_projectile.spine");
@@ -130,4 +131,6 @@ spawn_hydrocannon_projectile :: proc(player: Player, direction: v2, wt: Weapon_T
     proj.owner_user_id = player.get_user_id();
     proj.speed = config.projectile_speed;
     proj.max_lifetime = config.projectile_lifetime;
+
+    weapon_attach_projectile_particles(proj_entity, wt, direction);
 }

@@ -76,6 +76,7 @@ spawn_poison_cloud :: proc(pos: v2, owner_user_id: string) {
     cloud.max_lifetime = 10.0;
     cloud.owner_user_id = owner_user_id;
     cloud.radius = 2.0;
+    weapon_attach_poison_cloud_particles(cloud_entity);
 
     // Gas cloud sound
     sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/poison_grenade_gas_cloud.wav");
@@ -109,6 +110,7 @@ spawn_cluster_bombs :: proc(pos: v2, owner_user_id: string) {
         bomb.owner_user_id = owner_user_id;
         bomb.damage = 30.0;
         bomb.aoe_radius = 2.0;
+        weapon_attach_projectile_particles(bomb_entity, .BOOMWHEEL, offset);
 
         i += 1;
     }
@@ -151,6 +153,7 @@ Cluster_Bomb :: class : Component {
 
             // Spawn explosion VFX
             spawn_simple_vfx("reusable_weapons/anims/reusable-weapons/fireball/BAT003_fireball.spine", "default", target_pos, {2, 2}, "explode", 1.5);
+            weapon_spawn_impact_particles(target_pos, .BOOMWHEEL, {0, -1});
             entity.destroy();
         }
     }
@@ -268,6 +271,7 @@ spawn_tornado_entity :: proc(player: Player, direction: v2, wt: Weapon_Type) {
     tornado.speed = config.projectile_speed;
     tornado.homing_radius = 10.0;
     tornado.aoe_radius = config.aoe_radius;
+    weapon_attach_tornado_particles(tornado_entity, false);
 
     // Start sound + loop sound
     start_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/fire_tornado_start.wav");
@@ -364,6 +368,7 @@ spawn_storms_eye_tornado :: proc(player: Player) {
     tornado.tick_rate = 0.5;
     tornado.max_lifetime = 6.0;
     tornado.aoe_radius = config.aoe_radius;
+    weapon_attach_tornado_particles(tornado_entity, true);
 
     // Loop sound
     loop_sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/storms_eye_shoot_loop.wav");
