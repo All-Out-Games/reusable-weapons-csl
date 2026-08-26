@@ -1,0 +1,741 @@
+{
+"skeleton": { "hash": "K+c13NAA1tY", "spine": "4.0.64", "x": -25.47, "y": -149.63, "width": 320.13, "height": 170.15 },
+"bones": [
+	{ "name": "root" },
+	{ "name": "Weapon", "parent": "root", "transform": "noScale" },
+	{ "name": "Buzzsaw gun/Buzzsaw", "parent": "Weapon", "x": 95.43, "y": 53.31, "skin": true },
+	{ "name": "Buzzsaw gun/Buzzsawfront", "parent": "Weapon", "x": 139.28, "y": 35.25, "skin": true },
+	{ "name": "freeze gun/barrel", "parent": "Weapon", "x": 17, "y": 39.95, "skin": true },
+	{ "name": "Mega Blade/mega blade_Glow", "parent": "Weapon", "skin": true },
+	{ "name": "Mega Blade/buzzsaw", "parent": "Weapon", "x": 239.37, "y": 96.69, "skin": true },
+	{ "name": "Weapons/Missile Barrage/missile barrage_Glow", "parent": "root", "x": 109.85, "y": 57.14, "skin": true },
+	{ "name": "Octo Siphoner/octo siphoner_dark", "parent": "Weapon", "x": 143.64, "y": 36.59, "skin": true },
+	{ "name": "Solar Siphoner/Solar Siphoner glow", "parent": "Weapon", "x": 134.66, "y": -64.48, "skin": true },
+	{ "name": "Void Splitter/void spitter_dark", "parent": "Weapon", "x": 83.43, "y": 58.9, "skin": true },
+	{ "name": "Weapons/minigun", "parent": "Weapon", "x": 739.83, "y": -116.93, "skin": true },
+	{ "name": "Weapons/minigun/minigunbarrel", "parent": "Weapons/minigun", "x": -591.8, "y": 96.7, "skin": true },
+	{ "name": "Wind Blaster/Wind Blaster handle", "parent": "Weapon", "x": 96.18, "y": -17.91, "skin": true }
+],
+"slots": [
+	{ "name": "weapon_held_R", "bone": "Weapon", "attachment": "weapon_held" },
+	{ "name": "Buzzsaw gun/Buzzsaw", "bone": "Buzzsaw gun/Buzzsaw", "attachment": "Weapons/Buzzsaw gun/Buzzsaw" },
+	{ "name": "Buzzsaw gun/Buzzsawfront", "bone": "Buzzsaw gun/Buzzsawfront", "attachment": "Weapons/Buzzsaw gun/Buzzsaw gun front" },
+	{ "name": "freeze gun/barrel", "bone": "freeze gun/barrel", "attachment": "barrel" },
+	{ "name": "Mega Blade/buzzsaw", "bone": "Mega Blade/buzzsaw", "attachment": "buzzsaw" },
+	{ "name": "Mega Blade/mega blade_Glow", "bone": "Mega Blade/mega blade_Glow", "attachment": "mega blade" },
+	{ "name": "Mega Blade/mega blade_Glow2", "bone": "Mega Blade/mega blade_Glow", "attachment": "mega blade" },
+	{ "name": "Weapons/Missile Barrage/missile barrage_Glow", "bone": "Weapons/Missile Barrage/missile barrage_Glow", "attachment": "missile barrage" },
+	{ "name": "Octo Siphoner/octo siphoner_dark", "bone": "Octo Siphoner/octo siphoner_dark", "attachment": "octo siphoner" },
+	{ "name": "Solar Siphoner/Solar Siphoner glow", "bone": "Solar Siphoner/Solar Siphoner glow", "attachment": "Solar Siphoner glow" },
+	{ "name": "Void Splitter/void spitter_dark", "bone": "Void Splitter/void spitter_dark", "attachment": "void spitter" },
+	{ "name": "minigun/miniguntrigger", "bone": "Weapons/minigun", "attachment": "miniguntrigger" },
+	{ "name": "Weapons/minigun/minigunbase", "bone": "Weapons/minigun", "attachment": "minigunbase" },
+	{ "name": "Weapons/minigun/minigunbarrel", "bone": "Weapons/minigun/minigunbarrel", "attachment": "Weapons/minigun/minigunbarrel1" },
+	{ "name": "Wind Blaster/Wind Blaster handle", "bone": "Wind Blaster/Wind Blaster handle", "attachment": "Weapons/Wind Blaster/Wind Blaster handle" },
+	{ "name": "Wind Blaster/Wind Blaster stretchy part", "bone": "Wind Blaster/Wind Blaster handle", "attachment": "Weapons/Wind Blaster/Wind Blaster stretchy part" },
+	{ "name": "Wind Blaster/Wind BlasterBack", "bone": "Wind Blaster/Wind Blaster handle", "attachment": "Weapons/Wind Blaster/Wind Blaster front" },
+	{ "name": "Wind Blaster/Wind Blaster not inflated", "bone": "Wind Blaster/Wind Blaster handle", "attachment": "Weapons/Wind Blaster/Wind Blaster not inflated" },
+	{ "name": "Wind Blaster/Wind Blaster front", "bone": "Wind Blaster/Wind Blaster handle", "attachment": "Weapons/Wind Blaster/Wind Blaster front" }
+],
+"skins": [
+	{
+		"name": "weapons/gun/assault_rifle",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/assault_rifle", "x": 91.71, "y": 20.87, "width": 272, "height": 115 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/bazooka",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/G.Bazooka", "x": -38.15, "y": 35.93, "width": 325, "height": 157 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/blunderbuss",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/Blunderbuss/blunderbuss combined", "x": 107.14, "y": 13.8, "width": 362, "height": 118 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/buzzsaw_gun",
+		"bones": [ "Buzzsaw gun/Buzzsaw", "Buzzsaw gun/Buzzsawfront" ],
+		"attachments": {
+			"Buzzsaw gun/Buzzsaw": {
+				"Weapons/Buzzsaw gun/Buzzsaw": { "x": 0.5, "width": 127, "height": 126 }
+			},
+			"Buzzsaw gun/Buzzsawfront": {
+				"Weapons/Buzzsaw gun/Buzzsaw gun front": { "width": 312, "height": 184 }
+			},
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/Buzzsaw gun/Buzzsaw gun", "x": 143.78, "y": 35.51, "width": 321, "height": 184 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/fart_gun",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/fart_gun", "x": 66.22, "y": 22.99, "width": 140, "height": 150 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/flamethrower",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/flamethrower", "x": 103.71, "y": 10.16, "width": 200, "height": 93 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/freeze_ray",
+		"bones": [ "freeze gun/barrel" ],
+		"attachments": {
+			"freeze gun/barrel": {
+				"barrel": { "name": "Weapons/freeze gun/barrel", "width": 58, "height": 58 }
+			},
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/freeze gun/base", "x": 76.41, "y": 7.64, "width": 189, "height": 146 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/glaciator",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/glaciator", "x": 182.31, "y": 10.86, "width": 439, "height": 228 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/ice_bazooka",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/ice_bazooka", "x": 93.45, "y": 32.89, "width": 287, "height": 212 }
+			}
+		}
+	},
+	{
+		"name": "weapons/sword/katana",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/Katana", "x": 13.47, "y": 100.69, "rotation": 33.6, "width": 192, "height": 268 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/lightning_gun",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/lightning_gun", "x": 80.62, "y": 19.92, "width": 164, "height": 115 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/mega_blade",
+		"bones": [ "Mega Blade/buzzsaw", "Mega Blade/mega blade_Glow" ],
+		"attachments": {
+			"Mega Blade/buzzsaw": {
+				"buzzsaw": { "name": "Weapons/Mega Blade/buzzsaw", "x": 0.52, "y": 4.18, "width": 257, "height": 259 }
+			},
+			"Mega Blade/mega blade_Glow": {
+				"mega blade": { "name": "Weapons/Mega Blade/mega blade_dark", "x": 144.34, "y": 60.35, "width": 329, "height": 238 }
+			},
+			"Mega Blade/mega blade_Glow2": {
+				"mega blade": { "name": "Weapons/Mega Blade/mega blade", "x": 144.34, "y": 60.35, "width": 329, "height": 238 }
+			},
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/Mega Blade/mega blade_dark", "x": 144.08, "y": 60.18, "width": 329, "height": 238 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/minigun",
+		"bones": [ "Weapons/minigun", "Weapons/minigun/minigunbarrel" ],
+		"attachments": {
+			"minigun/miniguntrigger": {
+				"miniguntrigger": { "name": "Weapons/minigun/miniguntrigger", "x": -734.9, "y": 113.7, "width": 54, "height": 65 }
+			},
+			"Weapons/minigun/minigunbarrel": {
+				"Weapons/minigun/minigunbarrel1": { "width": 135, "height": 70 },
+				"Weapons/minigun/minigunbarrel2": { "x": 0.5, "width": 135, "height": 70 },
+				"Weapons/minigun/minigunbarrel3": { "x": 0.5, "width": 135, "height": 70 }
+			},
+			"Weapons/minigun/minigunbase": {
+				"minigunbase": { "name": "Weapons/minigun/minigunbase", "x": -680.69, "y": 88.62, "width": 149, "height": 120 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/missile_barrage",
+		"bones": [ "Weapons/Missile Barrage/missile barrage_Glow" ],
+		"attachments": {
+			"Weapons/Missile Barrage/missile barrage_Glow": {
+				"missile barrage": { "name": "Weapons/Missile Barrage/missile barrage", "x": 4.95, "y": 0.23, "width": 472, "height": 213 }
+			},
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/Missile Barrage/missile barrage_dark", "x": 109.85, "y": 57.14, "width": 462, "height": 213 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/nuclear_rocket",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/rocketlauncher", "x": -23.64, "y": 86.48, "rotation": -4.27, "width": 442, "height": 271 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/octo_siphoner",
+		"bones": [ "Octo Siphoner/octo siphoner_dark" ],
+		"attachments": {
+			"Octo Siphoner/octo siphoner_dark": {
+				"octo siphoner": { "name": "Weapons/Octo Siphoner/octo siphoner", "width": 346, "height": 176 }
+			},
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/Octo Siphoner/octo siphoner_dark", "x": 134.33, "y": 26.64, "width": 307, "height": 156 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/pistol",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/pistol", "x": 59.07, "y": 11.44, "width": 148, "height": 123 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/plasma_rifle",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/plasma-rifle", "x": 48.16, "y": 31.27, "width": 338, "height": 164 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/rail_gun",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/rail_gun", "x": 84.43, "y": 36.39, "width": 265, "height": 154 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/revolver",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/Mythic Revolver", "x": 85.83, "y": 13.12, "width": 187, "height": 109 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/rpg",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/rocket_laucher/rocket_laucher", "x": 48.45, "y": 36.6, "width": 292, "height": 173 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/shotgun",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/shotgun2", "x": 75.91, "y": 10.45, "width": 238, "height": 118 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/shrink_ray",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/shrink ray/base back", "x": 73.26, "y": -69.64, "width": 333, "height": 224 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/smg",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/smg", "x": 92.68, "y": 13.62, "width": 254, "height": 149 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/solar_siphoner",
+		"bones": [ "Solar Siphoner/Solar Siphoner glow" ],
+		"attachments": {
+			"Solar Siphoner/Solar Siphoner glow": {
+				"Solar Siphoner glow": { "name": "Weapons/Solar Siphoner/Solar Siphoner glow", "width": 320, "height": 170 }
+			},
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/Solar Siphoner/Solar Siphoner", "x": 131.53, "y": -64.63, "width": 314, "height": 170 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/storms_eye",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": {
+					"name": "Weapons/storms eye/storms_eye_merged",
+					"x": 78.11,
+					"y": 59.19,
+					"scaleX": 0.75,
+					"scaleY": 0.75,
+					"width": 322,
+					"height": 264
+				}
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/sunnyside_shotty",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/sunny_side_shotty", "x": 94.82, "y": 34.14, "width": 333, "height": 164 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/void_spitter",
+		"bones": [ "Void Splitter/void spitter_dark" ],
+		"attachments": {
+			"Void Splitter/void spitter_dark": {
+				"void spitter": { "name": "Weapons/Void Splitter/void spitter", "width": 291, "height": 208 }
+			},
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/Void Splitter/void spitter_dark", "x": 83.4, "y": 49.56, "width": 291, "height": 186 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/water_blaster",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/WaterBlaster", "x": 54.6, "y": 72.83, "width": 356, "height": 226 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/water_gun",
+		"attachments": {
+			"weapon_held_R": {
+				"weapon_held": { "name": "Weapons/water_gun", "x": 74.63, "y": 32.37, "width": 181, "height": 147 }
+			}
+		}
+	},
+	{
+		"name": "weapons/gun/wind_blaster",
+		"bones": [ "Wind Blaster/Wind Blaster handle" ],
+		"attachments": {
+			"Wind Blaster/Wind BlasterBack": {
+				"Weapons/Wind Blaster/Wind Blaster front": { "x": -11.54, "y": 47.19, "width": 87, "height": 150 }
+			},
+			"Wind Blaster/Wind Blaster front": {
+				"Weapons/Wind Blaster/Wind Blaster front": { "x": 147.88, "y": 49.29, "width": 87, "height": 150 }
+			},
+			"Wind Blaster/Wind Blaster handle": {
+				"Weapons/Wind Blaster/Wind Blaster handle": { "x": -5.24, "y": -26.22, "width": 61, "height": 106 }
+			},
+			"Wind Blaster/Wind Blaster not inflated": {
+				"Weapons/Wind Blaster/Wind Blaster not inflated": { "x": 68.17, "y": 48.24, "width": 190, "height": 145 }
+			},
+			"Wind Blaster/Wind Blaster stretchy part": {
+				"Weapons/Wind Blaster/Wind Blaster stretchy part": { "x": -78.66, "y": 48.24, "width": 135, "height": 141 }
+			}
+		}
+	}
+],
+"events": {
+	"Attack": {},
+	"bat": {},
+	"brick": {},
+	"Fire": {},
+	"footstep": {},
+	"poop": {},
+	"transform": {}
+},
+"animations": {
+	"Idle": {
+		"slots": {
+			"Mega Blade/mega blade_Glow2": {
+				"rgba": [
+					{
+						"color": "ffffffff",
+						"curve": [ 0.167, 1, 0.333, 1, 0.167, 1, 0.333, 1, 0.167, 1, 0.333, 1, 0.167, 1, 0.333, 0.43 ]
+					},
+					{
+						"time": 0.5,
+						"color": "ffffff6e",
+						"curve": [ 0.667, 1, 0.833, 1, 0.667, 1, 0.833, 1, 0.667, 1, 0.833, 1, 0.667, 0.43, 0.833, 1 ]
+					},
+					{ "time": 1, "color": "ffffffff" }
+				]
+			},
+			"Octo Siphoner/octo siphoner_dark": {
+				"rgba": [
+					{
+						"color": "ffffffff",
+						"curve": [ 0.167, 1, 0.333, 1, 0.167, 1, 0.333, 1, 0.167, 1, 0.333, 1, 0.167, 1, 0.333, 0.5 ]
+					},
+					{
+						"time": 0.5,
+						"color": "ffffff80",
+						"curve": [ 0.667, 1, 0.833, 1, 0.667, 1, 0.833, 1, 0.667, 1, 0.833, 1, 0.667, 0.5, 0.833, 1 ]
+					},
+					{ "time": 1, "color": "ffffffff" }
+				]
+			},
+			"Solar Siphoner/Solar Siphoner glow": {
+				"attachment": [
+					{ "name": null }
+				]
+			},
+			"Void Splitter/void spitter_dark": {
+				"rgba": [
+					{
+						"color": "ffffffff",
+						"curve": [ 0.167, 1, 0.333, 1, 0.167, 1, 0.333, 1, 0.167, 1, 0.333, 1, 0.167, 1, 0.333, 0.46 ]
+					},
+					{
+						"time": 0.5,
+						"color": "ffffff74",
+						"curve": [ 0.667, 1, 0.833, 1, 0.667, 1, 0.833, 1, 0.667, 1, 0.833, 1, 0.667, 0.46, 0.833, 1 ]
+					},
+					{ "time": 1, "color": "ffffffff" }
+				]
+			},
+			"Weapons/minigun/minigunbarrel": {
+				"attachment": [
+					{ "name": "Weapons/minigun/minigunbarrel1" },
+					{ "time": 0.0667, "name": "Weapons/minigun/minigunbarrel2" },
+					{ "time": 0.1333, "name": "Weapons/minigun/minigunbarrel3" },
+					{ "time": 0.2, "name": "Weapons/minigun/minigunbarrel1" },
+					{ "time": 0.2667, "name": "Weapons/minigun/minigunbarrel2" },
+					{ "time": 0.3333, "name": "Weapons/minigun/minigunbarrel3" },
+					{ "time": 0.4, "name": "Weapons/minigun/minigunbarrel1" },
+					{ "time": 0.4667, "name": "Weapons/minigun/minigunbarrel2" },
+					{ "time": 0.5333, "name": "Weapons/minigun/minigunbarrel3" },
+					{ "time": 0.6, "name": "Weapons/minigun/minigunbarrel1" },
+					{ "time": 0.6667, "name": "Weapons/minigun/minigunbarrel2" },
+					{ "time": 0.7333, "name": "Weapons/minigun/minigunbarrel3" },
+					{ "time": 0.8, "name": "Weapons/minigun/minigunbarrel1" },
+					{ "time": 0.8667, "name": "Weapons/minigun/minigunbarrel2" },
+					{ "time": 0.9333, "name": "Weapons/minigun/minigunbarrel3" },
+					{ "time": 1, "name": "Weapons/minigun/minigunbarrel1" }
+				]
+			},
+			"Weapons/Missile Barrage/missile barrage_Glow": {
+				"rgba": [
+					{
+						"color": "ffffffff",
+						"curve": [ 0.167, 1, 0.333, 1, 0.167, 1, 0.333, 1, 0.167, 1, 0.333, 1, 0.167, 1, 0.333, 0.5 ]
+					},
+					{
+						"time": 0.5,
+						"color": "ffffff7e",
+						"curve": [ 0.667, 1, 0.833, 1, 0.667, 1, 0.833, 1, 0.667, 1, 0.833, 1, 0.667, 0.5, 0.833, 1 ]
+					},
+					{ "time": 1, "color": "ffffffff" }
+				]
+			}
+		},
+		"bones": {
+			"Buzzsaw gun/Buzzsaw": {
+				"rotate": [
+					{},
+					{ "time": 1, "value": 360 }
+				]
+			},
+			"freeze gun/barrel": {
+				"rotate": [
+					{},
+					{ "time": 1, "value": 360 }
+				]
+			},
+			"Mega Blade/buzzsaw": {
+				"rotate": [
+					{},
+					{ "time": 1, "value": 360 }
+				]
+			},
+			"Weapons/minigun/minigunbarrel": {
+				"scale": [
+					{
+						"curve": [ 0.028, 1, 0.056, 1, 0.028, 1, 0.056, 1.02 ]
+					},
+					{
+						"time": 0.0833,
+						"y": 1.02,
+						"curve": [ 0.111, 1, 0.139, 1, 0.111, 1.02, 0.139, 1 ]
+					},
+					{
+						"time": 0.1667,
+						"curve": [ 0.194, 1, 0.222, 1, 0.194, 1, 0.222, 1.02 ]
+					},
+					{
+						"time": 0.25,
+						"y": 1.02,
+						"curve": [ 0.278, 1, 0.306, 1, 0.278, 1.02, 0.306, 1 ]
+					},
+					{
+						"time": 0.3333,
+						"curve": [ 0.361, 1, 0.389, 1, 0.361, 1, 0.389, 1.02 ]
+					},
+					{
+						"time": 0.4167,
+						"y": 1.02,
+						"curve": [ 0.444, 1, 0.472, 1, 0.444, 1.02, 0.472, 1 ]
+					},
+					{
+						"time": 0.5,
+						"curve": [ 0.528, 1, 0.556, 1, 0.528, 1, 0.556, 1.02 ]
+					},
+					{
+						"time": 0.5833,
+						"y": 1.02,
+						"curve": [ 0.611, 1, 0.639, 1, 0.611, 1.02, 0.639, 1 ]
+					},
+					{
+						"time": 0.6667,
+						"curve": [ 0.694, 1, 0.722, 1, 0.694, 1, 0.722, 1.02 ]
+					},
+					{
+						"time": 0.75,
+						"y": 1.02,
+						"curve": [ 0.778, 1, 0.806, 1, 0.778, 1.02, 0.806, 1 ]
+					},
+					{
+						"time": 0.8333,
+						"curve": [ 0.861, 1, 0.889, 1, 0.861, 1, 0.889, 1.02 ]
+					},
+					{
+						"time": 0.9167,
+						"y": 1.02,
+						"curve": [ 0.944, 1, 0.972, 1, 0.944, 1.02, 0.972, 1.007 ]
+					},
+					{ "time": 1 }
+				]
+			}
+		}
+	},
+	"Shoot": {
+		"slots": {
+			"Buzzsaw gun/Buzzsaw": {
+				"rgba": [
+					{
+						"color": "ffffffff",
+						"curve": [ 0.044, 1, 0.122, 1, 0.044, 1, 0.122, 1, 0.044, 1, 0.122, 1, 0.044, 1, 0.122, 0.67 ]
+					},
+					{ "time": 0.1667, "color": "ffffff00" }
+				]
+			},
+			"Mega Blade/buzzsaw": {
+				"rgba": [
+					{ "color": "ffffffff" },
+					{ "time": 0.1667, "color": "ffffff00" }
+				]
+			},
+			"Mega Blade/mega blade_Glow2": {
+				"rgba": [
+					{
+						"color": "ffffff6e",
+						"curve": [ 0.028, 1, 0.072, 1, 0.028, 1, 0.072, 1, 0.028, 1, 0.072, 1, 0.028, 0.43, 0.072, 1 ]
+					},
+					{ "time": 0.1, "color": "ffffffff" },
+					{ "time": 0.1667, "color": "ffffff6e" }
+				]
+			},
+			"Octo Siphoner/octo siphoner_dark": {
+				"rgba": [
+					{
+						"color": "ffffffff",
+						"curve": [ 0.014, 1, 0.036, 1, 0.014, 1, 0.036, 1, 0.014, 1, 0.036, 1, 0.014, 1, 0.036, 0.5 ]
+					},
+					{
+						"time": 0.05,
+						"color": "ffffff80",
+						"curve": [ 0.064, 1, 0.072, 1, 0.064, 1, 0.072, 1, 0.064, 1, 0.072, 1, 0.064, 0.5, 0.072, 1 ]
+					},
+					{
+						"time": 0.0833,
+						"color": "ffffffff",
+						"curve": [ 0.097, 1, 0.119, 1, 0.097, 1, 0.119, 1, 0.097, 1, 0.119, 1, 0.097, 1, 0.119, 0.5 ]
+					},
+					{
+						"time": 0.1333,
+						"color": "ffffff80",
+						"curve": [ 0.147, 1, 0.153, 1, 0.147, 1, 0.153, 1, 0.147, 1, 0.153, 1, 0.147, 0.5, 0.153, 1 ]
+					},
+					{ "time": 0.1667, "color": "ffffffff" }
+				]
+			},
+			"Void Splitter/void spitter_dark": {
+				"rgba": [
+					{
+						"color": "ffffffff",
+						"curve": [ 0.013, 1, 0.021, 1, 0.013, 1, 0.021, 1, 0.013, 1, 0.021, 1, 0.013, 1, 0.021, 0.46 ]
+					},
+					{
+						"time": 0.0333,
+						"color": "ffffff74",
+						"curve": [ 0.046, 1, 0.067, 1, 0.046, 1, 0.067, 1, 0.046, 1, 0.067, 1, 0.046, 0.46, 0.067, 1 ]
+					},
+					{
+						"time": 0.0833,
+						"color": "ffffffff",
+						"curve": [ 0.096, 1, 0.104, 1, 0.096, 1, 0.104, 1, 0.096, 1, 0.104, 1, 0.096, 1, 0.104, 0.46 ]
+					},
+					{
+						"time": 0.1167,
+						"color": "ffffff74",
+						"curve": [ 0.129, 1, 0.154, 1, 0.129, 1, 0.154, 1, 0.129, 1, 0.154, 1, 0.129, 0.46, 0.154, 1 ]
+					},
+					{ "time": 0.1667, "color": "ffffffff" }
+				]
+			},
+			"Weapons/minigun/minigunbarrel": {
+				"attachment": [
+					{ "name": "Weapons/minigun/minigunbarrel1" },
+					{ "time": 0.0167, "name": "Weapons/minigun/minigunbarrel3" },
+					{ "time": 0.0333, "name": "Weapons/minigun/minigunbarrel1" },
+					{ "time": 0.05, "name": "Weapons/minigun/minigunbarrel3" },
+					{ "time": 0.0667, "name": "Weapons/minigun/minigunbarrel1" },
+					{ "time": 0.0833, "name": "Weapons/minigun/minigunbarrel2" },
+					{ "time": 0.1, "name": "Weapons/minigun/minigunbarrel1" },
+					{ "time": 0.1167, "name": "Weapons/minigun/minigunbarrel2" },
+					{ "time": 0.1333, "name": "Weapons/minigun/minigunbarrel1" },
+					{ "time": 0.15, "name": "Weapons/minigun/minigunbarrel2" },
+					{ "time": 0.1667, "name": "Weapons/minigun/minigunbarrel1" }
+				]
+			},
+			"Weapons/Missile Barrage/missile barrage_Glow": {
+				"rgba": [
+					{
+						"color": "ffffffff",
+						"curve": [ 0.012, 1, 0.021, 1, 0.012, 1, 0.021, 1, 0.012, 1, 0.021, 1, 0.012, 1, 0.021, 0.5 ]
+					},
+					{
+						"time": 0.0333,
+						"color": "ffffff7e",
+						"curve": [ 0.046, 1, 0.067, 1, 0.046, 1, 0.067, 1, 0.046, 1, 0.067, 1, 0.046, 0.5, 0.067, 1 ]
+					},
+					{
+						"time": 0.0833,
+						"color": "ffffffff",
+						"curve": [ 0.096, 1, 0.104, 1, 0.096, 1, 0.104, 1, 0.096, 1, 0.104, 1, 0.096, 1, 0.104, 0.5 ]
+					},
+					{
+						"time": 0.1167,
+						"color": "ffffff7e",
+						"curve": [ 0.129, 1, 0.154, 1, 0.129, 1, 0.154, 1, 0.129, 1, 0.154, 1, 0.129, 0.5, 0.154, 1 ]
+					},
+					{ "time": 0.1667, "color": "ffffffff" }
+				]
+			}
+		},
+		"bones": {
+			"Buzzsaw gun/Buzzsaw": {
+				"rotate": [
+					{
+						"curve": [ 0.044, 0, 0.122, 120 ]
+					},
+					{ "time": 0.1667, "value": 360 }
+				],
+				"translate": [
+					{
+						"curve": [ 0.044, 0, 0.122, 66.81, 0.044, 0, 0.122, 0 ]
+					},
+					{ "time": 0.1667, "x": 200.42 }
+				]
+			},
+			"freeze gun/barrel": {
+				"rotate": [
+					{},
+					{ "time": 0.1667, "value": 360 }
+				],
+				"scale": [
+					{
+						"curve": [ 0.022, 1.099, 0.044, 1.296, 0.022, 1.099, 0.044, 1.296 ]
+					},
+					{
+						"time": 0.0667,
+						"x": 1.296,
+						"y": 1.296,
+						"curve": [ 0.1, 1.296, 0.133, 1.099, 0.1, 1.296, 0.133, 1.099 ]
+					},
+					{ "time": 0.1667 }
+				]
+			},
+			"Mega Blade/buzzsaw": {
+				"rotate": [
+					{},
+					{ "time": 0.1667, "value": 360 }
+				],
+				"translate": [
+					{
+						"curve": [ 0.017, -40.21, 0.047, -69.51, 0.017, 1.3, 0.033, 1.95 ]
+					},
+					{
+						"time": 0.05,
+						"x": -60.32,
+						"y": 1.95,
+						"curve": [ 0.089, 44.11, 0.128, 96.32, 0.089, 1.95, 0.128, 2.92 ]
+					},
+					{ "time": 0.1667, "x": 96.32, "y": 2.92 }
+				]
+			},
+			"Weapons/minigun/minigunbarrel": {
+				"scale": [
+					{
+						"curve": [ 0.005, 1, 0.012, 1, 0.005, 1, 0.012, 1.02 ]
+					},
+					{
+						"time": 0.0167,
+						"y": 1.02,
+						"curve": [ 0.021, 1, 0.029, 1, 0.021, 1.02, 0.029, 1 ]
+					},
+					{ "time": 0.0333, "curve": "stepped" },
+					{
+						"time": 0.05,
+						"curve": [ 0.055, 1, 0.062, 1, 0.055, 1, 0.062, 1.02 ]
+					},
+					{
+						"time": 0.0667,
+						"y": 1.02,
+						"curve": [ 0.071, 1, 0.079, 1, 0.071, 1.02, 0.079, 1 ]
+					},
+					{
+						"time": 0.0833,
+						"curve": [ 0.088, 1, 0.095, 1, 0.088, 1, 0.095, 1.02 ]
+					},
+					{
+						"time": 0.1,
+						"y": 1.02,
+						"curve": [ 0.105, 1, 0.112, 1, 0.105, 1.02, 0.112, 1 ]
+					},
+					{
+						"time": 0.1167,
+						"curve": [ 0.121, 1, 0.129, 1, 0.121, 1, 0.129, 1.02 ]
+					},
+					{ "time": 0.1333, "y": 1.02, "curve": "stepped" },
+					{
+						"time": 0.15,
+						"y": 1.02,
+						"curve": [ 0.155, 1, 0.162, 1, 0.155, 1.02, 0.162, 1.007 ]
+					},
+					{ "time": 0.1667 }
+				]
+			}
+		}
+	}
+}
+}
