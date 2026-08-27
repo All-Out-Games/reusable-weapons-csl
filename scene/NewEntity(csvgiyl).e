@@ -10,8 +10,8 @@
   },
   "local_rotation": 0,
   "local_scale": {
-    "X": 55,
-    "Y": 55
+    "X": 555,
+    "Y": 555
   }
 },
 {
@@ -20,7 +20,7 @@
   "component_type": "Internal_Component",
   "internal_component_type": "Sprite_Renderer",
   "data": {
-    "texture": "$AO/editor/icons/Square.png",
+    "texture": "$AO/player/Cosmetics/Black Market Dealer/hat.png",
     "tint": {
       "X": 0.0036361098755151,
       "Y": 0.0036361098755151,

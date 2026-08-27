@@ -76,9 +76,11 @@ ao_late_update :: method(dt: float) {
         handle_equipped_item_changing(hotbar.selected_item_index);
     }
 
-    if is_local() {
-        draw_health_bar(this); // from weapons_ui_helpers.csl
-    }
+}
+
+// World-visible, non-interactive UI is drawn ungated from its owning component.
+ao_draw :: method(dt: float) {
+    draw_health_bar(this); // from weapons_ui_helpers.csl
 }
 ```
 

@@ -1,10 +1,9 @@
 {
-    csl: true,
-    projects:
-    [
-        {
-            name: "ns-evals"
-            id: "69656dbdda5626277f25de72"
-        }
-    ]
+  "csl": true,
+  "projects": [
+    {
+      "name": "ns-evals",
+      "id": "68349425f54d816a4465bbba"
+    }
+  ]
 }
