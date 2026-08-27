@@ -104,7 +104,7 @@ See `weapon_items.csl` for all ammo type indices (0-9).
 
 After cloning, run the following MCP tool from the consuming game project.
 
-Tool: `mcp__allout__player_rig_ensure_animations`
+Tool: `player_rig_ensure_animations`
 
 ```json
 {
