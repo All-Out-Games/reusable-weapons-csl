@@ -21,7 +21,7 @@
   "internal_component_type": "Sprite_Renderer",
   "data": {
     "texture": "$AO/player/Cosmetics/Black Market Dealer/hat.png",
-    "tint": {
+    "color": {
       "X": 0.0036361098755151,
       "Y": 0.0036361098755151,
       "Z": 0.0036361098755151
