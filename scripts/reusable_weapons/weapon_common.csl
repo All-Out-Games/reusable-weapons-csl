@@ -199,7 +199,8 @@ weapon_play_fire_sound :: proc(player: Player, wt: Weapon_Type) {
     }
 
     desc := SFX.default_sfx_desc();
-    desc.set_position(player.entity.world_position);
+    desc.entity_to_follow = player.entity.id;
+    desc.unique_id = get_frame_number(); // separate shots never merge; predicted and server copies of one shot still do
     desc.volume = 0.7;
     desc.volume_perturb = 0.1;
     desc.speed_perturb = 0.1;

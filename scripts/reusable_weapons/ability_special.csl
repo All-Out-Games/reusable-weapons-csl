@@ -4,7 +4,7 @@ Melee_Weapon_Effect :: class : Effect_Base {
         weapon_trigger_melee_animation(player);
 
         sfx_desc := SFX.default_sfx_desc();
-        sfx_desc.set_position(player.entity.world_position);
+        sfx_desc.entity_to_follow = player.entity.id;
         sfx_desc.range_multiplier = 2.0;
         SFX.play(get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/katana_slash.wav"), sfx_desc);
         weapon_spawn_melee_particles(player);
