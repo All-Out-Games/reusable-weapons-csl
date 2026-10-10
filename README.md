@@ -223,6 +223,8 @@ My_Mob :: class : Component {
 }
 ```
 
+To block or scale a hit before health is reduced (spawn protection, damage upgrades), set `modify_damage`. It receives the same arguments as `on_damaged`, including `on_damaged_userdata`, and returns the damage to apply; return `0` to block the damage (the projectile still counts it as a hit). To let shots pass through a target, call `set_enabled(false)` on its `Weapon_Target`.
+
 ### Owner exclusion
 
 The `owner_user_id` field prevents weapons from hitting their own source or another entity with the attacker's exact user ID. It does not provide team or alliance friendly-fire rules. User IDs remain stable across reconciliation and late joins. For player-owned entities such as turrets or pets, use the player's user ID:
@@ -242,6 +244,7 @@ target.owner_user_id = player.get_user_id(); // player's weapons won't hit their
 | `max_health` | `float` | Maximum health |
 | `owner_user_id` | `string` | Stable user ID of the owner (for self-hit exclusion) |
 | `on_damaged` | `proc` | Callback fired after damage is applied |
+| `modify_damage` | `proc` | Optional hook run before damage is applied; returns the damage to apply (`0` blocks the damage) |
 | `on_damaged_userdata` | `Object` | Userdata passed to the callback |
 
 ### Reading health from the Player
