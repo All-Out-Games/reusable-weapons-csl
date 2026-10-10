@@ -225,6 +225,8 @@ My_Mob :: class : Component {
 
 To block or scale a hit before health is reduced (spawn protection, damage upgrades), set `modify_damage`. It receives the same arguments as `on_damaged`, including `on_damaged_userdata`, and returns the damage to apply; return `0` to block the damage (the projectile still counts it as a hit). To let shots pass through a target, call `set_enabled(false)` on its `Weapon_Target`.
 
+Each frame a projectile hits the first `Weapon_Target` along its path (piercing and growing projectiles hit each one). Colliders do not stop shots; to make cover block them, give it a `Weapon_Target` whose `modify_damage` returns `0`.
+
 ### Owner exclusion
 
 The `owner_user_id` field prevents weapons from hitting their own source or another entity with the attacker's exact user ID. It does not provide team or alliance friendly-fire rules. User IDs remain stable across reconciliation and late joins. For player-owned entities such as turrets or pets, use the player's user ID:

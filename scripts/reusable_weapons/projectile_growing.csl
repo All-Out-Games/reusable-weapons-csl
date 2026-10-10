@@ -20,6 +20,7 @@ Growing_Projectile :: class : Component {
             return;
         }
 
+        prev_pos := entity.world_position + v2{0, -0.5};
         move := v2{direction.x * speed * dt, direction.y * speed * dt};
         entity.add_local_position(move);
 
@@ -31,11 +32,11 @@ Growing_Projectile :: class : Component {
         }
 
         pos := entity.world_position + v2{0, -0.5};
-        nearby: [..]Weapon_Target;
-        Scene.get_all_components_in_range(pos, radius, ref nearby);
+        hits: [..]Weapon_Target_Hit;
+        weapon_find_segment_hits(prev_pos, pos, radius, owner_user_id, ref hits);
 
-        for hit_target: nearby {
-            if hit_target.owner_user_id == owner_user_id continue;
+        for hit: hits {
+            hit_target := hit.target;
 
             // Check if already hit
             already_hit := false;
@@ -64,10 +65,10 @@ Growing_Projectile :: class : Component {
 
             sfx := get_asset(SFX_Asset, "reusable_weapons/sounds/reusable-weapons/plasma_burst_hit.wav");
             sfx_desc := SFX.default_sfx_desc();
-            sfx_desc.set_position(pos);
+            sfx_desc.set_position(hit.position);
             sfx_desc.range_multiplier = 2.0;
             SFX.play(sfx, sfx_desc);
-            weapon_spawn_impact_particles(pos, .PLASMA_BURST, direction);
+            weapon_spawn_impact_particles(hit.position, .PLASMA_BURST, direction);
         }
     }
 }

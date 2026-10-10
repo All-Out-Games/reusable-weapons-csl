@@ -22,3 +22,47 @@ weapon_target_apply_damage :: proc(target: Weapon_Target, damage: float, attacke
         target.on_damaged(target, damage, attacker_user_id, target.on_damaged_userdata);
     }
 }
+
+// A Weapon_Target touched by a moving projectile, and where the projectile first touched it.
+Weapon_Target_Hit :: struct {
+    target: Weapon_Target;
+    position: v2;
+    distance: float; // distance travelled from the segment start before contact
+}
+
+// Appends the Weapon_Targets touched by a projectile with hit radius `radius` moving from `from`
+// to `to` this frame, in the order the projectile reaches them. Targets owned by `owner_user_id` are skipped.
+weapon_find_segment_hits :: proc(from: v2, to: v2, radius: float, owner_user_id: string, hits: ref [..]Weapon_Target_Hit) {
+    delta := to - from;
+    travel := length(delta);
+    dir: v2;
+    if travel > 0 {
+        dir = delta / travel;
+    }
+
+    nearby: [..]Weapon_Target;
+    Scene.get_all_components_in_range(from + delta * 0.5, travel * 0.5 + radius + 0.01, ref nearby);
+
+    for target: nearby {
+        if target.owner_user_id == owner_user_id continue;
+
+        // The closest point on the segment must be inside the hit radius.
+        to_target := target.entity.world_position - from;
+        along := dot(to_target, dir);
+        if length_squared(to_target - dir * clamp(along, 0.0, travel)) > radius * radius continue;
+
+        // Back up from the closest approach to where the hit radius first reached the target.
+        perp_sq := length_squared(to_target) - along * along;
+        distance := max(along - sqrt(max(radius * radius - perp_sq, 0.0)), 0.0);
+
+        // Insert sorted by contact distance; ties keep scene order so every peer picks the same target.
+        hit := Weapon_Target_Hit{target=target, position=from + dir * distance, distance=distance};
+        hits.append(hit);
+        i := hits.count - 1;
+        while i > 0 && hits[i - 1].distance > distance {
+            hits[i] = hits[i - 1];
+            i -= 1;
+        }
+        hits[i] = hit;
+    }
+}
